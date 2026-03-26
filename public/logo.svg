@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="scf-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D6186E"/>
+      <stop offset="100%" stop-color="#7B1FA2"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="96" fill="url(#scf-grad)"/>
+  <g fill="white" fill-rule="evenodd" transform="translate(38,30) scale(0.62)">
+    <!-- person -->
+    <circle cx="85" cy="42" r="22"/>
+    <path d="M60,75 C60,75 55,130 58,160 L76,160 L80,110 L90,110 L94,160 L112,160 C115,130 110,75 110,75 Z"/>
+    <!-- cat -->
+    <circle cx="148" cy="115" r="16"/>
+    <path d="M136,102 L130,80 L142,98Z"/>
+    <path d="M160,102 L166,80 L154,98Z"/>
+    <ellipse cx="148" cy="148" rx="13" ry="20"/>
+    <path d="M160,160 Q175,145 180,158" fill="none" stroke="white" stroke-width="5" stroke-linecap="round"/>
+  </g>
+</svg>
