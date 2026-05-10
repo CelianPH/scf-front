@@ -16,7 +16,7 @@ export const siteConfig = {
   /** Description courte */
   description: "Association de protection et de sauvetage animal",
 
-  /** Chemin vers le logo — remplacez le fichier pour changer le logo */
+  /** Chemin vers le logo, remplacez le fichier pour changer le logo */
   logo: "/logo.svg",
 
   /** Liens de navigation principale */

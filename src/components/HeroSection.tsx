@@ -1,64 +1,58 @@
-import { getStrapiMedia } from "@/lib/strapi";
-import type { StrapiMedia } from "@/types/strapi";
+import Image from "next/image";
+import Link from "next/link";
+import { Heart, PawPrint } from "lucide-react";
 
-interface HeroSectionProps {
-  titre: string;
-  description: string;
-  image: StrapiMedia;
-}
-
-export default function HeroSection({
-  titre,
-  description,
-  image,
-}: HeroSectionProps) {
-  const imageUrl = getStrapiMedia(image?.url);
-
+export default function HeroSection() {
   return (
-    <section className="relative min-h-[85vh] flex flex-col justify-end overflow-hidden bg-dark">
-      {/*
-       * Background image via CSS — pas de next/image ici volontairement :
-       * si l'URL est invalide, aucune icône cassée ne s'affiche,
-       * le gradient prend le relais naturellement.
-       */}
-      {imageUrl && (
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${imageUrl})` }}
-          role="img"
-          aria-label={image.alternativeText || titre}
+    <section className="relative isolate overflow-hidden">
+      <div className="relative h-[68svh] min-h-[520px] w-full md:h-[78svh]">
+        <Image
+          src="/images/hero.jpg"
+          alt="Chat tigré au regard expressif, accueilli par l'association"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
         />
-      )}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-b from-dark/40 via-dark/55 to-dark/80"
+        />
 
-      {/* Brand gradient overlay — fonctionne comme overlay ET comme fallback */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary-deep/70 via-secondary-dark/75 to-dark/95" />
-
-      {/* Decorative glows */}
-      <div className="absolute top-[15%] right-[-10%] w-[55vw] h-[55vw] rounded-full bg-primary/20 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[20%] left-[-8%] w-[45vw] h-[45vw] rounded-full bg-secondary-light/15 blur-[80px] pointer-events-none" />
-
-      {/* Bottom wave transition */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
-        <svg
-          viewBox="0 0 1440 80"
-          className="w-full h-auto block"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z"
-            fill="var(--color-bg)"
-          />
-        </svg>
-      </div>
-
-      {/* Content — flex justify-end + line-clamp = toujours en bas, jamais de débordement */}
-      <div className="relative z-10 p-6 pb-24 mt-auto">
-        <h1 className="font-display text-[2.5rem] font-bold text-white mb-3 leading-[1.1] line-clamp-3 drop-shadow-lg">
-          {titre}
-        </h1>
-        <p className="text-white/75 text-base leading-relaxed line-clamp-3 max-w-sm drop-shadow-sm">
-          {description}
-        </p>
+        <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-5 pb-12 pt-24 md:px-8 md:pb-20 md:pt-32 lg:justify-center">
+          <div className="max-w-2xl">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm md:text-sm">
+              <PawPrint className="h-3.5 w-3.5" aria-hidden="true" />
+              Association lyonnaise · loi 1901 · depuis 2015
+            </span>
+            <h1 className="font-display text-4xl font-bold leading-[1.05] text-white md:text-6xl lg:text-7xl">
+              Adoptez un chat,
+              <br />
+              <span className="text-secondary-lighter">offrez-lui une seconde chance</span>
+            </h1>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/85 md:mt-6 md:text-lg">
+              Sans Croquettes Fixes accompagne les chats en détresse et les
+              humains qui en prennent soin, à Lyon et dans toute la région
+              Auvergne-Rhône-Alpes.
+            </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row md:mt-9">
+              <Link
+                href="/adoption"
+                className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-primary/30 transition hover:bg-primary-dark hover:shadow-primary/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
+                <PawPrint className="h-5 w-5" aria-hidden="true" />
+                Adopter un chat
+              </Link>
+              <Link
+                href="/don"
+                className="inline-flex items-center justify-center gap-2 rounded-md border-2 border-white/80 bg-white/10 px-6 py-3.5 text-base font-semibold text-white backdrop-blur-sm transition hover:border-white hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
+                <Heart className="h-5 w-5" aria-hidden="true" />
+                Faire un don
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

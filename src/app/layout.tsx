@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Outfit } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -8,8 +8,8 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
@@ -17,7 +17,7 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Sans Croquettes Fixes | Association de protection animale",
   description:
-    "Sans Croquettes Fixes — Association de protection et de sauvetage animal. Prise en charge, stérilisation, adoption et sensibilisation.",
+    "Sans Croquettes Fixes, association de protection et de sauvetage animal. Prise en charge, stérilisation, adoption et sensibilisation.",
 };
 
 export default function RootLayout({
@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className="light scroll-smooth" style={{ colorScheme: "light" }}>
       <body
-        className={`${fraunces.variable} ${outfit.variable} font-body antialiased bg-bg text-text`}
+        className={`${fraunces.variable} ${inter.variable} font-body antialiased bg-bg text-text`}
       >
         {children}
       </body>

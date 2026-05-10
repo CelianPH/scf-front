@@ -1,45 +1,27 @@
-import Image from "next/image";
-import { siteConfig } from "@/lib/site-config";
+import { Construction } from "lucide-react";
 
 export default function Footer() {
-  const year = new Date().getFullYear();
-
   return (
-    <footer className="bg-dark text-white/60 px-5 py-10">
-      <div className="max-w-lg mx-auto text-center">
-        <div className="flex items-center justify-center gap-2.5 mb-1">
-          <Image
-            src={siteConfig.logo}
-            alt={siteConfig.name}
-            width={32}
-            height={32}
-            className="rounded-full opacity-90"
-          />
-          <p className="font-display text-xl font-semibold text-white">
-            {siteConfig.name}
-          </p>
+    <footer className="border-t border-dark-lighter bg-dark text-white/80">
+      <div className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-12">
+        <div className="flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
+          <div>
+            <p className="font-display text-lg font-bold text-white">
+              Sans Croquettes Fixes
+            </p>
+            <p className="mt-1 text-sm text-white/60">
+              Association lyonnaise de protection animale &middot; depuis 2015
+            </p>
+          </div>
+          <div
+            role="status"
+            aria-label="Pied de page en cours de construction"
+            className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/80 md:text-sm"
+          >
+            <Construction className="h-4 w-4" aria-hidden="true" />
+            <span>Pied de page en travaux</span>
+          </div>
         </div>
-        <p className="text-sm mb-8 text-white/40">
-          {siteConfig.description}
-        </p>
-
-        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm mb-8">
-          {siteConfig.footer.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="hover:text-secondary-lighter transition-colors duration-200"
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-
-        <div className="h-px bg-white/10 mb-6" />
-
-        <p className="text-xs text-white/30">
-          &copy; {year} {siteConfig.name}. Tous droits r&eacute;serv&eacute;s.
-        </p>
       </div>
     </footer>
   );
