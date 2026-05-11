@@ -36,9 +36,9 @@ export default function ArticleCard({ article }: ArticleCardProps) {
               {article.titre}
             </span>
           </h3>
-          {article.excerpt ? (
+          {article.resume ? (
             <p className="mt-2 line-clamp-3 text-sm text-text-secondary">
-              {article.excerpt}
+              {article.resume}
             </p>
           ) : null}
           {article.tags.length > 0 ? (

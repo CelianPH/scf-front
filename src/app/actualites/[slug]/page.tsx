@@ -71,7 +71,7 @@ export async function generateMetadata({
   const seo = article.seo;
   return {
     title: seo?.metaTitle ?? `${article.titre} | Sans Croquettes Fixes`,
-    description: seo?.metaDescription ?? article.excerpt ?? undefined,
+    description: seo?.metaDescription ?? article.resume ?? undefined,
   };
 }
 
@@ -128,9 +128,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 {dateLabel}
               </time>
 
-              {article.excerpt ? (
+              {article.resume ? (
                 <p className="mt-6 text-lg leading-relaxed text-text-secondary md:text-xl">
-                  {article.excerpt}
+                  {article.resume}
                 </p>
               ) : null}
             </Reveal>

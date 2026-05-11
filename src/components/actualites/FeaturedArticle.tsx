@@ -43,9 +43,9 @@ export default function FeaturedArticle({ article }: FeaturedArticleProps) {
           <h2 className="font-display text-2xl font-bold leading-tight text-text transition group-hover:text-primary md:text-3xl lg:text-4xl">
             {article.titre}
           </h2>
-          {article.excerpt ? (
+          {article.resume ? (
             <p className="line-clamp-3 text-base text-text-secondary md:line-clamp-4">
-              {article.excerpt}
+              {article.resume}
             </p>
           ) : null}
           {article.tags.length > 0 ? (
