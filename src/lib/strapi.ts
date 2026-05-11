@@ -1,8 +1,31 @@
 import qs from "qs";
-import type { PageAccueilResponse } from "@/types/strapi";
+import type {
+  AboutPageResponse,
+  ArticleResponse,
+  ArticlesResponse,
+  ChatResponse,
+  ChatsResponse,
+  HomePageResponse,
+  SiteSettingsResponse,
+  TagsResponse,
+} from "@/types/strapi";
 
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
+
+const DEFAULT_REVALIDATE = 3600;
+
+export const CACHE_TAGS = {
+  home: "home-page",
+  about: "about-page",
+  settings: "site-settings",
+  chats: "chats",
+  articles: "articles",
+  tags: "tags",
+} as const;
+
+export type CacheTag = (typeof CACHE_TAGS)[keyof typeof CACHE_TAGS];
 
 export function getStrapiURL(path = "") {
   return `${STRAPI_URL}${path}`;
@@ -14,60 +37,310 @@ export function getStrapiMedia(url: string | null | undefined) {
   return `${STRAPI_URL}${url}`;
 }
 
+interface FetchOptions {
+  tags: CacheTag[];
+  revalidate?: number;
+}
+
 async function fetchAPI<T>(
   path: string,
-  urlParamsObject: Record<string, unknown> = {}
+  params: Record<string, unknown>,
+  { tags, revalidate = DEFAULT_REVALIDATE }: FetchOptions
 ): Promise<T> {
-  const queryString = qs.stringify(urlParamsObject, {
-    encodeValuesOnly: true,
-  });
+  const queryString = qs.stringify(params, { encodeValuesOnly: true });
+  const url = getStrapiURL(`/api${path}${queryString ? `?${queryString}` : ""}`);
 
-  const requestUrl = getStrapiURL(
-    `/api${path}${queryString ? `?${queryString}` : ""}`
-  );
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (STRAPI_TOKEN) headers.Authorization = `Bearer ${STRAPI_TOKEN}`;
 
-  const response = await fetch(requestUrl, {
-    next: { revalidate: 60 },
-    headers: { "Content-Type": "application/json" },
+  const response = await fetch(url, {
+    headers,
+    next: { tags, revalidate },
   });
 
   if (!response.ok) {
-    throw new Error(`Erreur Strapi: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `Erreur Strapi ${response.status} ${response.statusText} sur ${path}`
+    );
   }
 
   return response.json();
 }
 
-export async function getPageAccueil(): Promise<PageAccueilResponse> {
-  const query = {
+// ---------- populate presets ----------
+
+const mediaFields = ["url", "alternativeText", "width", "height", "mime", "name", "formats"];
+
+const ctaPopulate = { populate: "*" } as const;
+
+const seoPopulate = {
+  populate: {
+    ogImage: { fields: mediaFields },
+  },
+};
+
+const chatPopulate = {
+  populate: {
+    image: { fields: mediaFields },
+  },
+};
+
+const articlePopulate = {
+  populate: {
+    image: { fields: mediaFields },
+    tags: { fields: ["nom", "slug"] },
+  },
+};
+
+// ---------- Home page ----------
+
+export async function getHomePage(): Promise<HomePageResponse> {
+  const params = {
     populate: {
-      Hero_image: {
-        fields: ["url", "alternativeText", "width", "height"],
-      },
-      Missions: true,
-      Chiffres: {
+      hero: {
         populate: {
-          Image: {
-            fields: ["url", "alternativeText", "width", "height"],
+          image: { fields: mediaFields },
+          ctaPrimary: ctaPopulate,
+          ctaSecondary: ctaPopulate,
+        },
+      },
+      statsBlock: {
+        populate: { stats: true },
+      },
+      chatsBlock: {
+        populate: {
+          chats: chatPopulate,
+          ctaSeeAll: ctaPopulate,
+        },
+      },
+      quiSommesNous: {
+        populate: {
+          image: { fields: mediaFields },
+          cta: ctaPopulate,
+        },
+      },
+      distributionBandeau: {
+        populate: {
+          infos: true,
+          ctaLink: ctaPopulate,
+        },
+      },
+      gesteCompte: {
+        populate: {
+          actions: {
+            populate: { cta: ctaPopulate },
           },
         },
       },
-      Equipe: {
+      actualitesBlock: {
         populate: {
-          Photo: {
-            fields: ["url", "alternativeText", "width", "height"],
-          },
+          articles: articlePopulate,
+          ctaSeeAll: ctaPopulate,
         },
       },
-      Partenaires: {
+      ctaFinal: {
         populate: {
-          Logo: {
-            fields: ["url", "alternativeText", "width", "height"],
-          },
+          ctaPrimary: ctaPopulate,
+          ctaSecondary: ctaPopulate,
+          chatFeatured: chatPopulate,
         },
       },
+      seo: seoPopulate,
     },
   };
 
-  return fetchAPI<PageAccueilResponse>("/page-accueil", query);
+  return fetchAPI<HomePageResponse>("/home-page", params, {
+    tags: [CACHE_TAGS.home],
+  });
+}
+
+// ---------- About page ----------
+
+export async function getAboutPage(): Promise<AboutPageResponse> {
+  const params = {
+    populate: {
+      hero: {
+        populate: { image: { fields: mediaFields } },
+      },
+      missions: {
+        populate: {
+          signature: {
+            populate: {
+              infos: true,
+              image: { fields: mediaFields },
+            },
+          },
+          autres: {
+            populate: { cta: ctaPopulate },
+          },
+        },
+      },
+      histoire: {
+        populate: { jalons: true },
+      },
+      valeurs: {
+        populate: { valeurs: true },
+      },
+      felinsOmbre: {
+        populate: {
+          image: { fields: mediaFields },
+          ctaHelloAsso: ctaPopulate,
+        },
+      },
+      statsBand: {
+        populate: { stats: true },
+      },
+      temoignages: {
+        populate: {
+          items: {
+            populate: { photo: { fields: mediaFields } },
+          },
+        },
+      },
+      ctaFinal: {
+        populate: {
+          ctaPrimary: ctaPopulate,
+          ctaSecondary: ctaPopulate,
+        },
+      },
+      seo: seoPopulate,
+    },
+  };
+
+  return fetchAPI<AboutPageResponse>("/about-page", params, {
+    tags: [CACHE_TAGS.about],
+  });
+}
+
+// ---------- Site settings ----------
+
+export async function getSiteSettings(): Promise<SiteSettingsResponse> {
+  const params = {
+    populate: {
+      navLinks: true,
+      navCta: ctaPopulate,
+      footerHelloAssoCta: ctaPopulate,
+      footerLinks: true,
+      legalLinks: true,
+      contact: true,
+      socials: true,
+      defaultSeo: seoPopulate,
+    },
+  };
+
+  return fetchAPI<SiteSettingsResponse>("/site-settings", params, {
+    tags: [CACHE_TAGS.settings],
+  });
+}
+
+// ---------- Chats ----------
+
+export async function getChats(opts: {
+  featured?: boolean;
+  includeAdopted?: boolean;
+  pageSize?: number;
+} = {}): Promise<ChatsResponse> {
+  const filters: Record<string, unknown> = {};
+  if (opts.featured) filters.featured = { $eq: true };
+  if (!opts.includeAdopted) filters.adopted = { $eq: false };
+
+  const params = {
+    filters,
+    populate: { image: { fields: mediaFields } },
+    pagination: { pageSize: opts.pageSize ?? 25 },
+    sort: ["createdAt:desc"],
+  };
+
+  return fetchAPI<ChatsResponse>("/chats", params, {
+    tags: [CACHE_TAGS.chats],
+  });
+}
+
+export async function getChatBySlug(slug: string): Promise<ChatResponse> {
+  const params = {
+    filters: { slug: { $eq: slug } },
+    populate: { image: { fields: mediaFields } },
+  };
+
+  const res = await fetchAPI<ChatsResponse>("/chats", params, {
+    tags: [CACHE_TAGS.chats],
+  });
+  if (!res.data[0]) {
+    throw new Error(`Chat introuvable: ${slug}`);
+  }
+  return { data: res.data[0], meta: {} };
+}
+
+// ---------- Articles ----------
+
+export async function getArticles(opts: {
+  pageSize?: number;
+  page?: number;
+  search?: string;
+  tagSlug?: string;
+} = {}): Promise<ArticlesResponse> {
+  const filters: Record<string, unknown> = {};
+  const search = opts.search?.trim();
+  if (search) {
+    filters.$or = [
+      { titre: { $containsi: search } },
+      { excerpt: { $containsi: search } },
+      { contenu: { $containsi: search } },
+    ];
+  }
+  if (opts.tagSlug) {
+    filters.tags = { slug: { $eq: opts.tagSlug } };
+  }
+
+  const params = {
+    populate: {
+      image: { fields: mediaFields },
+      tags: { fields: ["nom", "slug"] },
+    },
+    pagination: {
+      page: opts.page ?? 1,
+      pageSize: opts.pageSize ?? 12,
+    },
+    sort: ["date:desc"],
+    ...(Object.keys(filters).length > 0 ? { filters } : {}),
+  };
+
+  return fetchAPI<ArticlesResponse>("/articles", params, {
+    tags: [CACHE_TAGS.articles],
+  });
+}
+
+export async function getArticleBySlug(slug: string): Promise<ArticleResponse> {
+  const params = {
+    filters: { slug: { $eq: slug } },
+    populate: {
+      image: { fields: mediaFields },
+      tags: { fields: ["nom", "slug"] },
+      seo: seoPopulate,
+    },
+  };
+
+  const res = await fetchAPI<ArticlesResponse>("/articles", params, {
+    tags: [CACHE_TAGS.articles],
+  });
+  if (!res.data[0]) {
+    throw new Error(`Article introuvable: ${slug}`);
+  }
+  return { data: res.data[0], meta: {} };
+}
+
+// ---------- Tags ----------
+
+export async function getTags(): Promise<TagsResponse> {
+  const params = {
+    fields: ["nom", "slug"],
+    sort: ["nom:asc"],
+    pagination: { pageSize: 100 },
+  };
+
+  return fetchAPI<TagsResponse>("/tags", params, {
+    tags: [CACHE_TAGS.tags],
+  });
 }
