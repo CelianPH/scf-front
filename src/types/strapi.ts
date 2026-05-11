@@ -179,8 +179,7 @@ export interface Article {
   slug: string;
   date: string;
   image: StrapiMedia;
-  excerpt: string | null;
-  lectureMinutes: number;
+  resume: string | null;
   contenu: string;
   tags: Tag[];
   seo: SharedSeo | null;

@@ -286,7 +286,7 @@ export async function getArticles(opts: {
   if (search) {
     filters.$or = [
       { titre: { $containsi: search } },
-      { excerpt: { $containsi: search } },
+      { resume: { $containsi: search } },
       { contenu: { $containsi: search } },
     ];
   }
