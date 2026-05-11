@@ -20,7 +20,7 @@
   /* ── Surfaces & Backgrounds ── */
   --color-surface: #FFFFFF;
   --color-bg: #FFFBF7;             /* Crème chaud — fond principal */
-  --color-bg-alt: #FBF1F5;         /* Rosé très pâle — sections alternées */
+  --color-bg-alt: #F7E4EC;         /* Rosé pâle — alternance perceptible avec bg crème */
 
   /* ── Text ── */
   --color-text: #1F1A1D;           /* Presque noir, nuance prune */
@@ -46,4 +46,32 @@
   /* ── Typography ── */
   --font-display: var(--font-fraunces);
   --font-body: var(--font-inter);
+}
+
+/* Sélection texte — teinte primary douce, lisible sur fond crème comme sur fond sombre. */
+::selection {
+  background-color: color-mix(in oklab, var(--color-primary) 28%, transparent);
+  color: var(--color-text);
+}
+
+/* Fallback focus-visible global : tout élément focusable sans style dédié
+   reçoit un anneau primary lisible. Les composants (Button, Navbar, ArrowLink)
+   gardent leur outline custom — celle-ci n'écrase rien. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Respecte les préférences système d'animation réduite, en sécurité,
+   même pour les libs tierces qui n'auraient pas la délicatesse de le faire. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
