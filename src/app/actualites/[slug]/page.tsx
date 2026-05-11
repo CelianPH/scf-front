@@ -9,7 +9,21 @@ import Reveal from "@/components/Reveal";
 import { Button } from "@/components/ui/Button";
 import { RichText } from "@/components/ui/RichText";
 import { getArticleBySlug, getArticles, getStrapiMedia } from "@/lib/strapi";
+import { buildActualitesHref } from "@/lib/actualites";
 import { formatArticleDate } from "@/lib/formatters";
+import type { Article } from "@/types/strapi";
+
+async function fetchRelated(article: Article): Promise<Article[]> {
+  const primaryTag = article.tags[0]?.slug;
+  if (!primaryTag) return [];
+  try {
+    const res = await getArticles({ tagSlug: primaryTag, pageSize: 4 });
+    return res.data.filter((a) => a.slug !== article.slug).slice(0, 3);
+  } catch (err) {
+    console.error("[actualites/[slug]] fetchRelated failed:", err);
+    return [];
+  }
+}
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -70,6 +84,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   const imageUrl = getStrapiMedia(article.image.url) ?? "";
   const dateLabel = formatArticleDate(article.date);
+  const related = await fetchRelated(article);
+  const relatedTagNom = article.tags[0]?.nom ?? null;
 
   return (
     <>
@@ -180,6 +196,74 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   </div>
                 </div>
               </Reveal>
+
+              {related.length > 0 ? (
+                <Reveal delay={120} className="mt-10 md:mt-14">
+                  <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                    <div>
+                      <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+                        <span
+                          className="h-px w-8 bg-primary/60"
+                          aria-hidden="true"
+                        />
+                        Lire ensuite
+                      </div>
+                      <h2 className="mt-3 font-display text-2xl font-bold leading-snug text-text md:text-3xl">
+                        {relatedTagNom
+                          ? `D'autres récits autour de ${relatedTagNom.toLowerCase()}`
+                          : "D'autres récits du terrain"}
+                      </h2>
+                    </div>
+                    <Link
+                      href={buildActualitesHref(
+                        relatedTagNom && article.tags[0]
+                          ? { tag: article.tags[0].slug }
+                          : {},
+                      )}
+                      className="inline-flex items-center gap-1.5 self-start rounded-sm text-sm font-semibold text-primary transition hover:text-primary-dark focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                    >
+                      Tout voir
+                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    </Link>
+                  </div>
+                  <ul className="mt-8 grid gap-6 md:grid-cols-3">
+                    {related.map((r, i) => {
+                      const rImg = getStrapiMedia(r.image.url) ?? "";
+                      return (
+                        <Reveal as="li" key={r.id} delay={i * 80}>
+                          <Link
+                            href={`/actualites/${r.slug}`}
+                            className="group block h-full rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                          >
+                            <article className="flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface shadow-sm transition duration-200 ease-out group-hover:-translate-y-1 group-hover:border-primary/30 group-hover:shadow-lg group-hover:shadow-primary/15 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0">
+                              <div className="relative aspect-[16/10] w-full overflow-hidden bg-secondary-50">
+                                <Image
+                                  src={rImg}
+                                  alt={r.image.alternativeText ?? r.titre}
+                                  fill
+                                  sizes="(min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw"
+                                  className="object-cover transition duration-500 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                                />
+                              </div>
+                              <div className="flex flex-1 flex-col p-5">
+                                <time
+                                  dateTime={r.date}
+                                  className="text-xs text-text-muted"
+                                >
+                                  {formatArticleDate(r.date)}
+                                </time>
+                                <h3 className="mt-2 font-display text-base font-bold leading-snug text-text transition group-hover:text-primary md:text-lg">
+                                  {r.titre}
+                                </h3>
+                              </div>
+                            </article>
+                          </Link>
+                        </Reveal>
+                      );
+                    })}
+                  </ul>
+                </Reveal>
+              ) : null}
             </div>
           </aside>
         </article>
