@@ -147,6 +147,19 @@ export interface SharedActionCard {
   cta: SharedCta;
 }
 
+export interface SharedReferent {
+  id: number;
+  nom: string;
+  role: string | null;
+  photo: StrapiMedia | null;
+}
+
+export interface ChatInfoPratique {
+  id: number;
+  libelle: string;
+  valeur: string;
+}
+
 // ---------- Collection types ----------
 
 export interface Chat {
@@ -159,6 +172,10 @@ export interface Chat {
   trait: string;
   description: string | null;
   image: StrapiMedia;
+  gallery: StrapiMedia[] | null;
+  caracteres: string[] | null;
+  infos: ChatInfoPratique[] | null;
+  referent: SharedReferent | null;
   badge: string | null;
   featured: boolean;
   adopted: boolean;

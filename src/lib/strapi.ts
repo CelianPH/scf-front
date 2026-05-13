@@ -331,18 +331,23 @@ export async function getChats(opts: {
   });
 }
 
-export async function getChatBySlug(slug: string): Promise<ChatResponse> {
+export async function getChatBySlug(slug: string): Promise<ChatResponse | null> {
   const params = {
     filters: { slug: { $eq: slug } },
-    populate: { image: { fields: mediaFields } },
+    populate: {
+      image: { fields: mediaFields },
+      gallery: { fields: mediaFields },
+      infos: true,
+      referent: {
+        populate: { photo: { fields: mediaFields } },
+      },
+    },
   };
 
   const res = await fetchAPI<ChatsResponse>("/chats", params, {
     tags: [CACHE_TAGS.chats],
   });
-  if (!res.data[0]) {
-    throw new Error(`Chat introuvable: ${slug}`);
-  }
+  if (!res.data[0]) return null;
   return { data: res.data[0], meta: {} };
 }
 
