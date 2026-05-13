@@ -339,6 +339,7 @@ export async function getChatBySlug(slug: string): Promise<ChatResponse | null> 
       gallery: { fields: mediaFields },
       infos: true,
       referent: {
+        fields: ["nom", "slug", "role", "bio"],
         populate: { photo: { fields: mediaFields } },
       },
     },
