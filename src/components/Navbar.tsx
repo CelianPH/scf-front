@@ -34,8 +34,9 @@ export default function Navbar() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-bg/85 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8 md:py-4">
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-bg/85 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8 md:py-4">
         <Link
           href="/"
           className="inline-flex items-center gap-2 font-display text-base font-bold text-primary transition hover:text-primary-dark md:text-lg"
@@ -90,10 +91,11 @@ export default function Navbar() {
         >
           <Menu className="h-5 w-5" aria-hidden="true" />
         </button>
-      </div>
+        </div>
+      </header>
 
       {open && (
-        <div className="fixed inset-0 z-50 md:hidden" id="mobile-nav" role="dialog" aria-modal="true" aria-label="Menu principal">
+        <div className="fixed inset-0 z-[60] md:hidden" id="mobile-nav" role="dialog" aria-modal="true" aria-label="Menu principal">
           <button
             type="button"
             aria-label="Fermer le menu"
@@ -147,6 +149,6 @@ export default function Navbar() {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
