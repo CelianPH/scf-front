@@ -13,6 +13,8 @@ import {
   Package,
   PawPrint,
   Phone,
+  Receipt,
+  ShieldCheck,
   Sparkles,
   Stethoscope,
   UserPlus,
@@ -41,6 +43,8 @@ export const ICON_MAP: Record<IconName, LucideIcon> = {
   Calendar,
   ArrowRight,
   Sparkles,
+  ShieldCheck,
+  Receipt,
 };
 
 export const FALLBACK_ICON: LucideIcon = HelpCircle;

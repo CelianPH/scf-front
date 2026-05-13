@@ -52,7 +52,9 @@ export type IconName =
   | "UserPlus"
   | "Calendar"
   | "ArrowRight"
-  | "Sparkles";
+  | "Sparkles"
+  | "ShieldCheck"
+  | "Receipt";
 
 export type CtaVariant =
   | "primary"
@@ -375,7 +377,103 @@ export interface AboutCtaFinal {
   ctaSecondary: SharedCta | null;
 }
 
+// ---------- Don components ----------
+
+export interface DonHero {
+  id: number;
+  titre: string;
+  sousTitre: string;
+  mention: string | null;
+  ctaPrimary: SharedCta;
+  ctaSecondary: SharedCta | null;
+}
+
+export interface DonReassuranceBand {
+  id: number;
+  items: SharedFeatureCard[];
+}
+
+export interface DonMontant {
+  id: number;
+  valeur: number;
+  impactText: string | null;
+  defaut: boolean;
+}
+
+export interface DonWidget {
+  id: number;
+  titre: string;
+  frequenceLabel: string | null;
+  frequenceUniqueLabel: string;
+  frequenceMensuelLabel: string;
+  montantLabel: string | null;
+  montants: DonMontant[];
+  placeholderMontantLibre: string | null;
+  labelMontantLibre: string | null;
+  exempleImpactLabel: string | null;
+  exempleImpactTexte: string | null;
+  helloAssoUrlUnique: string;
+  helloAssoUrlMensuel: string | null;
+  ctaSubmit: SharedCta | null;
+}
+
+export interface DonUtiliteItem {
+  id: number;
+  iconName: IconName;
+  titre: string;
+  description: string;
+  sousTexte: string | null;
+}
+
+export interface DonUtiliteBlock {
+  id: number;
+  titre: string;
+  note: string | null;
+  items: DonUtiliteItem[];
+}
+
+export interface DonCampagne {
+  id: number;
+  titre: string;
+  description: string | null;
+  objectifEUR: number;
+  collecteEUR: number | null;
+  progressionPct: number | null;
+  actif: boolean;
+  ctaDetails: SharedCta | null;
+  ctaContribuer: SharedCta;
+}
+
+export interface DonCampagnesBlock {
+  id: number;
+  titre: string;
+  intro: string | null;
+  campagnes: DonCampagne[];
+}
+
+export interface DonAutresActions {
+  id: number;
+  titre: string;
+  intro: string | null;
+  actions: SharedActionCard[];
+}
+
 // ---------- Single types ----------
+
+export interface DonPage {
+  id: number;
+  documentId: string;
+  hero: DonHero;
+  reassurance: DonReassuranceBand | null;
+  widget: DonWidget | null;
+  utilite: DonUtiliteBlock | null;
+  campagnes: DonCampagnesBlock | null;
+  autresActions: DonAutresActions | null;
+  seo: SharedSeo | null;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string | null;
+}
 
 export interface HomePage {
   id: number;
@@ -436,6 +534,7 @@ export interface SiteSettings {
 
 export type HomePageResponse = StrapiSingleResponse<HomePage>;
 export type AboutPageResponse = StrapiSingleResponse<AboutPage>;
+export type DonPageResponse = StrapiSingleResponse<DonPage>;
 export type SiteSettingsResponse = StrapiSingleResponse<SiteSettings>;
 export type ChatsResponse = StrapiCollectionResponse<Chat>;
 export type ChatResponse = StrapiSingleResponse<Chat>;

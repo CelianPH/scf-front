@@ -5,6 +5,7 @@ import type {
   ArticlesResponse,
   ChatResponse,
   ChatsResponse,
+  DonPageResponse,
   HomePageResponse,
   SiteSettingsResponse,
   TagsResponse,
@@ -19,6 +20,7 @@ const DEFAULT_REVALIDATE = 3600;
 export const CACHE_TAGS = {
   home: "home-page",
   about: "about-page",
+  don: "don-page",
   settings: "site-settings",
   chats: "chats",
   articles: "articles",
@@ -211,6 +213,57 @@ export async function getAboutPage(): Promise<AboutPageResponse> {
 
   return fetchAPI<AboutPageResponse>("/about-page", params, {
     tags: [CACHE_TAGS.about],
+  });
+}
+
+// ---------- Don page ----------
+
+export async function getDonPage(): Promise<DonPageResponse> {
+  const params = {
+    populate: {
+      hero: {
+        populate: {
+          ctaPrimary: ctaPopulate,
+          ctaSecondary: ctaPopulate,
+        },
+      },
+      reassurance: {
+        populate: {
+          items: { populate: "*" },
+        },
+      },
+      widget: {
+        populate: {
+          montants: true,
+          ctaSubmit: ctaPopulate,
+        },
+      },
+      utilite: {
+        populate: { items: true },
+      },
+      campagnes: {
+        populate: {
+          campagnes: {
+            populate: {
+              ctaDetails: ctaPopulate,
+              ctaContribuer: ctaPopulate,
+            },
+          },
+        },
+      },
+      autresActions: {
+        populate: {
+          actions: {
+            populate: { cta: ctaPopulate },
+          },
+        },
+      },
+      seo: seoPopulate,
+    },
+  };
+
+  return fetchAPI<DonPageResponse>("/don-page", params, {
+    tags: [CACHE_TAGS.don],
   });
 }
 
