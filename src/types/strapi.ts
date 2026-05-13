@@ -377,6 +377,23 @@ export interface AboutCtaFinal {
   ctaSecondary: SharedCta | null;
 }
 
+// ---------- Adoption components ----------
+
+export interface AdoptionHeroData {
+  id: number;
+  titreDebut: string;
+  titreHighlight: string;
+  sousTitre: string;
+}
+
+export interface AdoptionMatchingCta {
+  id: number;
+  badge: string | null;
+  titre: string;
+  description: string;
+  cta: SharedCta;
+}
+
 // ---------- Don components ----------
 
 export interface DonHero {
@@ -460,6 +477,17 @@ export interface DonAutresActions {
 
 // ---------- Single types ----------
 
+export interface AdoptionPage {
+  id: number;
+  documentId: string;
+  hero: AdoptionHeroData;
+  matchingCta: AdoptionMatchingCta | null;
+  seo: SharedSeo | null;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string | null;
+}
+
 export interface DonPage {
   id: number;
   documentId: string;
@@ -535,6 +563,7 @@ export interface SiteSettings {
 export type HomePageResponse = StrapiSingleResponse<HomePage>;
 export type AboutPageResponse = StrapiSingleResponse<AboutPage>;
 export type DonPageResponse = StrapiSingleResponse<DonPage>;
+export type AdoptionPageResponse = StrapiSingleResponse<AdoptionPage>;
 export type SiteSettingsResponse = StrapiSingleResponse<SiteSettings>;
 export type ChatsResponse = StrapiCollectionResponse<Chat>;
 export type ChatResponse = StrapiSingleResponse<Chat>;

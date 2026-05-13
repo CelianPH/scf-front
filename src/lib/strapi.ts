@@ -1,6 +1,7 @@
 import qs from "qs";
 import type {
   AboutPageResponse,
+  AdoptionPageResponse,
   ArticleResponse,
   ArticlesResponse,
   ChatResponse,
@@ -21,6 +22,7 @@ export const CACHE_TAGS = {
   home: "home-page",
   about: "about-page",
   don: "don-page",
+  adoption: "adoption-page",
   settings: "site-settings",
   chats: "chats",
   articles: "articles",
@@ -264,6 +266,24 @@ export async function getDonPage(): Promise<DonPageResponse> {
 
   return fetchAPI<DonPageResponse>("/don-page", params, {
     tags: [CACHE_TAGS.don],
+  });
+}
+
+// ---------- Adoption page ----------
+
+export async function getAdoptionPage(): Promise<AdoptionPageResponse> {
+  const params = {
+    populate: {
+      hero: true,
+      matchingCta: {
+        populate: { cta: ctaPopulate },
+      },
+      seo: seoPopulate,
+    },
+  };
+
+  return fetchAPI<AdoptionPageResponse>("/adoption-page", params, {
+    tags: [CACHE_TAGS.adoption],
   });
 }
 
