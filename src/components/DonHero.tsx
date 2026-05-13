@@ -33,22 +33,7 @@ export default function DonHero({ data }: DonHeroProps) {
       </svg>
 
       <div className="mx-auto max-w-7xl px-5 pb-16 pt-24 md:px-8 md:pb-24 md:pt-32">
-        <Reveal>
-          <nav
-            aria-label="Fil d'Ariane"
-            className="text-xs font-medium text-text-secondary md:text-sm"
-          >
-            <a href="/" className="transition-colors hover:text-primary">
-              Accueil
-            </a>
-            <span aria-hidden="true" className="mx-2 text-text-muted">
-              /
-            </span>
-            <span className="text-text">Faire un don</span>
-          </nav>
-        </Reveal>
-
-        <div className="mt-8 grid items-end gap-10 md:mt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-14">
+        <div className="grid items-end gap-10 md:mt-2 lg:grid-cols-[1.4fr_1fr] lg:gap-14">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary shadow-sm backdrop-blur-sm md:text-sm">
               <Icon name="Heart" className="h-3.5 w-3.5" aria-hidden="true" />
