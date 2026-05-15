@@ -1,4 +1,4 @@
-import { getProfilAdoptant } from "@/lib/strapi";
+import { getProfilAdoptant } from "@/lib/strapi-server";
 import ProfilForm from "@/components/compte/ProfilForm";
 
 export default async function ProfilPage() {

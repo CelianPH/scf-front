@@ -3,7 +3,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DemandeForm from "@/components/adoption/DemandeForm";
 import { requireUser } from "@/lib/auth";
-import { getChatBySlug, getProfilAdoptant } from "@/lib/strapi";
+import { getChatBySlug } from "@/lib/strapi";
+import { getProfilAdoptant } from "@/lib/strapi-server";
 
 const REQUIRED_FIELDS = [
   "telephone",

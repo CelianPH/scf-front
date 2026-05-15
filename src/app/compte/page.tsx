@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Heart, MailQuestion, Settings, UserCog } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
-import { getProfilAdoptant, getMesDemandes, getMesFavoris } from "@/lib/strapi";
+import { getProfilAdoptant, getMesDemandes, getMesFavoris } from "@/lib/strapi-server";
 import CompletionGauge from "@/components/compte/CompletionGauge";
 
 export default async function ComptePage() {

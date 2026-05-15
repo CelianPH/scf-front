@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MailQuestion } from "lucide-react";
-import { getMesDemandes } from "@/lib/strapi";
+import { getMesDemandes } from "@/lib/strapi-server";
 import { getStrapiMedia } from "@/lib/strapi";
 
 const STATUT_LABEL: Record<string, { label: string; cls: string }> = {
