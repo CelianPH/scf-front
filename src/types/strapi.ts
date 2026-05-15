@@ -583,6 +583,70 @@ export interface SiteSettings {
   updatedAt: string;
 }
 
+// ---------- Auth & user ----------
+
+export type StrapiRole = "public" | "authenticated" | "benevole";
+
+export interface AuthUser {
+  id: number;
+  documentId: string;
+  username: string;
+  email: string;
+  confirmed: boolean;
+  blocked: boolean;
+  prenom: string;
+  nom: string;
+  cguAcceptedAt: string;
+  role: { id: number; name: string; type: StrapiRole } | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type TypeLogement = "maison" | "appartement" | "studio";
+export type AccesExterieur = "jardin" | "balcon" | "aucun";
+export type PresenceMaison = "tout_le_temps" | "partiel" | "bureau";
+export type AutresAnimaux = "aucun" | "chats" | "chiens" | "chats_et_chiens" | "autres";
+export type Enfants = "aucun" | "moins_6_ans" | "plus_6_ans" | "mixte";
+export type ExperienceChats = "jamais" | "passee" | "actuelle" | "fa";
+export type PrefAge = "aucune" | "chaton" | "jeune" | "adulte" | "senior";
+export type PrefSexe = "aucune" | "femelle" | "male";
+
+export interface ProfilAdoptant {
+  id: number;
+  documentId: string;
+  telephone: string | null;
+  dateNaissance: string | null;
+  ville: string | null;
+  codePostal: string | null;
+  typeLogement: TypeLogement | null;
+  accesExterieur: AccesExterieur | null;
+  presenceMaison: PresenceMaison | null;
+  autresAnimaux: AutresAnimaux | null;
+  enfants: Enfants | null;
+  experienceChats: ExperienceChats | null;
+  prefAge: PrefAge | null;
+  prefSexe: PrefSexe | null;
+  prefCaracteres: string[] | null;
+  completionPct: number;
+  notesPersonnelles: string | null;
+}
+
+export type DemandeStatut = "en_attente" | "en_cours" | "acceptee" | "refusee";
+
+export interface DemandeAdoption {
+  id: number;
+  documentId: string;
+  message: string;
+  dateRencontreSouhaitee: string | null;
+  statut: DemandeStatut;
+  reponseBenevole: string | null;
+  repondueAt: string | null;
+  assigneeAt: string | null;
+  chat: Chat;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ---------- Response aliases ----------
 
 export type HomePageResponse = StrapiSingleResponse<HomePage>;
