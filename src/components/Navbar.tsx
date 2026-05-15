@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Heart, Menu, PawPrint, X } from "lucide-react";
+import { Heart, LogOut, Menu, PawPrint, User as UserIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useAuthState } from "@/lib/use-auth-state";
 
 const links = [
   { href: "/", label: "Accueil" },
@@ -16,6 +17,7 @@ const links = [
 export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { user } = useAuthState();
 
   useEffect(() => {
     setOpen(false);
@@ -75,7 +77,43 @@ export default function Navbar() {
           </ul>
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-2 md:flex">
+          {user ? (
+            <>
+              <Link
+                href="/compte"
+                className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-text-secondary hover:text-text"
+              >
+                <UserIcon className="h-4 w-4" aria-hidden="true" />
+                {user.prenom}
+              </Link>
+              <form
+                action="/api/auth/logout"
+                method="post"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  fetch("/api/auth/logout", { method: "POST" }).then(() =>
+                    window.location.reload()
+                  );
+                }}
+              >
+                <button
+                  type="submit"
+                  aria-label="Se déconnecter"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-md text-text-secondary hover:bg-primary-50 hover:text-primary"
+                >
+                  <LogOut className="h-4 w-4" aria-hidden="true" />
+                </button>
+              </form>
+            </>
+          ) : (
+            <Link
+              href="/connexion"
+              className="rounded-md px-3 py-2 text-sm font-medium text-text-secondary hover:text-text"
+            >
+              Se connecter
+            </Link>
+          )}
           <Button href="/don" variant="secondary" size="sm" iconLeft={Heart}>
             Faire un don
           </Button>
@@ -140,6 +178,47 @@ export default function Navbar() {
                 })}
               </ul>
             </nav>
+
+            <div className="border-t border-border px-5 pt-4 pb-2">
+              {user ? (
+                <div className="flex items-center justify-between">
+                  <Link
+                    href="/compte"
+                    onClick={() => setOpen(false)}
+                    className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-text-secondary hover:text-text"
+                  >
+                    <UserIcon className="h-4 w-4" aria-hidden="true" />
+                    {user.prenom}
+                  </Link>
+                  <form
+                    action="/api/auth/logout"
+                    method="post"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      fetch("/api/auth/logout", { method: "POST" }).then(() =>
+                        window.location.reload()
+                      );
+                    }}
+                  >
+                    <button
+                      type="submit"
+                      aria-label="Se déconnecter"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-md text-text-secondary hover:bg-primary-50 hover:text-primary"
+                    >
+                      <LogOut className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <Link
+                  href="/connexion"
+                  onClick={() => setOpen(false)}
+                  className="flex w-full items-center justify-center rounded-md px-3 py-2 text-sm font-medium text-text-secondary hover:text-text"
+                >
+                  Se connecter
+                </Link>
+              )}
+            </div>
 
             <div className="border-t border-border p-5">
               <Button href="/don" variant="secondary" size="md" iconLeft={Heart} fullWidth>
