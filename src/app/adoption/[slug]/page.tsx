@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
-  ExternalLink,
   Heart,
   PawPrint,
   Sparkles,
@@ -18,8 +17,6 @@ import FavoriteButton from "@/components/FavoriteButton";
 import { Button } from "@/components/ui/Button";
 import { getChatBySlug, getStrapiMedia } from "@/lib/strapi";
 
-const ADOPTION_FORM_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLScsuZRgyy778u5XklovaF_hyGjdbl6ySO3GIA_uDByLN8OHVw/viewform";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -190,16 +187,15 @@ export default async function ChatDetailPage({ params }: PageProps) {
                   </p>
 
                   <Button
-                    href={ADOPTION_FORM_URL}
-                    external
+                    href={`/adoption/${slug}/demande`}
                     variant="primary"
                     size="lg"
                     fullWidth
                     className="mt-5"
                     iconLeft={Heart}
-                    iconRight={ExternalLink}
+                    iconRight={ArrowRight}
                   >
-                    Demande d&apos;adoption
+                    Faire une demande
                   </Button>
 
                   <div className="mt-3">
