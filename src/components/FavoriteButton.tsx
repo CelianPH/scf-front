@@ -10,42 +10,82 @@ interface FavoriteButtonProps {
 
 const STORAGE_KEY = "scf:favorites";
 
-function read(): string[] {
+function readLocal(): string[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr.filter((x): x is string => typeof x === "string") : [];
+    return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
   }
 }
 
-function write(list: string[]) {
+function writeLocal(list: string[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  } catch {
-    /* quota or private mode — ignore */
-  }
+  } catch {}
 }
 
 export default function FavoriteButton({ slug, catName }: FavoriteButtonProps) {
   const [active, setActive] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [authed, setAuthed] = useState<boolean | null>(null);
 
+  // Check auth + initial state
   useEffect(() => {
-    setActive(read().includes(slug));
-    setHydrated(true);
+    let cancelled = false;
+    (async () => {
+      const me = await fetch("/api/auth/me", { cache: "no-store" });
+      const isAuth = me.ok;
+      if (cancelled) return;
+      setAuthed(isAuth);
+
+      if (isAuth) {
+        // Source de vérité : DB. On compare localStorage et on sync.
+        const local = readLocal();
+        const dbRes = await fetch("/api/auth/favoris");
+        const dbData = await dbRes.json();
+        const dbSlugs: string[] = (dbData.data ?? []).map((c: any) => c.slug);
+
+        // Merge : si localStorage a des slugs non présents en DB, on les ajoute
+        const toAdd = local.filter((s) => !dbSlugs.includes(s));
+        for (const s of toAdd) {
+          await fetch("/api/auth/favoris", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chatSlug: s }),
+          });
+          dbSlugs.push(s);
+        }
+        writeLocal([]); // on vide le local après sync
+        setActive(dbSlugs.includes(slug));
+      } else {
+        setActive(readLocal().includes(slug));
+      }
+      setHydrated(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
-  function toggle() {
-    const list = read();
-    const next = list.includes(slug)
-      ? list.filter((s) => s !== slug)
-      : [...list, slug];
-    write(next);
-    setActive(next.includes(slug));
+  async function toggle() {
+    if (authed) {
+      const res = await fetch("/api/auth/favoris", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chatSlug: slug }),
+      });
+      const data = await res.json();
+      setActive(data.data?.active ?? !active);
+    } else {
+      const list = readLocal();
+      const next = list.includes(slug)
+        ? list.filter((s) => s !== slug)
+        : [...list, slug];
+      writeLocal(next);
+      setActive(next.includes(slug));
+    }
   }
 
   return (
@@ -53,11 +93,7 @@ export default function FavoriteButton({ slug, catName }: FavoriteButtonProps) {
       type="button"
       onClick={toggle}
       aria-pressed={active}
-      aria-label={
-        active
-          ? `Retirer ${catName} de mes favoris`
-          : `Ajouter ${catName} à mes favoris`
-      }
+      aria-label={active ? `Retirer ${catName} des favoris` : `Ajouter ${catName} aux favoris`}
       className={`group inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 px-5 py-3 text-base font-semibold transition duration-200 ease-out hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
         active
           ? "border-primary bg-primary-50 text-primary"
