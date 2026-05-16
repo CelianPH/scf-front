@@ -2,58 +2,73 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { ProfilAdoptant } from "@/types/strapi";
+import { Select, type SelectOption } from "@/components/ui/Select";
+import { DatePicker } from "@/components/ui/DatePicker";
+import type {
+  AccesExterieur,
+  AutresAnimaux,
+  Enfants,
+  ExperienceChats,
+  PrefAge,
+  PrefSexe,
+  PresenceMaison,
+  ProfilAdoptant,
+  TypeLogement,
+} from "@/types/strapi";
 
-const TYPE_LOGEMENT_OPTIONS = [
-  { v: "maison", l: "Maison" },
-  { v: "appartement", l: "Appartement" },
-  { v: "studio", l: "Studio" },
+const TYPE_LOGEMENT_OPTIONS: SelectOption<TypeLogement>[] = [
+  { value: "maison", label: "Maison" },
+  { value: "appartement", label: "Appartement" },
+  { value: "studio", label: "Studio" },
 ];
-const ACCES_OPTIONS = [
-  { v: "jardin", l: "Jardin sécurisé" },
-  { v: "balcon", l: "Balcon sécurisé" },
-  { v: "aucun", l: "Aucun" },
+const ACCES_OPTIONS: SelectOption<AccesExterieur>[] = [
+  { value: "jardin", label: "Jardin sécurisé" },
+  { value: "balcon", label: "Balcon sécurisé" },
+  { value: "aucun", label: "Aucun" },
 ];
-const PRESENCE_OPTIONS = [
-  { v: "tout_le_temps", l: "Présent toute la journée" },
-  { v: "partiel", l: "Mi-temps / en alternance" },
-  { v: "bureau", l: "Bureau plein temps" },
+const PRESENCE_OPTIONS: SelectOption<PresenceMaison>[] = [
+  { value: "tout_le_temps", label: "Présent toute la journée" },
+  { value: "partiel", label: "Mi-temps / en alternance" },
+  { value: "bureau", label: "Bureau plein temps" },
 ];
-const ANIMAUX_OPTIONS = [
-  { v: "aucun", l: "Aucun" },
-  { v: "chats", l: "Chat(s)" },
-  { v: "chiens", l: "Chien(s)" },
-  { v: "chats_et_chiens", l: "Chats et chiens" },
-  { v: "autres", l: "Autres animaux" },
+const ANIMAUX_OPTIONS: SelectOption<AutresAnimaux>[] = [
+  { value: "aucun", label: "Aucun" },
+  { value: "chats", label: "Chat(s)" },
+  { value: "chiens", label: "Chien(s)" },
+  { value: "chats_et_chiens", label: "Chats et chiens" },
+  { value: "autres", label: "Autres animaux" },
 ];
-const ENFANTS_OPTIONS = [
-  { v: "aucun", l: "Aucun" },
-  { v: "moins_6_ans", l: "Moins de 6 ans" },
-  { v: "plus_6_ans", l: "Plus de 6 ans" },
-  { v: "mixte", l: "Les deux" },
+const ENFANTS_OPTIONS: SelectOption<Enfants>[] = [
+  { value: "aucun", label: "Aucun" },
+  { value: "moins_6_ans", label: "Moins de 6 ans" },
+  { value: "plus_6_ans", label: "Plus de 6 ans" },
+  { value: "mixte", label: "Les deux" },
 ];
-const EXPERIENCE_OPTIONS = [
-  { v: "jamais", l: "Première adoption" },
-  { v: "passee", l: "Déjà eu un chat dans le passé" },
-  { v: "actuelle", l: "J'ai actuellement un chat" },
-  { v: "fa", l: "Expérience en FA" },
+const EXPERIENCE_OPTIONS: SelectOption<ExperienceChats>[] = [
+  { value: "jamais", label: "Première adoption" },
+  { value: "passee", label: "Déjà eu un chat dans le passé" },
+  { value: "actuelle", label: "J'ai actuellement un chat" },
+  { value: "fa", label: "Expérience en FA" },
 ];
-const PREF_AGE_OPTIONS = [
-  { v: "aucune", l: "Aucune préférence" },
-  { v: "chaton", l: "Chaton (< 1 an)" },
-  { v: "jeune", l: "Jeune (1-3 ans)" },
-  { v: "adulte", l: "Adulte (3-8 ans)" },
-  { v: "senior", l: "Senior (8+ ans)" },
+const PREF_AGE_OPTIONS: SelectOption<PrefAge>[] = [
+  { value: "aucune", label: "Aucune préférence" },
+  { value: "chaton", label: "Chaton (< 1 an)" },
+  { value: "jeune", label: "Jeune (1-3 ans)" },
+  { value: "adulte", label: "Adulte (3-8 ans)" },
+  { value: "senior", label: "Senior (8+ ans)" },
 ];
-const PREF_SEXE_OPTIONS = [
-  { v: "aucune", l: "Aucune préférence" },
-  { v: "femelle", l: "Femelle" },
-  { v: "male", l: "Mâle" },
+const PREF_SEXE_OPTIONS: SelectOption<PrefSexe>[] = [
+  { value: "aucune", label: "Aucune préférence" },
+  { value: "femelle", label: "Femelle" },
+  { value: "male", label: "Mâle" },
 ];
 
 interface Props {
   profil: ProfilAdoptant;
 }
+
+const inputCls =
+  "mt-1 w-full rounded-md border border-border bg-surface px-4 py-2.5 text-base text-text outline-none focus:border-primary";
 
 export default function ProfilForm({ profil }: Props) {
   const router = useRouter();
@@ -82,56 +97,115 @@ export default function ProfilForm({ profil }: Props) {
   return (
     <form onSubmit={onSubmit} className="space-y-10">
       <Section title="Coordonnées" subtitle="Pour qu'on puisse te contacter au sujet d'une demande.">
-        <Field label="Téléphone" name="telephone">
+        <FieldLabel label="Téléphone">
           <input
             type="tel"
             value={data.telephone ?? ""}
             onChange={(e) => update("telephone", e.target.value || null)}
             className={inputCls}
+            autoComplete="tel"
           />
-        </Field>
-        <Field label="Date de naissance" name="dateNaissance">
-          <input
-            type="date"
-            value={data.dateNaissance ?? ""}
-            onChange={(e) => update("dateNaissance", e.target.value || null)}
-            className={inputCls}
+        </FieldLabel>
+        <FieldLabel label="Date de naissance">
+          <DatePicker
+            value={data.dateNaissance ?? null}
+            onChange={(iso) => update("dateNaissance", iso)}
+            ariaLabel="Date de naissance"
           />
-        </Field>
-        <Field label="Ville" name="ville">
+        </FieldLabel>
+        <FieldLabel label="Ville">
           <input
             type="text"
             value={data.ville ?? ""}
             onChange={(e) => update("ville", e.target.value || null)}
             className={inputCls}
+            autoComplete="address-level2"
           />
-        </Field>
-        <Field label="Code postal" name="codePostal">
+        </FieldLabel>
+        <FieldLabel label="Code postal">
           <input
             type="text"
             maxLength={5}
+            inputMode="numeric"
             value={data.codePostal ?? ""}
             onChange={(e) => update("codePostal", e.target.value || null)}
             className={inputCls}
+            autoComplete="postal-code"
           />
-        </Field>
+        </FieldLabel>
       </Section>
 
       <Section title="Mon logement" subtitle="Pour te proposer un chat adapté à ton cadre de vie.">
-        <SelectField label="Type de logement" options={TYPE_LOGEMENT_OPTIONS} value={data.typeLogement} onChange={(v) => update("typeLogement", v as any)} />
-        <SelectField label="Accès extérieur" options={ACCES_OPTIONS} value={data.accesExterieur} onChange={(v) => update("accesExterieur", v as any)} />
-        <SelectField label="Présence à la maison" options={PRESENCE_OPTIONS} value={data.presenceMaison} onChange={(v) => update("presenceMaison", v as any)} />
+        <FieldLabel label="Type de logement">
+          <SelectWrap
+            value={data.typeLogement ?? null}
+            options={TYPE_LOGEMENT_OPTIONS}
+            onChange={(v) => update("typeLogement", v)}
+            placeholder="Type de logement"
+          />
+        </FieldLabel>
+        <FieldLabel label="Accès extérieur">
+          <SelectWrap
+            value={data.accesExterieur ?? null}
+            options={ACCES_OPTIONS}
+            onChange={(v) => update("accesExterieur", v)}
+            placeholder="Accès extérieur"
+          />
+        </FieldLabel>
+        <FieldLabel label="Présence à la maison">
+          <SelectWrap
+            value={data.presenceMaison ?? null}
+            options={PRESENCE_OPTIONS}
+            onChange={(v) => update("presenceMaison", v)}
+            placeholder="Présence à la maison"
+          />
+        </FieldLabel>
       </Section>
 
       <Section title="Mon foyer" subtitle="Pour vérifier les ententes possibles avec le chat.">
-        <SelectField label="Autres animaux" options={ANIMAUX_OPTIONS} value={data.autresAnimaux} onChange={(v) => update("autresAnimaux", v as any)} />
-        <SelectField label="Enfants au foyer" options={ENFANTS_OPTIONS} value={data.enfants} onChange={(v) => update("enfants", v as any)} />
-        <SelectField label="Expérience avec les chats" options={EXPERIENCE_OPTIONS} value={data.experienceChats} onChange={(v) => update("experienceChats", v as any)} />
+        <FieldLabel label="Autres animaux">
+          <SelectWrap
+            value={data.autresAnimaux ?? null}
+            options={ANIMAUX_OPTIONS}
+            onChange={(v) => update("autresAnimaux", v)}
+            placeholder="Autres animaux"
+          />
+        </FieldLabel>
+        <FieldLabel label="Enfants au foyer">
+          <SelectWrap
+            value={data.enfants ?? null}
+            options={ENFANTS_OPTIONS}
+            onChange={(v) => update("enfants", v)}
+            placeholder="Enfants"
+          />
+        </FieldLabel>
+        <FieldLabel label="Expérience avec les chats">
+          <SelectWrap
+            value={data.experienceChats ?? null}
+            options={EXPERIENCE_OPTIONS}
+            onChange={(v) => update("experienceChats", v)}
+            placeholder="Expérience"
+          />
+        </FieldLabel>
       </Section>
 
       <Section title="Mes préférences" subtitle="Optionnel — utilisé pour le matching intelligent.">
-        <SelectField label="Âge préféré" options={PREF_AGE_OPTIONS} value={data.prefAge} onChange={(v) => update("prefAge", v as any)} />
-        <SelectField label="Sexe préféré" options={PREF_SEXE_OPTIONS} value={data.prefSexe} onChange={(v) => update("prefSexe", v as any)} />
+        <FieldLabel label="Âge préféré">
+          <SelectWrap
+            value={data.prefAge ?? null}
+            options={PREF_AGE_OPTIONS}
+            onChange={(v) => update("prefAge", v)}
+            placeholder="Âge préféré"
+          />
+        </FieldLabel>
+        <FieldLabel label="Sexe préféré">
+          <SelectWrap
+            value={data.prefSexe ?? null}
+            options={PREF_SEXE_OPTIONS}
+            onChange={(v) => update("prefSexe", v)}
+            placeholder="Sexe préféré"
+          />
+        </FieldLabel>
       </Section>
 
       <div className="sticky bottom-4 flex items-center justify-end gap-3 rounded-xl bg-surface px-5 py-4 shadow-lg ring-1 ring-border">
@@ -150,10 +224,15 @@ export default function ProfilForm({ profil }: Props) {
   );
 }
 
-const inputCls =
-  "mt-1 w-full rounded-md border border-border bg-surface px-4 py-2.5 text-base text-text outline-none focus:border-primary";
-
-function Section({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+function Section({
+  title,
+  subtitle,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+}) {
   return (
     <section>
       <h2 className="font-display text-2xl font-bold text-text">{title}</h2>
@@ -163,41 +242,42 @@ function Section({ title, subtitle, children }: { title: string; subtitle?: stri
   );
 }
 
-function Field({ label, name, children }: { label: string; name: string; children: React.ReactNode }) {
+function FieldLabel({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label htmlFor={name} className="block">
+    <label className="block">
       <span className="text-sm font-semibold text-text">{label}</span>
       {children}
     </label>
   );
 }
 
-function SelectField({
-  label,
-  options,
+/**
+ * Wrapper autour de <Select> qui :
+ * - autorise une valeur nulle (avant que l'utilisateur ait choisi)
+ * - ajoute le `mt-1` et la largeur 100% pour matcher les autres champs
+ */
+function SelectWrap<T extends string>({
   value,
+  options,
   onChange,
+  placeholder,
 }: {
-  label: string;
-  options: { v: string; l: string }[];
-  value: string | null | undefined;
-  onChange: (v: string) => void;
+  value: T | null;
+  options: SelectOption<T>[];
+  onChange: (v: T) => void;
+  placeholder: string;
 }) {
   return (
-    <label className="block">
-      <span className="text-sm font-semibold text-text">{label}</span>
-      <select
-        value={value ?? ""}
-        onChange={(e) => onChange(e.target.value)}
-        className={inputCls}
-      >
-        <option value="">— Choisir —</option>
-        {options.map((o) => (
-          <option key={o.v} value={o.v}>
-            {o.l}
-          </option>
-        ))}
-      </select>
-    </label>
+    <div className="mt-1 block w-full">
+      <Select<T>
+        value={value as T}
+        onChange={onChange}
+        options={options}
+        placeholder={placeholder}
+        ariaLabel={placeholder}
+        className="w-full"
+        buttonClassName="w-full justify-between py-2.5"
+      />
+    </div>
   );
 }
