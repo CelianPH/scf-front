@@ -4,7 +4,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
-  ArrowRight,
   ExternalLink,
   Heart,
   PawPrint,
@@ -240,7 +239,7 @@ export default async function ChatDetailPage({ params }: PageProps) {
                   ) : null}
                 </div>
 
-                <div className="mt-5 overflow-hidden rounded-3xl bg-gradient-to-br from-secondary via-primary to-primary-vif p-6 text-white shadow-xl shadow-primary/10 md:p-7">
+                <div className="mt-5 overflow-hidden rounded-3xl bg-dark p-6 text-white shadow-xl shadow-dark/30 md:p-7">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/80">
                     Soutenir l&apos;asso
                   </p>
@@ -251,24 +250,12 @@ export default async function ChatDetailPage({ params }: PageProps) {
                     Chaque don ou bénévole permet de sauver un chat de plus.
                   </p>
                   <div className="mt-5 flex flex-col gap-2">
-                    <Link
-                      href="/don"
-                      className="group inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-primary shadow-md transition hover:-translate-y-px hover:shadow-lg"
-                    >
-                      <Heart className="h-4 w-4" aria-hidden="true" />
+                    <Button variant="white" size="md" href="/don" iconLeft={Heart} fullWidth>
                       Faire un don
-                      <ArrowRight
-                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                        aria-hidden="true"
-                      />
-                    </Link>
-                    <Link
-                      href="/a-propos#benevoles"
-                      className="group inline-flex items-center justify-center gap-2 rounded-xl border-2 border-white/80 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
-                    >
-                      <UserPlus className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                    <Button variant="outlined-light" size="md" href="/a-propos#benevoles" iconLeft={UserPlus} fullWidth>
                       Devenir bénévole
-                    </Link>
+                    </Button>
                   </div>
                 </div>
               </aside>

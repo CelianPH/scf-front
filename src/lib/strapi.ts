@@ -274,7 +274,9 @@ export async function getDonPage(): Promise<DonPageResponse> {
 export async function getAdoptionPage(): Promise<AdoptionPageResponse> {
   const params = {
     populate: {
-      hero: true,
+      hero: {
+        populate: { image: { fields: mediaFields } },
+      },
       matchingCta: {
         populate: { cta: ctaPopulate },
       },
