@@ -14,7 +14,7 @@ import { formatArticleDate } from "@/lib/formatters";
 import type { Article } from "@/types/strapi";
 
 async function fetchRelated(article: Article): Promise<Article[]> {
-  const primaryTag = article.tags[0]?.slug;
+  const primaryTag = article.tags?.[0]?.slug;
   if (!primaryTag) return [];
   try {
     const res = await getArticles({ tagSlug: primaryTag, pageSize: 4 });
@@ -85,7 +85,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const imageUrl = getStrapiMedia(article.image.url) ?? "";
   const dateLabel = formatArticleDate(article.date);
   const related = await fetchRelated(article);
-  const relatedTagNom = article.tags[0]?.nom ?? null;
+  const relatedTagNom = article.tags?.[0]?.nom ?? null;
 
   return (
     <>
@@ -102,9 +102,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </Link>
 
             <Reveal as="header" className="mt-6">
-              {article.tags.length > 0 ? (
+              {(article.tags?.length ?? 0) > 0 ? (
                 <ul className="mb-4 flex flex-wrap gap-2">
-                  {article.tags.map((tag) => (
+                  {(article.tags ?? []).map((tag) => (
                     <li key={tag.id}>
                       <Link
                         href={buildActualitesHref({ tag: tag.slug })}
@@ -216,7 +216,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     </div>
                     <Link
                       href={buildActualitesHref(
-                        relatedTagNom && article.tags[0]
+                        relatedTagNom && article.tags?.[0]
                           ? { tag: article.tags[0].slug }
                           : {},
                       )}
