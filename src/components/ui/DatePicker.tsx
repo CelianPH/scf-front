@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import { Select, type SelectOption } from "./Select";
 
 interface DatePickerProps {
   value: string | null;
@@ -113,11 +114,16 @@ export function DatePicker({
     }
   }, [value]);
 
-  const years = useMemo(() => {
-    const out: number[] = [];
-    for (let y = yMax; y >= yMin; y--) out.push(y);
+  const yearOptions: SelectOption<string>[] = useMemo(() => {
+    const out: SelectOption<string>[] = [];
+    for (let y = yMax; y >= yMin; y--) out.push({ value: String(y), label: String(y) });
     return out;
   }, [yMax, yMin]);
+
+  const monthOptions: SelectOption<string>[] = useMemo(
+    () => MOIS.map((m, i) => ({ value: String(i), label: m })),
+    []
+  );
 
   const cellsBefore = firstWeekdayIndex(viewY, viewM);
   const totalDays = daysInMonth(viewY, viewM);
@@ -186,30 +192,22 @@ export function DatePicker({
             </button>
 
             <div className="flex flex-1 items-center gap-1.5">
-              <select
-                value={viewM}
-                onChange={(e) => setViewM(+e.target.value)}
-                aria-label="Mois"
-                className="flex-1 rounded-md border border-border bg-bg-alt px-2 py-1 text-sm font-medium text-text outline-none focus:border-primary"
-              >
-                {MOIS.map((m, i) => (
-                  <option key={m} value={i}>
-                    {m}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={viewY}
-                onChange={(e) => setViewY(+e.target.value)}
-                aria-label="Année"
-                className="w-[90px] rounded-md border border-border bg-bg-alt px-2 py-1 text-sm font-medium text-text outline-none focus:border-primary"
-              >
-                {years.map((y) => (
-                  <option key={y} value={y}>
-                    {y}
-                  </option>
-                ))}
-              </select>
+              <Select<string>
+                value={String(viewM)}
+                onChange={(v) => setViewM(+v)}
+                options={monthOptions}
+                ariaLabel="Mois"
+                className="flex-1"
+                buttonClassName="w-full text-sm py-1.5 bg-bg-alt"
+              />
+              <Select<string>
+                value={String(viewY)}
+                onChange={(v) => setViewY(+v)}
+                options={yearOptions}
+                ariaLabel="Année"
+                className="w-[100px] shrink-0"
+                buttonClassName="w-full text-sm py-1.5 bg-bg-alt"
+              />
             </div>
 
             <button
