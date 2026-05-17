@@ -6,6 +6,7 @@ import { Heart } from "lucide-react";
 interface FavoriteButtonProps {
   slug: string;
   catName: string;
+  fullWidth?: boolean;
 }
 
 const STORAGE_KEY = "scf:favorites";
@@ -30,7 +31,7 @@ function write(list: string[]) {
   }
 }
 
-export default function FavoriteButton({ slug, catName }: FavoriteButtonProps) {
+export default function FavoriteButton({ slug, catName, fullWidth = true }: FavoriteButtonProps) {
   const [active, setActive] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
@@ -58,14 +59,14 @@ export default function FavoriteButton({ slug, catName }: FavoriteButtonProps) {
           ? `Retirer ${catName} de mes favoris`
           : `Ajouter ${catName} à mes favoris`
       }
-      className={`group inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 px-5 py-3 text-base font-semibold transition duration-200 ease-out hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+      className={`group inline-flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-2.5 text-sm font-semibold transition duration-200 ease-out hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${fullWidth ? "w-full" : ""} ${
         active
           ? "border-primary bg-primary-50 text-primary"
           : "border-border bg-surface text-text hover:border-primary/40"
       }`}
     >
       <Heart
-        className={`h-5 w-5 transition-transform duration-200 ${
+        className={`h-4 w-4 transition-transform duration-200 ${
           active ? "fill-primary text-primary scale-110" : "text-text-secondary group-hover:text-primary"
         }`}
         aria-hidden="true"
