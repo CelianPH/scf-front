@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Heart } from "lucide-react";
-import Reveal from "./Reveal";
+import Reveal from "@/components/layout/Reveal";
 import { getStrapiMedia } from "@/lib/strapi";
 import type { AboutTemoignagesBlock } from "@/types/strapi";
 

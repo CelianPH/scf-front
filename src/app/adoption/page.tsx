@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import AdoptionHero from "@/components/AdoptionHero";
-import AdoptionList from "@/components/AdoptionList";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import AdoptionHero from "@/components/adoption/AdoptionHero";
+import AdoptionList from "@/components/adoption/AdoptionList";
 import { getAdoptionPage, getChats } from "@/lib/strapi";
 
 export async function generateMetadata(): Promise<Metadata> {

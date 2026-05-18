@@ -7,7 +7,7 @@ import {
   useTransform,
   type MotionValue,
 } from "motion/react";
-import Reveal from "./Reveal";
+import Reveal from "@/components/layout/Reveal";
 import { RichText } from "@/components/ui/RichText";
 import type { AboutHistoire as AboutHistoireData, AboutJalon as Jalon } from "@/types/strapi";
 

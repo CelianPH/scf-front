@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { PawPrint } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import Reveal from "@/components/Reveal";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import Reveal from "@/components/layout/Reveal";
 import { Button } from "@/components/ui/Button";
 import ArticleCard from "@/components/actualites/ArticleCard";
 import ArticleSearchForm from "@/components/actualites/ArticleSearchForm";

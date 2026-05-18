@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import AboutHero from "@/components/AboutHero";
-import AboutHistoire from "@/components/AboutHistoire";
-import AboutMissions from "@/components/AboutMissions";
-import AboutFelinsOmbre from "@/components/AboutFelinsOmbre";
-import AboutStatsBand from "@/components/AboutStatsBand";
-import AboutTemoignages from "@/components/AboutTemoignages";
-import AboutValeurs from "@/components/AboutValeurs";
-import AboutCta from "@/components/AboutCta";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import AboutHero from "@/components/about/AboutHero";
+import AboutHistoire from "@/components/about/AboutHistoire";
+import AboutMissions from "@/components/about/AboutMissions";
+import AboutFelinsOmbre from "@/components/about/AboutFelinsOmbre";
+import AboutStatsBand from "@/components/about/AboutStatsBand";
+import AboutTemoignages from "@/components/about/AboutTemoignages";
+import AboutValeurs from "@/components/about/AboutValeurs";
+import AboutCta from "@/components/about/AboutCta";
 import { getAboutPage } from "@/lib/strapi";
 
 export async function generateMetadata(): Promise<Metadata> {

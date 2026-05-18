@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import DonHero from "@/components/DonHero";
-import DonReassurance from "@/components/DonReassurance";
-import DonWidget from "@/components/DonWidget";
-import DonUtilite from "@/components/DonUtilite";
-import DonCampagnes from "@/components/DonCampagnes";
-import DonAutresActions from "@/components/DonAutresActions";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import DonHero from "@/components/don/DonHero";
+import DonReassurance from "@/components/don/DonReassurance";
+import DonWidget from "@/components/don/DonWidget";
+import DonUtilite from "@/components/don/DonUtilite";
+import DonCampagnes from "@/components/don/DonCampagnes";
+import DonAutresActions from "@/components/don/DonAutresActions";
 import { getDonPage } from "@/lib/strapi";
 
 export async function generateMetadata(): Promise<Metadata> {

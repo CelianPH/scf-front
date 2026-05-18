@@ -1,6 +1,6 @@
-import Reveal from "./Reveal";
-import { Icon } from "./Icon";
-import { ArrowLink } from "./ui/ArrowLink";
+import Reveal from "@/components/layout/Reveal";
+import { Icon } from "@/components/ui/Icon";
+import { ArrowLink } from "@/components/ui/ArrowLink";
 import type { DonAutresActions as DonAutresActionsData } from "@/types/strapi";
 
 interface DonAutresActionsProps {

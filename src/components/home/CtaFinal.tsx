@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import Reveal from "./Reveal";
+import Reveal from "@/components/layout/Reveal";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { getStrapiMedia } from "@/lib/strapi";
 import type { HomeCtaFinal } from "@/types/strapi";

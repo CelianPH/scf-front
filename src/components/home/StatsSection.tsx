@@ -1,5 +1,5 @@
-import { Icon } from "./Icon";
-import Reveal from "./Reveal";
+import { Icon } from "@/components/ui/Icon";
+import Reveal from "@/components/layout/Reveal";
 import type { HomeStatsBlock } from "@/types/strapi";
 
 interface StatsSectionProps {

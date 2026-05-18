@@ -1,5 +1,5 @@
-import Reveal from "./Reveal";
-import AdoptionCard from "@/components/AdoptionCard";
+import Reveal from "@/components/layout/Reveal";
+import AdoptionCard from "@/components/adoption/AdoptionCard";
 import { CtaButton } from "@/components/ui/CtaButton";
 import type { HomeChatsBlock } from "@/types/strapi";
 
