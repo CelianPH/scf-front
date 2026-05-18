@@ -1,13 +1,13 @@
-import Navbar from "@/components/Navbar";
-import HeroSection from "@/components/HeroSection";
-import StatsSection from "@/components/StatsSection";
-import ChatsAdoption from "@/components/ChatsAdoption";
-import QuiSommesNous from "@/components/QuiSommesNous";
-import DistributionBandeau from "@/components/DistributionBandeau";
-import GesteCompte from "@/components/GesteCompte";
-import ActualitesSection from "@/components/ActualitesSection";
-import CtaFinal from "@/components/CtaFinal";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/layout/Navbar";
+import HeroSection from "@/components/home/HeroSection";
+import StatsSection from "@/components/home/StatsSection";
+import ChatsAdoption from "@/components/home/ChatsAdoption";
+import QuiSommesNous from "@/components/home/QuiSommesNous";
+import DistributionBandeau from "@/components/home/DistributionBandeau";
+import GesteCompte from "@/components/home/GesteCompte";
+import ActualitesSection from "@/components/home/ActualitesSection";
+import CtaFinal from "@/components/home/CtaFinal";
+import Footer from "@/components/layout/Footer";
 import { getHomePage } from "@/lib/strapi";
 
 export default async function Home() {

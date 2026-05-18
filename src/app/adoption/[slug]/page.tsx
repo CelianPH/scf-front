@@ -11,11 +11,11 @@ import {
   Sparkles,
   UserPlus,
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import ChatGallery from "@/components/ChatGallery";
-import Reveal from "@/components/Reveal";
-import StickyAdoptionBar from "@/components/StickyAdoptionBar";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import ChatGallery from "@/components/adoption/ChatGallery";
+import Reveal from "@/components/layout/Reveal";
+import StickyAdoptionBar from "@/components/adoption/StickyAdoptionBar";
 import { Button } from "@/components/ui/Button";
 import { getChatBySlug, getStrapiMedia } from "@/lib/strapi";
 

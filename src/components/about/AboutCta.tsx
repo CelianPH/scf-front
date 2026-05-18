@@ -1,4 +1,4 @@
-import Reveal from "./Reveal";
+import Reveal from "@/components/layout/Reveal";
 import { CtaButton } from "@/components/ui/CtaButton";
 import type { AboutCtaFinal } from "@/types/strapi";
 

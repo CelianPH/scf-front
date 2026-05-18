@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import Reveal from "./Reveal";
+import Reveal from "@/components/layout/Reveal";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import { getStrapiMedia } from "@/lib/strapi";
 import { formatArticleDate } from "@/lib/formatters";

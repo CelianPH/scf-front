@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ArrowRight, Heart, ShieldCheck, Receipt, Sparkles } from "lucide-react";
-import Reveal from "./Reveal";
+import Reveal from "@/components/layout/Reveal";
 import type { DonWidget as DonWidgetData } from "@/types/strapi";
 
 type Frequence = "unique" | "mensuel";

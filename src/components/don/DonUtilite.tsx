@@ -1,5 +1,5 @@
-import Reveal from "./Reveal";
-import { Icon } from "./Icon";
+import Reveal from "@/components/layout/Reveal";
+import { Icon } from "@/components/ui/Icon";
 import type { DonUtiliteBlock } from "@/types/strapi";
 
 interface DonUtiliteProps {

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Search, X, SlidersHorizontal, PawPrint } from "lucide-react";
 import AdoptionCard from "./AdoptionCard";
 import { Button } from "@/components/ui/Button";
-import Reveal from "@/components/Reveal";
+import Reveal from "@/components/layout/Reveal";
 import { Select } from "@/components/ui/Select";
 import type { Chat } from "@/types/strapi";
 
