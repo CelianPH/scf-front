@@ -53,7 +53,7 @@ export default function MatchingIntro({ total, onStart }: Props) {
           transition={{ delay: 0.1, duration: 0.4 }}
           className="mt-3 font-display text-4xl font-bold text-white md:text-5xl"
         >
-          Trouvez votre match
+          Trouve ton match
         </motion.h1>
 
         <motion.p
@@ -62,8 +62,8 @@ export default function MatchingIntro({ total, onStart }: Props) {
           transition={{ delay: 0.2, duration: 0.4 }}
           className="mt-3 text-white/80"
         >
-          Nous avons analysé votre profil et vos conditions d&apos;accueil.
-          Swipez à droite si le cœur dit oui, à gauche pour passer.
+          Nous avons analysé ton profil et tes conditions d&apos;accueil.
+          Swipe à droite si le cœur dit oui, à gauche pour passer.
         </motion.p>
 
         <motion.div
@@ -96,7 +96,7 @@ export default function MatchingIntro({ total, onStart }: Props) {
           </Button>
           <p className="mt-4 text-xs text-white/55">
             {total} chat{total > 1 ? "s" : ""} correspond
-            {total > 1 ? "ent" : ""} à votre profil
+            {total > 1 ? "ent" : ""} à ton profil
           </p>
         </motion.div>
       </div>

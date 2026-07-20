@@ -56,7 +56,7 @@ export default function RecapLikes({
         </h1>
         <p className="mt-2 text-text-secondary">
           Voici pourquoi {chats.length > 1 ? "ils iraient" : "il irait"} bien
-          avec vous.
+          avec toi.
         </p>
       </div>
 

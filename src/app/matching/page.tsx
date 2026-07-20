@@ -12,9 +12,9 @@ import MatchingExperience, {
 import { raisonsNegatives, raisonsPositives } from "@/components/adoption/compatibilite-ui";
 
 export const metadata: Metadata = {
-  title: "Trouvez votre match — Sans Croquettes Fixes",
+  title: "Trouve ton match — Sans Croquettes Fixes",
   description:
-    "Découvrez, en swipant, les chats faits pour votre foyer et pourquoi ils vous correspondent.",
+    "Découvre, en swipant, les chats faits pour ton foyer et pourquoi ils te correspondent.",
 };
 
 export default async function MatchingPage() {
@@ -73,10 +73,10 @@ export default async function MatchingPage() {
                 <Sparkles className="h-8 w-8" aria-hidden="true" />
               </span>
               <h1 className="mt-5 font-display text-2xl font-bold text-text">
-                Complétez votre profil
+                Complète ton profil
               </h1>
               <p className="mt-2 max-w-md text-sm text-text-secondary md:text-base">
-                Le matching a besoin de vos conditions d&apos;accueil pour vous
+                Le matching a besoin de tes conditions d&apos;accueil pour te
                 proposer les bons chats.
                 {manquants.length > 0 ? ` Il manque ${manquants.join(", ")}.` : ""}
               </p>

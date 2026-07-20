@@ -63,10 +63,10 @@ export default function CompatibiliteDetail({ slug }: { slug: string }) {
       <div className="mt-4 rounded-2xl bg-surface p-5 ring-1 ring-border">
         <p className="flex items-center gap-2 text-sm font-semibold text-text">
           <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
-          Découvrez votre compatibilité
+          Découvre ta compatibilité
         </p>
         <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">
-          Complétez votre profil pour voir votre compatibilité avec {" "}
+          Complète ton profil pour voir ta compatibilité avec {" "}
           {etat.champsManquants.length > 0
             ? `ce chat. Il manque ${etat.champsManquants.join(", ")}.`
             : "ce chat."}

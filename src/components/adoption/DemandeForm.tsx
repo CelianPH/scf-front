@@ -41,7 +41,7 @@ export default function DemandeForm({ chatSlug, chatNom, incompatibilite }: Prop
     }
     if (incompatibilite && justification.trim().length < 20) {
       setError(
-        "Expliquez en quelques mots (min 20 caractères) comment vous comptez gérer les points d'attention."
+        "Explique en quelques mots (20 caractères minimum) comment tu comptes gérer les points d'attention."
       );
       return;
     }
@@ -80,7 +80,7 @@ export default function DemandeForm({ chatSlug, chatNom, incompatibilite }: Prop
         <div className="rounded-xl border border-amber-300 bg-amber-50 p-4">
           <p className="flex items-center gap-2 text-sm font-semibold text-amber-900">
             <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
-            Ce chat présente des incompatibilités avec votre profil
+            Ce chat présente des incompatibilités avec ton profil
           </p>
           {raisons.length > 0 && (
             <ul className="mt-2 space-y-1 text-sm text-amber-800">
@@ -93,9 +93,8 @@ export default function DemandeForm({ chatSlug, chatNom, incompatibilite }: Prop
             </ul>
           )}
           <p className="mt-2 text-sm text-amber-800">
-            Vous pouvez tout de même candidater : expliquez ci-dessous comment
-            vous comptez gérer ces points. Le bénévole référent en tiendra
-            compte.
+            Tu peux tout de même candidater : explique ci-dessous comment tu
+            comptes gérer ces points. Le bénévole référent en tiendra compte.
           </p>
         </div>
       )}
@@ -132,7 +131,7 @@ export default function DemandeForm({ chatSlug, chatNom, incompatibilite }: Prop
       {incompatibilite && (
         <label className="block">
           <span className="text-sm font-semibold text-text">
-            Comment comptez-vous gérer ces points ? (min 20 caractères)
+            Comment comptes-tu gérer ces points ? (20 caractères minimum)
           </span>
           <textarea
             required

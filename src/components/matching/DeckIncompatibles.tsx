@@ -35,8 +35,8 @@ export default function DeckIncompatibles({
         </h1>
         <p className="mt-2 text-text-secondary">
           {vide
-            ? "Aucun autre chat à vous montrer pour le moment."
-            : "Ces chats ne correspondent pas à vos conditions d'accueil actuelles — on vous explique pourquoi, en toute transparence."}
+            ? "Aucun autre chat à te montrer pour le moment."
+            : "Ces chats ne correspondent pas à tes conditions d'accueil actuelles. On t'explique pourquoi, en toute transparence."}
         </p>
       </div>
 
@@ -110,7 +110,7 @@ export default function DeckIncompatibles({
       {!vide && (
         <p className="mt-6 rounded-xl bg-bg-alt/60 px-4 py-3 text-center text-sm text-text-secondary">
           Adopter malgré une incompatibilité reste possible : le bénévole
-          référent en discutera avec vous.
+          référent en discutera avec toi.
         </p>
       )}
 
