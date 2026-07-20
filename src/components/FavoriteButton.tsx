@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
 
 interface FavoriteButtonProps {
@@ -27,6 +28,8 @@ function writeLocal(list: string[]) {
 }
 
 export default function FavoriteButton({ slug, catName }: FavoriteButtonProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [active, setActive] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [authed, setAuthed] = useState<boolean | null>(null);
@@ -60,7 +63,9 @@ export default function FavoriteButton({ slug, catName }: FavoriteButtonProps) {
         writeLocal([]); // on vide le local après sync
         setActive(dbSlugs.includes(slug));
       } else {
-        setActive(readLocal().includes(slug));
+        // Non connecté : les favoris demandent une connexion, donc jamais coché.
+        // Le localStorage sert seulement de file d'attente migrée au login.
+        setActive(false);
       }
       setHydrated(true);
     })();
@@ -70,22 +75,22 @@ export default function FavoriteButton({ slug, catName }: FavoriteButtonProps) {
   }, [slug]);
 
   async function toggle() {
-    if (authed) {
-      const res = await fetch("/api/auth/favoris", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chatSlug: slug }),
-      });
-      const data = await res.json();
-      setActive(data.data?.active ?? !active);
-    } else {
+    // Non connecté : on redirige vers la connexion, comme la demande d'adoption.
+    // Après login, l'effet ci-dessus persiste le favori en base.
+    if (!authed) {
       const list = readLocal();
-      const next = list.includes(slug)
-        ? list.filter((s) => s !== slug)
-        : [...list, slug];
-      writeLocal(next);
-      setActive(next.includes(slug));
+      if (!list.includes(slug)) writeLocal([...list, slug]);
+      router.push(`/connexion?next=${encodeURIComponent(pathname)}`);
+      return;
     }
+
+    const res = await fetch("/api/auth/favoris", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chatSlug: slug }),
+    });
+    const data = await res.json();
+    setActive(data.data?.active ?? !active);
   }
 
   return (
