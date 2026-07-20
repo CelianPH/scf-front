@@ -181,7 +181,7 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
         </div>
 
         <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <p
               className="text-sm text-text-secondary md:text-base"
               aria-live="polite"
