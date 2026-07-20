@@ -130,11 +130,18 @@ export default function ProfilForm({ profil }: Props) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-10">
+      <p className="rounded-md bg-bg-alt px-4 py-3 text-sm text-text-secondary">
+        Les champs marqués d&apos;un{" "}
+        <span className="font-semibold text-primary">*</span> sont nécessaires
+        pour envoyer une demande d&apos;adoption. Le reste nous aide à mieux te
+        connaître.
+      </p>
+
       <Section
         title="Coordonnées"
         subtitle="Pour qu'on puisse te contacter au sujet d'une demande."
       >
-        <FieldLabel label="Téléphone">
+        <FieldLabel label="Téléphone" required>
           <input
             type="tel"
             value={data.telephone ?? ""}
@@ -143,14 +150,14 @@ export default function ProfilForm({ profil }: Props) {
             autoComplete="tel"
           />
         </FieldLabel>
-        <FieldLabel label="Date de naissance">
+        <FieldLabel label="Date de naissance" required>
           <DatePicker
             value={data.dateNaissance ?? null}
             onChange={(iso) => update("dateNaissance", iso)}
             ariaLabel="Date de naissance"
           />
         </FieldLabel>
-        <FieldLabel label="Ville">
+        <FieldLabel label="Ville" required>
           <input
             type="text"
             value={data.ville ?? ""}
@@ -159,7 +166,7 @@ export default function ProfilForm({ profil }: Props) {
             autoComplete="address-level2"
           />
         </FieldLabel>
-        <FieldLabel label="Code postal">
+        <FieldLabel label="Code postal" required>
           <input
             type="text"
             maxLength={5}
@@ -201,7 +208,7 @@ export default function ProfilForm({ profil }: Props) {
             min={0}
           />
         ) : null}
-        <FieldLabel label="Enfants au foyer">
+        <FieldLabel label="Enfants au foyer" required>
           <SelectWrap
             value={data.enfants ?? null}
             options={ENFANTS_OPTIONS}
@@ -256,7 +263,7 @@ export default function ProfilForm({ profil }: Props) {
           value={data.travaille ?? null}
           onChange={(v) => update("travaille", v)}
         />
-        <FieldLabel label="Présence à la maison">
+        <FieldLabel label="Présence à la maison" required>
           <SelectWrap
             value={data.presenceMaison ?? null}
             options={PRESENCE_OPTIONS}
@@ -302,7 +309,7 @@ export default function ProfilForm({ profil }: Props) {
         title="Mon logement"
         subtitle="Pour te proposer un chat adapté à ton cadre de vie."
       >
-        <FieldLabel label="Type de logement">
+        <FieldLabel label="Type de logement" required>
           <SelectWrap
             value={data.typeLogement ?? null}
             options={TYPE_LOGEMENT_OPTIONS}
@@ -371,7 +378,7 @@ export default function ProfilForm({ profil }: Props) {
         title="Extérieur"
         subtitle="Pour vérifier que le chat serait en sécurité dehors."
       >
-        <FieldLabel label="Accès extérieur">
+        <FieldLabel label="Accès extérieur" required>
           <SelectWrap
             value={data.accesExterieur ?? null}
             options={ACCES_OPTIONS}
@@ -430,7 +437,7 @@ export default function ProfilForm({ profil }: Props) {
         title="Mes animaux"
         subtitle="Pour vérifier les ententes possibles avec le chat."
       >
-        <FieldLabel label="Autres animaux">
+        <FieldLabel label="Autres animaux" required>
           <SelectWrap
             value={data.autresAnimaux ?? null}
             options={ANIMAUX_OPTIONS}
@@ -438,7 +445,7 @@ export default function ProfilForm({ profil }: Props) {
             placeholder="Autres animaux"
           />
         </FieldLabel>
-        <FieldLabel label="Expérience avec les chats">
+        <FieldLabel label="Expérience avec les chats" required>
           <SelectWrap
             value={data.experienceChats ?? null}
             options={EXPERIENCE_OPTIONS}
@@ -584,16 +591,26 @@ function FieldLabel({
   label,
   hint,
   full,
+  required,
   children,
 }: {
   label: string;
   hint?: string;
   full?: boolean;
+  /** Champ du socle exigé pour envoyer une demande d'adoption. */
+  required?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <label className={`block${full ? " sm:col-span-2" : ""}`}>
-      <span className="text-sm font-semibold text-text">{label}</span>
+      <span className="text-sm font-semibold text-text">
+        {label}
+        {required ? (
+          <span className="ml-0.5 text-primary" title="Requis pour adopter">
+            *
+          </span>
+        ) : null}
+      </span>
       {hint ? (
         <span className="ml-2 text-xs font-normal text-text-secondary">{hint}</span>
       ) : null}

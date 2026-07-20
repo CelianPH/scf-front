@@ -39,8 +39,11 @@ export default async function DemandePage({ params }: PageProps) {
   });
 
   if (missing.length > 0) {
+    // On transmet les champs manquants pour que la page profil puisse les
+    // nommer, plutôt que d'afficher un refus sans explication.
     redirect(
-      `/compte/profil?gate=adoption&next=/adoption/${slug}/demande`
+      `/compte/profil?gate=adoption&next=/adoption/${slug}/demande` +
+        `&manquants=${missing.join(",")}`
     );
   }
 
