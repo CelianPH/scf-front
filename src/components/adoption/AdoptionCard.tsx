@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ArrowRight, Sparkles, PawPrint } from "lucide-react";
 import { getStrapiMedia } from "@/lib/strapi";
 import { estAdoptable, statutLabel } from "@/lib/chat-statut";
-import CompatibiliteBadge from "./CompatibiliteBadge";
 import type { Chat } from "@/types/strapi";
 
 interface AdoptionCardProps {
@@ -68,12 +67,6 @@ export default function AdoptionCard({ chat }: AdoptionCardProps) {
               {chat.badge}
             </span>
           ) : null}
-
-          {adoptable && (
-            <div className={`absolute left-3 ${chat.badge ? "top-12" : "top-3"}`}>
-              <CompatibiliteBadge slug={chat.slug} />
-            </div>
-          )}
 
           <div className="absolute inset-x-4 bottom-4 text-white">
             <h3 className="font-display text-2xl font-bold leading-tight drop-shadow-sm md:text-3xl">
