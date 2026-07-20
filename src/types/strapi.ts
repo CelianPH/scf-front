@@ -406,6 +406,7 @@ export interface AboutCtaFinal {
 
 export interface AdoptionHeroData {
   id: number;
+  image: StrapiMedia | null;
   titreDebut: string;
   titreHighlight: string;
   sousTitre: string;

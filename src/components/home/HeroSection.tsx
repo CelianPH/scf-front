@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { Icon } from "@/components/Icon";
+import { Icon } from "@/components/ui/Icon";
 import { getStrapiMedia } from "@/lib/strapi";
 import type { HomeHero } from "@/types/strapi";
 

@@ -1,5 +1,5 @@
-import Reveal from "./Reveal";
-import { Icon } from "./Icon";
+import Reveal from "@/components/layout/Reveal";
+import { Icon } from "@/components/ui/Icon";
 import { CtaButton } from "@/components/ui/CtaButton";
 import type { DonHero as DonHeroData } from "@/types/strapi";
 

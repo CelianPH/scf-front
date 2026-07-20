@@ -1,4 +1,4 @@
-import Reveal from "./Reveal";
+import Reveal from "@/components/layout/Reveal";
 import type { AboutValeursBlock } from "@/types/strapi";
 
 interface AboutValeursProps {

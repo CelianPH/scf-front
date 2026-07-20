@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Reveal from "./Reveal";
-import { Icon } from "./Icon";
+import Reveal from "@/components/layout/Reveal";
+import { Icon } from "@/components/ui/Icon";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { RichText } from "@/components/ui/RichText";
 import { getStrapiMedia } from "@/lib/strapi";

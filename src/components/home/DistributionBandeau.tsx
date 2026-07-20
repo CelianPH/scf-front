@@ -1,5 +1,5 @@
-import Reveal from "./Reveal";
-import { Icon } from "./Icon";
+import Reveal from "@/components/layout/Reveal";
+import { Icon } from "@/components/ui/Icon";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import type { HomeDistributionBandeau } from "@/types/strapi";
 

@@ -48,9 +48,9 @@ export default function FeaturedArticle({ article }: FeaturedArticleProps) {
               {article.resume}
             </p>
           ) : null}
-          {article.tags.length > 0 ? (
+          {(article.tags?.length ?? 0) > 0 ? (
             <ul className="flex flex-wrap gap-1.5">
-              {article.tags.slice(0, 3).map((tag) => (
+              {(article.tags ?? []).slice(0, 3).map((tag) => (
                 <li
                   key={tag.id}
                   className="rounded-full bg-primary-50 px-2.5 py-0.5 text-xs font-medium text-primary-dark"

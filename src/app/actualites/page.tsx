@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { PawPrint } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import Reveal from "@/components/Reveal";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import Reveal from "@/components/layout/Reveal";
 import { Button } from "@/components/ui/Button";
 import ArticleCard from "@/components/actualites/ArticleCard";
 import ArticleSearchForm from "@/components/actualites/ArticleSearchForm";
@@ -51,15 +51,14 @@ export default async function ActualitesPage({
     getTags(),
   ]);
 
-  const pagination = articlesRes.meta.pagination;
-  const total = pagination?.total ?? articlesRes.data.length;
+  const articles = articlesRes.data ?? [];
+  const pagination = articlesRes.meta?.pagination;
+  const total = pagination?.total ?? articles.length;
   const pageCount = pagination?.pageCount ?? 1;
 
-  const showFeatured = page === 1 && !search && !tag && articlesRes.data.length > 0;
-  const featured = showFeatured ? articlesRes.data[0] : null;
-  const gridArticles = showFeatured
-    ? articlesRes.data.slice(1)
-    : articlesRes.data;
+  const showFeatured = page === 1 && !search && !tag && articles.length > 0;
+  const featured = showFeatured ? articles[0] : null;
+  const gridArticles = showFeatured ? articles.slice(1) : articles;
 
   return (
     <>
@@ -100,7 +99,7 @@ export default async function ActualitesPage({
             <Reveal delay={200} className="mt-8">
               <div className="flex justify-center">
                 <TagFilterChips
-                  tags={tagsRes.data}
+                  tags={tagsRes.data ?? []}
                   activeSlug={tag}
                   search={search}
                 />
@@ -111,7 +110,7 @@ export default async function ActualitesPage({
 
         <section className="bg-bg pb-16 md:pb-24">
           <div className="mx-auto max-w-7xl px-5 md:px-8">
-            {articlesRes.data.length === 0 ? (
+            {articles.length === 0 ? (
               <div className="relative mx-auto max-w-xl overflow-hidden px-6 py-16 text-center">
                 <PawPrint
                   aria-hidden="true"
