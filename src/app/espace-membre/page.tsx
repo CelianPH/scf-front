@@ -1,7 +1,30 @@
 import Link from "next/link";
 import { Inbox, Cat, CalendarOff, ArrowRight } from "lucide-react";
+import Reveal from "@/components/layout/Reveal";
+import EspaceMembreHero from "@/components/espace-membre/EspaceMembreHero";
 import { getCurrentUser } from "@/lib/auth";
 import { getBenevoleMe, getDemandesATraiter } from "@/lib/strapi-server";
+
+const ACTIONS = [
+  {
+    href: "/espace-membre/demandes",
+    icon: Inbox,
+    titre: "Demandes à traiter",
+    description: "Prendre en charge, accepter ou refuser une demande.",
+  },
+  {
+    href: "/espace-membre/absence",
+    icon: CalendarOff,
+    titre: "Mes absences",
+    description: "Signaler une indisponibilité et passer la main aux backups.",
+  },
+  {
+    href: "/adoption",
+    icon: Cat,
+    titre: "Le refuge",
+    description: "Consulter les fiches des chats à l'adoption.",
+  },
+] as const;
 
 export default async function EspaceMembrePage() {
   const [user, { data: demandes }, { data: benevole }] = await Promise.all([
@@ -15,104 +38,51 @@ export default async function EspaceMembrePage() {
   const chatsSuivis = new Set(demandes.map((d) => d.chat?.slug)).size;
 
   return (
-    <section className="mx-auto max-w-4xl px-5 py-12 md:px-8 md:py-16">
-      <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-        Espace membre
-      </p>
-      <h1 className="mt-1 font-display text-4xl font-bold text-text md:text-5xl">
-        Bonjour {user?.prenom ?? ""}
-      </h1>
-      <p className="mt-2 text-text-secondary">
-        Retrouve ici les demandes d&apos;adoption dont tu as la charge.
-      </p>
-
-      {benevole?.absent ? (
-        <p className="mt-4 flex items-center gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-900 ring-1 ring-amber-200">
-          <CalendarOff className="h-4 w-4 shrink-0" />
-          Tu es déclaré·e absent·e : tes demandes sont redirigées vers tes
-          référent·es de secours.{" "}
-          <Link
-            href="/espace-membre/absence"
-            className="font-semibold underline"
-          >
-            Gérer
-          </Link>
-        </p>
-      ) : null}
-
-      <dl className="mt-8 grid grid-cols-3 gap-3">
-        {[
+    <>
+      <EspaceMembreHero
+        prenom={user?.prenom ?? ""}
+        absent={benevole?.absent ?? false}
+        stats={[
           { label: "En attente", valeur: enAttente },
           { label: "En cours", valeur: enCours },
           { label: "Chats concernés", valeur: chatsSuivis },
-        ].map((s) => (
-          <div
-            key={s.label}
-            className="rounded-2xl bg-surface p-4 text-center ring-1 ring-border"
-          >
-            <dd className="font-display text-3xl font-bold tabular-nums text-primary">
-              {s.valeur}
-            </dd>
-            <dt className="mt-1 text-xs text-text-secondary">{s.label}</dt>
+        ]}
+      />
+
+      <section className="bg-bg">
+        <div className="mx-auto max-w-4xl px-5 py-10 md:px-8 md:py-12">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {ACTIONS.map((action, i) => (
+              <Reveal
+                key={action.href}
+                delay={i * 90}
+                className={action.href === "/adoption" ? "sm:col-span-2" : ""}
+              >
+                <Link
+                  href={action.href}
+                  className="group flex items-start gap-4 rounded-2xl bg-surface p-5 shadow-sm ring-1 ring-border transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/10 hover:ring-primary/40"
+                >
+                  <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-vif text-white shadow-md shadow-primary/25 transition group-hover:scale-105">
+                    <action.icon className="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="flex items-center gap-1.5 font-display text-lg font-bold text-text">
+                      {action.titre}
+                      <ArrowRight
+                        className="h-4 w-4 text-primary transition group-hover:translate-x-1"
+                        aria-hidden="true"
+                      />
+                    </span>
+                    <span className="mt-0.5 block text-sm text-text-secondary">
+                      {action.description}
+                    </span>
+                  </span>
+                </Link>
+              </Reveal>
+            ))}
           </div>
-        ))}
-      </dl>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
-        <Link
-          href="/espace-membre/demandes"
-          className="group flex items-start gap-3 rounded-2xl bg-surface p-5 ring-1 ring-border transition hover:ring-primary"
-        >
-          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary">
-            <Inbox className="h-5 w-5" />
-          </span>
-          <span className="min-w-0">
-            <span className="flex items-center gap-1 font-display text-lg font-bold text-text">
-              Demandes à traiter
-              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-            </span>
-            <span className="mt-0.5 block text-sm text-text-secondary">
-              Prendre en charge, accepter ou refuser une demande.
-            </span>
-          </span>
-        </Link>
-
-        <Link
-          href="/espace-membre/absence"
-          className="group flex items-start gap-3 rounded-2xl bg-surface p-5 ring-1 ring-border transition hover:ring-primary"
-        >
-          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary">
-            <CalendarOff className="h-5 w-5" />
-          </span>
-          <span className="min-w-0">
-            <span className="flex items-center gap-1 font-display text-lg font-bold text-text">
-              Mes absences
-              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-            </span>
-            <span className="mt-0.5 block text-sm text-text-secondary">
-              Signaler une indisponibilité et passer la main aux backups.
-            </span>
-          </span>
-        </Link>
-
-        <Link
-          href="/adoption"
-          className="group flex items-start gap-3 rounded-2xl bg-surface p-5 ring-1 ring-border transition hover:ring-primary"
-        >
-          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary">
-            <Cat className="h-5 w-5" />
-          </span>
-          <span className="min-w-0">
-            <span className="flex items-center gap-1 font-display text-lg font-bold text-text">
-              Le refuge
-              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-            </span>
-            <span className="mt-0.5 block text-sm text-text-secondary">
-              Consulter les fiches des chats à l&apos;adoption.
-            </span>
-          </span>
-        </Link>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }
