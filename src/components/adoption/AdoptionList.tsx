@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Search, X, SlidersHorizontal, PawPrint } from "lucide-react";
 import AdoptionCard from "./AdoptionCard";
+import { CompatibiliteProvider } from "./CompatibiliteProvider";
 import { Button } from "@/components/ui/Button";
 import Reveal from "@/components/layout/Reveal";
 import { Select } from "@/components/ui/Select";
@@ -103,6 +104,7 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
   }
 
   return (
+    <CompatibiliteProvider>
     <section aria-label="Liste des chats à l'adoption" className="bg-bg">
       <div className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
         <div className="rounded-2xl bg-surface p-5 shadow-sm ring-1 ring-border md:p-6">
@@ -261,5 +263,6 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
         )}
       </div>
     </section>
+    </CompatibiliteProvider>
   );
 }

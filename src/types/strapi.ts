@@ -715,6 +715,37 @@ export interface DemandeATraiter extends DemandeAdoption {
   enRemplacement: boolean;
 }
 
+// ---------- Compatibilité chat ↔ adoptant ----------
+
+export type NiveauCompatibilite = "excellent" | "bon" | "moyen" | "faible";
+export type CategorieCritere = "bien_etre" | "capacite" | "preference";
+
+/** Détail d'un critère du score, pour expliquer le pourcentage à l'adoptant. */
+export interface CritereCompatibilite {
+  code: string;
+  libelle: string;
+  points: number;
+  max: number;
+  categorie: CategorieCritere;
+  detail: string;
+}
+
+/** Score de compatibilité d'un chat pour l'adoptant connecté. */
+export interface ChatScore {
+  slug: string;
+  nom: string;
+  score: number;
+  niveau: NiveauCompatibilite;
+  plafonne: boolean;
+  alertes: string[];
+  criteres: CritereCompatibilite[];
+}
+
+export interface CompatibiliteResponse {
+  data: ChatScore[];
+  meta: { profilComplet: boolean; champsManquants?: string[] };
+}
+
 // ---------- Response aliases ----------
 
 export type HomePageResponse = StrapiSingleResponse<HomePage>;

@@ -18,6 +18,7 @@ import ChatGallery from "@/components/adoption/ChatGallery";
 import Reveal from "@/components/layout/Reveal";
 import StickyAdoptionBar from "@/components/adoption/StickyAdoptionBar";
 import FavoriteButton from "@/components/adoption/FavoriteButton";
+import CompatibiliteDetail from "@/components/adoption/CompatibiliteDetail";
 import { Button } from "@/components/ui/Button";
 import { getChatBySlug, getStrapiMedia } from "@/lib/strapi";
 
@@ -183,6 +184,13 @@ export default async function ChatDetailPage({ params }: PageProps) {
                 )}
               </div>
             </Reveal>
+
+            {/* Compatibilité chat ↔ adoptant (visible seulement si connecté). */}
+            {adoptable ? (
+              <Reveal delay={90}>
+                <CompatibiliteDetail slug={c.slug} />
+              </Reveal>
+            ) : null}
 
             {/* Caractère */}
             {c.caracteres && c.caracteres.length > 0 ? (
