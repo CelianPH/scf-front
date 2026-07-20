@@ -34,11 +34,13 @@ export default function DemandeForm({ chatSlug, chatNom }: Props) {
     });
     setSubmitting(false);
     if (!res.ok) {
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
       setError(
-        data.error?.message ??
-          data.error ??
-          "Erreur lors de l'envoi de la demande."
+        data?.error?.message ??
+          data?.error ??
+          (res.status >= 500
+            ? "Le service est momentanément indisponible."
+            : "Erreur lors de l'envoi de la demande.")
       );
       return;
     }

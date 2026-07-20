@@ -20,15 +20,30 @@ export default function LoginForm() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    let res: Response;
+    try {
+      res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+    } catch {
+      setLoading(false);
+      setError("Connexion au serveur impossible. Réessaie dans un instant.");
+      return;
+    }
     setLoading(false);
+
     if (!res.ok) {
-      const { error: msg } = await res.json();
-      setError(msg ?? "Identifiants invalides");
+      // Une panne serveur renvoie un corps vide : `res.json()` lèverait une
+      // erreur qui masquerait la vraie cause.
+      const body = await res.json().catch(() => null);
+      setError(
+        body?.error ??
+          (res.status >= 500
+            ? "Le service est momentanément indisponible."
+            : "Identifiants invalides")
+      );
       return;
     }
     router.push(next);

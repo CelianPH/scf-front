@@ -30,9 +30,16 @@ export default function RegisterForm() {
       body: JSON.stringify({ prenom, nom, email, password, cguAccepted: cgu }),
     });
     setLoading(false);
-    const data = await res.json();
-    if (!res.ok) {
-      setError(data.error ?? "Erreur d'inscription");
+    // Une panne serveur renvoie un corps vide : `res.json()` lèverait une
+    // erreur qui masquerait la vraie cause.
+    const data = await res.json().catch(() => null);
+    if (!res.ok || !data) {
+      setError(
+        data?.error ??
+          (res.status >= 500
+            ? "Le service est momentanément indisponible."
+            : "Erreur d'inscription")
+      );
       return;
     }
     if (data.loggedIn) {

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Heart, Inbox, LogOut, Menu, PawPrint, User as UserIcon, X } from "lucide-react";
+import { Heart, LogOut, Menu, PawPrint, User as UserIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useAuthState } from "@/lib/use-auth-state";
 import { ROLE_MEMBRE } from "@/types/strapi";
@@ -19,7 +19,10 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { user } = useAuthState();
-  const estMembre = user?.role?.type === ROLE_MEMBRE;
+  // Un membre de l'association n'a pas d'espace adoptant : son prénom mène
+  // directement à son espace de travail.
+  const espaceUrl =
+    user?.role?.type === ROLE_MEMBRE ? "/espace-membre" : "/compte";
 
   useEffect(() => {
     setOpen(false);
@@ -82,17 +85,8 @@ export default function Navbar() {
         <div className="hidden items-center gap-2 md:flex">
           {user ? (
             <>
-              {estMembre ? (
-                <Link
-                  href="/espace-membre"
-                  className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-primary hover:text-primary-dark"
-                >
-                  <Inbox className="h-4 w-4" aria-hidden="true" />
-                  Espace membre
-                </Link>
-              ) : null}
               <Link
-                href="/compte"
+                href={espaceUrl}
                 className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-text-secondary hover:text-text"
               >
                 <UserIcon className="h-4 w-4" aria-hidden="true" />
@@ -193,18 +187,8 @@ export default function Navbar() {
             <div className="border-t border-border px-5 pt-4 pb-2">
               {user ? (
                 <div className="flex items-center justify-between">
-                  {estMembre ? (
-                    <Link
-                      href="/espace-membre"
-                      onClick={() => setOpen(false)}
-                      className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-primary hover:text-primary-dark"
-                    >
-                      <Inbox className="h-4 w-4" aria-hidden="true" />
-                      Espace membre
-                    </Link>
-                  ) : null}
                   <Link
-                    href="/compte"
+                    href={espaceUrl}
                     onClick={() => setOpen(false)}
                     className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-text-secondary hover:text-text"
                   >
