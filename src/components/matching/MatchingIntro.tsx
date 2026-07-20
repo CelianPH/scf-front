@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { Heart, Sparkles, X } from "lucide-react";
+import { Heart, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 interface Props {
@@ -36,16 +36,6 @@ export default function MatchingIntro({ total, onStart }: Props) {
             <Heart className="h-10 w-10 text-white/90" aria-hidden="true" />
           </div>
         </motion.div>
-
-        <motion.span
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur"
-        >
-          <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-          Matching
-        </motion.span>
 
         <motion.h1
           initial={{ opacity: 0, y: 12 }}
