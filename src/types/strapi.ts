@@ -615,6 +615,9 @@ export interface SiteSettings {
  */
 export type StrapiRole = "public" | "authenticated" | "membre";
 
+/** Type du rôle « Membre de l'association » (cf. src/index.ts côté Strapi). */
+export const ROLE_MEMBRE: StrapiRole = "membre";
+
 export interface AuthUser {
   id: number;
   documentId: string;
@@ -657,7 +660,47 @@ export interface ProfilAdoptant {
   prefCaracteres: string[] | null;
   completionPct: number;
   notesPersonnelles: string | null;
+
+  // Fiche d'adoption SCF — identité et foyer
+  adressePostale: string | null;
+  compositionFoyer: CompositionFoyer | null;
+  nbColocataires: number | null;
+  nbEnfants: number | null;
+  agesEnfants: string | null;
+  foyerDaccord: boolean | null;
+  foyerDesaccordDetail: string | null;
+
+  // Activité
+  travaille: boolean | null;
+  profession: string | null;
+  horairesTravail: string | null;
+  heuresSeulParJour: number | null;
+
+  // Logement et environnement
+  superficieLogement: number | null;
+  lieuVieAnimal: LieuVieAnimal | null;
+  typeZone: TypeZone | null;
+  proximiteRoutePassante: boolean | null;
+  sortiesAutorisees: boolean | null;
+  etage: number | null;
+  fenetresSecurisees: boolean | null;
+  envisageSecuriserFenetres: boolean | null;
+  superficieJardin: number | null;
+  jardinGrillage: boolean | null;
+  hauteurGrillage: string | null;
+  superficieBalcon: number | null;
+  balconSecurise: boolean | null;
+
+  // Autres animaux et remarques
+  autresAnimauxDetail: string | null;
+  autresAnimauxSterilises: boolean | null;
+  autresAnimauxDepuis: string | null;
+  remarques: string | null;
 }
+
+export type CompositionFoyer = "seul" | "couple" | "colocation" | "autre";
+export type LieuVieAnimal = "interieur" | "exterieur" | "les_deux" | "autre";
+export type TypeZone = "ville" | "campagne" | "lotissement" | "autre";
 
 export type DemandeStatut = "en_attente" | "en_cours" | "acceptee" | "refusee";
 
@@ -673,6 +716,17 @@ export interface DemandeAdoption {
   chat: Chat;
   createdAt: string;
   updatedAt: string;
+}
+
+/**
+ * Demande vue par un membre de l'association : elle porte en plus l'adoptant
+ * et son profil, ainsi que le fait d'agir ou non en remplacement du référent.
+ */
+export interface DemandeATraiter extends DemandeAdoption {
+  user: Pick<AuthUser, "id" | "prenom" | "nom" | "email"> & {
+    profil: ProfilAdoptant | null;
+  };
+  enRemplacement: boolean;
 }
 
 // ---------- Response aliases ----------

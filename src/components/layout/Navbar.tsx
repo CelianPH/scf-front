@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Heart, LogOut, Menu, PawPrint, User as UserIcon, X } from "lucide-react";
+import { Heart, Inbox, LogOut, Menu, PawPrint, User as UserIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useAuthState } from "@/lib/use-auth-state";
+import { ROLE_MEMBRE } from "@/types/strapi";
 
 const links = [
   { href: "/", label: "Accueil" },
@@ -18,6 +19,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { user } = useAuthState();
+  const estMembre = user?.role?.type === ROLE_MEMBRE;
 
   useEffect(() => {
     setOpen(false);
@@ -80,6 +82,15 @@ export default function Navbar() {
         <div className="hidden items-center gap-2 md:flex">
           {user ? (
             <>
+              {estMembre ? (
+                <Link
+                  href="/espace-membre"
+                  className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-primary hover:text-primary-dark"
+                >
+                  <Inbox className="h-4 w-4" aria-hidden="true" />
+                  Espace membre
+                </Link>
+              ) : null}
               <Link
                 href="/compte"
                 className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-text-secondary hover:text-text"
@@ -182,6 +193,16 @@ export default function Navbar() {
             <div className="border-t border-border px-5 pt-4 pb-2">
               {user ? (
                 <div className="flex items-center justify-between">
+                  {estMembre ? (
+                    <Link
+                      href="/espace-membre"
+                      onClick={() => setOpen(false)}
+                      className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-primary hover:text-primary-dark"
+                    >
+                      <Inbox className="h-4 w-4" aria-hidden="true" />
+                      Espace membre
+                    </Link>
+                  ) : null}
                   <Link
                     href="/compte"
                     onClick={() => setOpen(false)}

@@ -4,6 +4,7 @@ import { getAuthToken } from "./cookies";
 import type {
   Chat,
   DemandeAdoption,
+  DemandeATraiter,
   ProfilAdoptant,
 } from "@/types/strapi";
 
@@ -47,6 +48,20 @@ export async function getMesDemandes(): Promise<{ data: DemandeAdoption[] }> {
     cache: "no-store",
   });
   if (!res.ok) throw new Error(`getMesDemandes: ${res.status}`);
+  return res.json();
+}
+
+/** Demandes que le membre connecté a la charge de traiter. */
+export async function getDemandesATraiter(): Promise<{
+  data: DemandeATraiter[];
+}> {
+  const token = await getAuthToken();
+  if (!token) throw new Error("Auth required");
+  const res = await fetch(`${INTERNAL}/api/demandes-adoption/a-traiter`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`getDemandesATraiter: ${res.status}`);
   return res.json();
 }
 
