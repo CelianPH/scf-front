@@ -26,10 +26,7 @@ export default async function ProfilPage({
     searchParams,
   ]);
 
-  const manquants = (params.manquants ?? "")
-    .split(",")
-    .filter(Boolean)
-    .map((k) => LIBELLES[k] ?? k);
+  const manquants = (params.manquants ?? "").split(",").filter(Boolean);
 
   return (
     <section className="mx-auto max-w-3xl px-5 py-12 md:px-8 md:py-16">
@@ -53,7 +50,18 @@ export default async function ProfilPage({
             {manquants.length > 0 ? (
               <p className="mt-1">
                 À compléter :{" "}
-                <span className="font-medium">{manquants.join(", ")}</span>.
+                {manquants.map((k, i) => (
+                  <span key={k}>
+                    {i > 0 ? ", " : ""}
+                    <a
+                      href={`#champ-${k}`}
+                      className="font-medium underline underline-offset-2 hover:text-amber-950"
+                    >
+                      {LIBELLES[k] ?? k}
+                    </a>
+                  </span>
+                ))}
+                .
               </p>
             ) : (
               <p className="mt-1">
@@ -66,7 +74,7 @@ export default async function ProfilPage({
       ) : null}
 
       <div className="mt-10">
-        <ProfilForm profil={profil} />
+        <ProfilForm profil={profil} manquants={manquants} />
       </div>
     </section>
   );

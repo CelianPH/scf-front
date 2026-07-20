@@ -86,17 +86,29 @@ const TYPE_ZONE_OPTIONS: SelectOption<TypeZone>[] = [
 
 interface Props {
   profil: ProfilAdoptant;
+  /** Champs du socle à mettre en évidence (renvoyés par le gating d'adoption). */
+  manquants?: string[];
 }
 
 const inputCls =
   "mt-1 w-full rounded-md border border-border bg-surface px-4 py-2.5 text-base text-text outline-none focus:border-primary";
 const textareaCls = `${inputCls} min-h-[96px] resize-y`;
 
-export default function ProfilForm({ profil }: Props) {
+export default function ProfilForm({ profil, manquants = [] }: Props) {
   const router = useRouter();
   const [data, setData] = useState<Partial<ProfilAdoptant>>(profil);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  /**
+   * Un champ signalé reste en évidence tant qu'il est vide : le surlignage
+   * s'efface dès la saisie plutôt qu'au rechargement de la page.
+   */
+  const aSignaler = (cle: keyof ProfilAdoptant) => {
+    if (!manquants.includes(cle as string)) return false;
+    const v = data[cle];
+    return v === null || v === undefined || v === "";
+  };
 
   function update<K extends keyof ProfilAdoptant>(key: K, value: ProfilAdoptant[K]) {
     setData((d) => ({ ...d, [key]: value }));
@@ -141,7 +153,9 @@ export default function ProfilForm({ profil }: Props) {
         title="Coordonnées"
         subtitle="Pour qu'on puisse te contacter au sujet d'une demande."
       >
-        <FieldLabel label="Téléphone" required>
+        <FieldLabel label="Téléphone" required
+          highlight={aSignaler("telephone")}
+          anchor="champ-telephone">
           <input
             type="tel"
             value={data.telephone ?? ""}
@@ -150,14 +164,18 @@ export default function ProfilForm({ profil }: Props) {
             autoComplete="tel"
           />
         </FieldLabel>
-        <FieldLabel label="Date de naissance" required>
+        <FieldLabel label="Date de naissance" required
+          highlight={aSignaler("dateNaissance")}
+          anchor="champ-dateNaissance">
           <DatePicker
             value={data.dateNaissance ?? null}
             onChange={(iso) => update("dateNaissance", iso)}
             ariaLabel="Date de naissance"
           />
         </FieldLabel>
-        <FieldLabel label="Ville" required>
+        <FieldLabel label="Ville" required
+          highlight={aSignaler("ville")}
+          anchor="champ-ville">
           <input
             type="text"
             value={data.ville ?? ""}
@@ -166,7 +184,9 @@ export default function ProfilForm({ profil }: Props) {
             autoComplete="address-level2"
           />
         </FieldLabel>
-        <FieldLabel label="Code postal" required>
+        <FieldLabel label="Code postal" required
+          highlight={aSignaler("codePostal")}
+          anchor="champ-codePostal">
           <input
             type="text"
             maxLength={5}
@@ -208,7 +228,9 @@ export default function ProfilForm({ profil }: Props) {
             min={0}
           />
         ) : null}
-        <FieldLabel label="Enfants au foyer" required>
+        <FieldLabel label="Enfants au foyer" required
+          highlight={aSignaler("enfants")}
+          anchor="champ-enfants">
           <SelectWrap
             value={data.enfants ?? null}
             options={ENFANTS_OPTIONS}
@@ -263,7 +285,9 @@ export default function ProfilForm({ profil }: Props) {
           value={data.travaille ?? null}
           onChange={(v) => update("travaille", v)}
         />
-        <FieldLabel label="Présence à la maison" required>
+        <FieldLabel label="Présence à la maison" required
+          highlight={aSignaler("presenceMaison")}
+          anchor="champ-presenceMaison">
           <SelectWrap
             value={data.presenceMaison ?? null}
             options={PRESENCE_OPTIONS}
@@ -309,7 +333,9 @@ export default function ProfilForm({ profil }: Props) {
         title="Mon logement"
         subtitle="Pour te proposer un chat adapté à ton cadre de vie."
       >
-        <FieldLabel label="Type de logement" required>
+        <FieldLabel label="Type de logement" required
+          highlight={aSignaler("typeLogement")}
+          anchor="champ-typeLogement">
           <SelectWrap
             value={data.typeLogement ?? null}
             options={TYPE_LOGEMENT_OPTIONS}
@@ -378,7 +404,9 @@ export default function ProfilForm({ profil }: Props) {
         title="Extérieur"
         subtitle="Pour vérifier que le chat serait en sécurité dehors."
       >
-        <FieldLabel label="Accès extérieur" required>
+        <FieldLabel label="Accès extérieur" required
+          highlight={aSignaler("accesExterieur")}
+          anchor="champ-accesExterieur">
           <SelectWrap
             value={data.accesExterieur ?? null}
             options={ACCES_OPTIONS}
@@ -437,7 +465,9 @@ export default function ProfilForm({ profil }: Props) {
         title="Mes animaux"
         subtitle="Pour vérifier les ententes possibles avec le chat."
       >
-        <FieldLabel label="Autres animaux" required>
+        <FieldLabel label="Autres animaux" required
+          highlight={aSignaler("autresAnimaux")}
+          anchor="champ-autresAnimaux">
           <SelectWrap
             value={data.autresAnimaux ?? null}
             options={ANIMAUX_OPTIONS}
@@ -445,7 +475,9 @@ export default function ProfilForm({ profil }: Props) {
             placeholder="Autres animaux"
           />
         </FieldLabel>
-        <FieldLabel label="Expérience avec les chats" required>
+        <FieldLabel label="Expérience avec les chats" required
+          highlight={aSignaler("experienceChats")}
+          anchor="champ-experienceChats">
           <SelectWrap
             value={data.experienceChats ?? null}
             options={EXPERIENCE_OPTIONS}
@@ -592,6 +624,8 @@ function FieldLabel({
   hint,
   full,
   required,
+  highlight,
+  anchor,
   children,
 }: {
   label: string;
@@ -599,10 +633,20 @@ function FieldLabel({
   full?: boolean;
   /** Champ du socle exigé pour envoyer une demande d'adoption. */
   required?: boolean;
+  /** Champ bloquant une demande : encadré et annoncé. */
+  highlight?: boolean;
+  anchor?: string;
   children: React.ReactNode;
 }) {
   return (
-    <label className={`block${full ? " sm:col-span-2" : ""}`}>
+    <label
+      id={anchor}
+      className={`block scroll-mt-24${full ? " sm:col-span-2" : ""}${
+        highlight
+          ? " -mx-3 rounded-xl bg-amber-50/70 px-3 py-2 ring-1 ring-amber-300"
+          : ""
+      }`}
+    >
       <span className="text-sm font-semibold text-text">
         {label}
         {required ? (
@@ -613,6 +657,11 @@ function FieldLabel({
       </span>
       {hint ? (
         <span className="ml-2 text-xs font-normal text-text-secondary">{hint}</span>
+      ) : null}
+      {highlight ? (
+        <span className="ml-2 text-xs font-semibold text-amber-800">
+          À compléter
+        </span>
       ) : null}
       {children}
     </label>
