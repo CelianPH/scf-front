@@ -4,6 +4,7 @@ import { getAuthToken } from "./cookies";
 import type {
   Benevole,
   Chat,
+  CompatibiliteResponse,
   DemandeAdoption,
   DemandeATraiter,
   ProfilAdoptant,
@@ -75,6 +76,30 @@ export async function getBenevoleMe(): Promise<{ data: Benevole | null }> {
     cache: "no-store",
   });
   if (!res.ok) return { data: null };
+  return res.json();
+}
+
+/**
+ * Compatibilité des chats adoptables pour l'adoptant connecté (page /matching).
+ * Sans token, on renvoie un profil « incomplet » vide plutôt qu'une erreur :
+ * la page redirige déjà les visiteurs via `requireUser`.
+ */
+export async function getCompatibilites(
+  slug?: string
+): Promise<CompatibiliteResponse> {
+  const token = await getAuthToken();
+  const vide: CompatibiliteResponse = {
+    data: [],
+    meta: { profilComplet: false, champsManquants: [] },
+  };
+  if (!token) return vide;
+
+  const qs = slug ? `?slug=${encodeURIComponent(slug)}` : "";
+  const res = await fetch(`${INTERNAL}/api/chats/compatibilite${qs}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: "no-store",
+  });
+  if (!res.ok) return vide;
   return res.json();
 }
 

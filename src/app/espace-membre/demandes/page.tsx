@@ -184,6 +184,18 @@ export default async function DemandesATraiterPage() {
                         </p>
                       </div>
 
+                      {d.justificationIncompatibilite ? (
+                        <div className="mt-3 rounded-lg bg-amber-50 p-3 ring-1 ring-amber-200">
+                          <p className="text-xs font-semibold uppercase tracking-wider text-amber-800">
+                            ⚠ Adoption malgré une incompatibilité — réponse de
+                            l&apos;adoptant
+                          </p>
+                          <p className="mt-1 whitespace-pre-line text-sm text-text">
+                            {d.justificationIncompatibilite}
+                          </p>
+                        </div>
+                      ) : null}
+
                       {profil ? (
                         <details className="group mt-3 rounded-lg bg-bg-alt p-3">
                           <summary className="flex cursor-pointer items-center justify-between text-xs font-semibold uppercase tracking-wider text-primary-dark">
