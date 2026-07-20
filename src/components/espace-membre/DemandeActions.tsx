@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowRight, Check, X, type LucideIcon } from "lucide-react";
 import type { DemandeStatut } from "@/types/strapi";
 
 interface DemandeActionsProps {
@@ -12,30 +13,34 @@ interface DemandeActionsProps {
 /** Transitions proposées selon l'état courant. Une demande close est figée. */
 const TRANSITIONS: Record<
   DemandeStatut,
-  { statut: DemandeStatut; label: string; style: string }[]
+  { statut: DemandeStatut; label: string; style: string; icon: LucideIcon }[]
 > = {
   en_attente: [
     {
       statut: "en_cours",
       label: "Prendre en charge",
-      style: "bg-primary text-white hover:bg-primary-dark",
+      style: "bg-primary text-white shadow-sm shadow-primary/25 hover:bg-primary-dark",
+      icon: ArrowRight,
     },
     {
       statut: "refusee",
       label: "Refuser",
       style: "bg-surface text-text ring-1 ring-border hover:bg-bg-alt",
+      icon: X,
     },
   ],
   en_cours: [
     {
       statut: "acceptee",
       label: "Accepter",
-      style: "bg-green-600 text-white hover:bg-green-700",
+      style: "bg-green-600 text-white shadow-sm shadow-green-600/25 hover:bg-green-700",
+      icon: Check,
     },
     {
       statut: "refusee",
       label: "Refuser",
       style: "bg-surface text-text ring-1 ring-border hover:bg-bg-alt",
+      icon: X,
     },
   ],
   acceptee: [],
@@ -105,7 +110,7 @@ export default function DemandeActions({
         onChange={(e) => setReponse(e.target.value)}
         rows={2}
         placeholder="Ex : on te propose une rencontre samedi après-midi."
-        className="mt-1.5 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+        className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text placeholder:text-text-muted transition focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
       />
 
       {erreur ? (
@@ -121,8 +126,9 @@ export default function DemandeActions({
             type="button"
             disabled={isPending || envoiEnCours}
             onClick={() => appliquer(t.statut)}
-            className={`rounded-full px-4 py-2 text-sm font-semibold transition disabled:opacity-60 ${t.style}`}
+            className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 ${t.style}`}
           >
+            <t.icon className="h-4 w-4" aria-hidden="true" />
             {t.label}
           </button>
         ))}
