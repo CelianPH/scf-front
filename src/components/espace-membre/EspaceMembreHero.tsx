@@ -96,9 +96,14 @@ export default function EspaceMembreHero({
                   duration: 0.4,
                   ease: "easeOut",
                 }}
-                className="rounded-2xl bg-white/15 p-4 text-center backdrop-blur-md ring-1 ring-white/20 md:p-5"
+                whileHover={{
+                  y: -4,
+                  scale: 1.03,
+                  transition: { duration: 0.2, ease: "easeOut" },
+                }}
+                className="group cursor-default rounded-2xl bg-white/15 p-4 text-center backdrop-blur-md ring-1 ring-white/20 transition-colors duration-200 hover:bg-white/25 hover:ring-white/40 hover:shadow-lg hover:shadow-primary-deep/25 md:p-5"
               >
-                <span className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-white">
+                <span className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-white transition duration-200 group-hover:scale-110 group-hover:bg-white/30">
                   <Icon className="h-4 w-4" aria-hidden="true" />
                 </span>
                 <dd className="mt-2 font-display text-3xl font-bold tabular-nums text-white md:text-4xl">
