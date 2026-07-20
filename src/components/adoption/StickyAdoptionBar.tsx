@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Heart, ExternalLink, X } from "lucide-react";
+import { Heart, ArrowRight, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 interface Props {
@@ -58,13 +58,12 @@ export default function StickyAdoptionBar({ catName, sexeLabel, age, adoptionUrl
           <div className="flex shrink-0 items-center gap-2">
             <Button
               href={adoptionUrl}
-              external
               variant="primary"
               size="sm"
               iconLeft={Heart}
-              iconRight={ExternalLink}
+              iconRight={ArrowRight}
             >
-              <span className="hidden sm:inline">Demande d&apos;adoption</span>
+              <span className="hidden sm:inline">Faire une demande</span>
               <span className="sm:hidden">Adopter</span>
             </Button>
             <button

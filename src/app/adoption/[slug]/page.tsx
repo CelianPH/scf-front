@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import DOMPurify from "isomorphic-dompurify";
 import {
   ArrowLeft,
-  ExternalLink,
+  ArrowRight,
   Heart,
   PawPrint,
   Sparkles,
@@ -16,11 +16,9 @@ import Footer from "@/components/layout/Footer";
 import ChatGallery from "@/components/adoption/ChatGallery";
 import Reveal from "@/components/layout/Reveal";
 import StickyAdoptionBar from "@/components/adoption/StickyAdoptionBar";
+import FavoriteButton from "@/components/adoption/FavoriteButton";
 import { Button } from "@/components/ui/Button";
 import { getChatBySlug, getStrapiMedia } from "@/lib/strapi";
-
-const ADOPTION_FORM_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLScsuZRgyy778u5XklovaF_hyGjdbl6ySO3GIA_uDByLN8OHVw/viewform";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -47,6 +45,7 @@ export default async function ChatDetailPage({ params }: PageProps) {
   const c = res.data;
   const sexeLabel = c.sexe === "Male" ? "Mâle" : "Femelle";
   const statusLabel = c.adopted ? "Adopté" : "Disponible";
+  const demandeUrl = `/adoption/${slug}/demande`;
   const referentPhotoUrl = c.referent?.photo
     ? getStrapiMedia(c.referent.photo.url)
     : null;
@@ -168,15 +167,15 @@ export default async function ChatDetailPage({ params }: PageProps) {
 
                     <div className="flex shrink-0 flex-col gap-2">
                       <Button
-                        href={ADOPTION_FORM_URL}
-                        external
+                        href={demandeUrl}
                         variant="primary"
                         size="sm"
                         iconLeft={Heart}
-                        iconRight={ExternalLink}
+                        iconRight={ArrowRight}
                       >
-                        Demande d&apos;adoption
+                        Faire une demande
                       </Button>
+                      <FavoriteButton slug={c.slug} catName={c.nom} fullWidth={false} />
                     </div>
                   </div>
                 )}
@@ -317,7 +316,7 @@ export default async function ChatDetailPage({ params }: PageProps) {
           catName={c.nom}
           sexeLabel={sexeLabel}
           age={c.age}
-          adoptionUrl={ADOPTION_FORM_URL}
+          adoptionUrl={demandeUrl}
         />
       )}
 

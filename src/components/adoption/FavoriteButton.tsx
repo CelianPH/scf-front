@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
 
 interface FavoriteButtonProps {
@@ -11,42 +12,86 @@ interface FavoriteButtonProps {
 
 const STORAGE_KEY = "scf:favorites";
 
-function read(): string[] {
+function readLocal(): string[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr.filter((x): x is string => typeof x === "string") : [];
+    return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
   }
 }
 
-function write(list: string[]) {
+function writeLocal(list: string[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  } catch {
-    /* quota or private mode — ignore */
-  }
+  } catch {}
 }
 
 export default function FavoriteButton({ slug, catName, fullWidth = true }: FavoriteButtonProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [active, setActive] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [authed, setAuthed] = useState<boolean | null>(null);
 
+  // Check auth + initial state
   useEffect(() => {
-    setActive(read().includes(slug));
-    setHydrated(true);
+    let cancelled = false;
+    (async () => {
+      const me = await fetch("/api/auth/me", { cache: "no-store" });
+      const isAuth = me.ok;
+      if (cancelled) return;
+      setAuthed(isAuth);
+
+      if (isAuth) {
+        // Source de vérité : DB. On compare localStorage et on sync.
+        const local = readLocal();
+        const dbRes = await fetch("/api/auth/favoris");
+        const dbData = await dbRes.json();
+        const dbSlugs: string[] = (dbData.data ?? []).map((c: any) => c.slug);
+
+        // Merge : si localStorage a des slugs non présents en DB, on les ajoute
+        const toAdd = local.filter((s) => !dbSlugs.includes(s));
+        for (const s of toAdd) {
+          await fetch("/api/auth/favoris", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chatSlug: s }),
+          });
+          dbSlugs.push(s);
+        }
+        writeLocal([]); // on vide le local après sync
+        setActive(dbSlugs.includes(slug));
+      } else {
+        // Non connecté : les favoris demandent une connexion, donc jamais coché.
+        // Le localStorage sert seulement de file d'attente migrée au login.
+        setActive(false);
+      }
+      setHydrated(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
-  function toggle() {
-    const list = read();
-    const next = list.includes(slug)
-      ? list.filter((s) => s !== slug)
-      : [...list, slug];
-    write(next);
-    setActive(next.includes(slug));
+  async function toggle() {
+    // Non connecté : on redirige vers la connexion, comme la demande d'adoption.
+    // Après login, l'effet ci-dessus persiste le favori en base.
+    if (!authed) {
+      const list = readLocal();
+      if (!list.includes(slug)) writeLocal([...list, slug]);
+      router.push(`/connexion?next=${encodeURIComponent(pathname)}`);
+      return;
+    }
+
+    const res = await fetch("/api/auth/favoris", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chatSlug: slug }),
+    });
+    const data = await res.json();
+    setActive(data.data?.active ?? !active);
   }
 
   return (
