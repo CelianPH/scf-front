@@ -105,12 +105,15 @@ export default function SwipeDeck({
         )}
       </div>
 
+      {/* Largeur de la carte : pleine largeur en mobile ; en desktop, pilotée
+          par la hauteur disponible (carte en 3/4) pour occuper l'écran sans
+          jamais déborder verticalement. */}
       <div
         ref={conteneur}
         tabIndex={0}
         role="group"
         aria-label="Cartes de chats à choisir. Flèche gauche pour passer, flèche droite pour choisir."
-        className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-sm flex-col items-center justify-center px-5 py-8 outline-none"
+        className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-sm flex-col items-center justify-center px-5 py-8 outline-none md:max-w-[min(30rem,calc((100vh-16rem)*0.75))]"
       >
         {/* Progression en points, jamais en chiffres */}
         <div className="mb-5 flex items-center gap-1.5" aria-hidden="true">
@@ -143,7 +146,6 @@ export default function SwipeDeck({
                   carte={carteActuelle}
                   rang={0}
                   interactif
-                  reduced={reduced}
                   onDecide={decider}
                 />
               </motion.div>
@@ -157,7 +159,6 @@ export default function SwipeDeck({
               carte={c}
               rang={i + 1}
               interactif={false}
-              reduced={reduced}
               onDecide={() => {}}
             />
           ))}
@@ -196,8 +197,6 @@ export default function SwipeDeck({
 
         <p className="mt-5 text-center text-xs text-white/50">
           {restants > 1 ? `Encore ${restants} chats à découvrir` : "Dernier chat !"}
-          <span className="mx-2 hidden sm:inline">·</span>
-          <span className="hidden sm:inline">← passer &nbsp; choisir →</span>
         </p>
 
         <p aria-live="polite" className="sr-only">

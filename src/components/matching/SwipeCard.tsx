@@ -16,9 +16,8 @@ interface Props {
   carte: CarteMatch;
   /** Rang dans la pile : 0 = carte du dessus (interactive). */
   rang: number;
-  /** Geste désactivé (reduced-motion) : seule la carte du dessus, sans drag. */
+  /** Seule la carte du dessus est interactive (drag + boutons de fiche). */
   interactif: boolean;
-  reduced: boolean;
   onDecide: (dir: 1 | -1) => void;
 }
 
@@ -34,7 +33,6 @@ export default function SwipeCard({
   carte,
   rang,
   interactif,
-  reduced,
   onDecide,
 }: Props) {
   const x = useMotionValue(0);
@@ -54,12 +52,22 @@ export default function SwipeCard({
 
   return (
     <motion.div
-      className="absolute inset-0"
-      style={dessus ? { x, rotate, touchAction: "pan-y" } : undefined}
+      className={`absolute inset-0 ${dessus && interactif ? "cursor-grab" : ""}`}
+      // z-index explicite : les cartes de fond sont rendues après la carte du
+      // dessus dans le DOM ; sans lui, elles peindraient par-dessus et
+      // intercepteraient le geste de drag.
+      style={
+        dessus
+          ? { x, rotate, touchAction: "pan-y", zIndex: 30 - rang * 10 }
+          : { zIndex: 30 - rang * 10 }
+      }
       initial={false}
       animate={{ y: offsetY, scale }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      drag={dessus && interactif && !reduced ? "x" : false}
+      // Le drag reste actif même en reduced-motion : un geste initié par
+      // l'utilisateur n'est pas une animation décorative. Seule l'animation
+      // de sortie est adoucie (fondu côté deck).
+      drag={dessus && interactif ? "x" : false}
       dragConstraints={{ left: 0, right: 0 }}
       dragElastic={0.9}
       onDragEnd={dessus ? handleDragEnd : undefined}
@@ -72,7 +80,7 @@ export default function SwipeCard({
             src={carte.imageUrl}
             alt={carte.imageAlt}
             fill
-            sizes="(min-width:640px) 24rem, 100vw"
+            sizes="(min-width:768px) 30rem, (min-width:640px) 24rem, 100vw"
             className="object-cover"
             draggable={false}
             priority={dessus}
