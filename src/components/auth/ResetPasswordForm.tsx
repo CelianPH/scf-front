@@ -37,6 +37,7 @@ export default function ResetPasswordForm() {
       return;
     }
     router.push("/compte");
+    router.refresh();
   }
 
   if (!code) {

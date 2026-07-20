@@ -29,6 +29,21 @@ export async function POST(req: Request) {
     );
   }
 
+  // On ne renvoie au client que les champs utiles (jamais l'objet Strapi brut)
+  const user = {
+    id: data.user?.id,
+    prenom: data.user?.prenom,
+    nom: data.user?.nom,
+    email: data.user?.email,
+    confirmed: data.user?.confirmed,
+  };
+
+  // Si la confirmation email est activée côté Strapi, il n'y a pas de jwt :
+  // le compte doit d'abord être confirmé via le lien reçu par email.
+  if (!data.jwt) {
+    return NextResponse.json({ user, loggedIn: false });
+  }
+
   await setAuthCookie(data.jwt);
-  return NextResponse.json({ user: data.user });
+  return NextResponse.json({ user, loggedIn: true });
 }

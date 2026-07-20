@@ -30,12 +30,19 @@ export default function RegisterForm() {
       body: JSON.stringify({ prenom, nom, email, password, cguAccepted: cgu }),
     });
     setLoading(false);
+    const data = await res.json();
     if (!res.ok) {
-      const { error: msg } = await res.json();
-      setError(msg ?? "Erreur d'inscription");
+      setError(data.error ?? "Erreur d'inscription");
       return;
     }
-    router.push("/inscription/verifier-email");
+    if (data.loggedIn) {
+      // Compte actif immédiatement : on est connecté, direction l'espace compte
+      router.push("/compte");
+      router.refresh();
+    } else {
+      // Confirmation email requise avant de pouvoir se connecter
+      router.push("/inscription/verifier-email");
+    }
   }
 
   return (
