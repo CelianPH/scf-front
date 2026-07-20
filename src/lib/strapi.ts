@@ -320,7 +320,10 @@ export async function getChats(opts: {
 } = {}): Promise<ChatsResponse> {
   const filters: Record<string, unknown> = {};
   if (opts.featured) filters.featured = { $eq: true };
-  if (!opts.includeAdopted) filters.adopted = { $eq: false };
+  // Par défaut on masque les chats qui ne sont plus à l'adoption.
+  if (!opts.includeAdopted) {
+    filters.statut = { $notIn: ["adopte", "reserve"] };
+  }
 
   const params = {
     filters,

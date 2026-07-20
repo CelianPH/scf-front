@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getAuthToken } from "./cookies";
-import type { AuthUser } from "@/types/strapi";
+import type { AuthUser, StrapiRole } from "@/types/strapi";
 
 const STRAPI = process.env.STRAPI_INTERNAL_URL ?? "http://localhost:1337";
 
@@ -23,8 +23,11 @@ export async function requireUser(redirectTo = "/connexion"): Promise<AuthUser> 
   return user;
 }
 
+/** Type du rôle « Membre de l'association » (cf. src/index.ts côté Strapi). */
+export const ROLE_MEMBRE: StrapiRole = "membre";
+
 export async function requireBenevole(): Promise<AuthUser> {
   const user = await requireUser();
-  if (user.role?.type !== ("benevole" as const)) redirect("/compte");
+  if (user.role?.type !== ROLE_MEMBRE) redirect("/compte");
   return user;
 }

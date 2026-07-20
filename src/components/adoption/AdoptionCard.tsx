@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Sparkles, PawPrint } from "lucide-react";
 import { getStrapiMedia } from "@/lib/strapi";
+import { estAdoptable, statutLabel } from "@/lib/chat-statut";
 import type { Chat } from "@/types/strapi";
 
 interface AdoptionCardProps {
@@ -11,7 +12,8 @@ interface AdoptionCardProps {
 export default function AdoptionCard({ chat }: AdoptionCardProps) {
   const sexeLabel = chat.sexe === "Male" ? "Mâle" : "Femelle";
   const imageUrl = getStrapiMedia(chat.image?.url) ?? "";
-  const statusLabel = chat.adopted ? "Adopté" : "Disponible";
+  const statusLabel = statutLabel(chat.statut);
+  const adoptable = estAdoptable(chat.statut);
 
   return (
     <Link
@@ -45,12 +47,12 @@ export default function AdoptionCard({ chat }: AdoptionCardProps) {
 
           <span
             className={`absolute right-3 top-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm ${
-              chat.adopted
-                ? "bg-text-muted text-white"
-                : "bg-white text-primary ring-1 ring-primary/10"
+              adoptable
+                ? "bg-white text-primary ring-1 ring-primary/10"
+                : "bg-text-muted text-white"
             }`}
           >
-            {!chat.adopted && (
+            {adoptable && (
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inset-0 animate-ping rounded-full bg-primary opacity-60 motion-reduce:hidden" />
                 <span className="relative h-1.5 w-1.5 rounded-full bg-primary" />

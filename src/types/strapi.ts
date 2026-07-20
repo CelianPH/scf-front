@@ -170,6 +170,23 @@ export interface Benevole {
   publishedAt: string | null;
 }
 
+/** Statut du chat dans le parcours d'adoption. */
+export type ChatStatut =
+  | "en_refuge"
+  | "famille_accueil"
+  | "en_soins"
+  | "reserve"
+  | "adopte";
+
+/** Entente constatée avec une espèce ou un public. */
+export type Entente = "ok" | "pas_ok" | "inconnu";
+
+/** Besoin d'accès extérieur du chat. */
+export type BesoinExterieur =
+  | "indifferent"
+  | "interieur_strict"
+  | "acces_exterieur_requis";
+
 export interface Chat {
   id: number;
   documentId: string;
@@ -184,9 +201,21 @@ export interface Chat {
   caracteres: string[] | null;
   infos: ChatInfoPratique[] | null;
   referent: Benevole | null;
+  referentsBackup: Benevole[] | null;
   badge: string | null;
   featured: boolean;
-  adopted: boolean;
+  statut: ChatStatut;
+  dateNaissance: string | null;
+  vaccine: boolean;
+  sterilise: boolean;
+  identifie: boolean;
+  deparasite: boolean;
+  fraisAdoption: number | null;
+  ententeChiens: Entente;
+  ententeChats: Entente;
+  ententeEnfants: Entente;
+  niveauEnergie: number;
+  besoinExterieur: BesoinExterieur;
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
@@ -579,7 +608,12 @@ export interface SiteSettings {
 
 // ---------- Auth & user ----------
 
-export type StrapiRole = "public" | "authenticated" | "benevole";
+/**
+ * Rôles users-permissions.
+ * - `authenticated` : adoptant (rôle attribué à l'inscription)
+ * - `membre` : membre de l'association, traite les demandes d'adoption
+ */
+export type StrapiRole = "public" | "authenticated" | "membre";
 
 export interface AuthUser {
   id: number;

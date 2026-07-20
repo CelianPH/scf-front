@@ -11,6 +11,7 @@ import {
   Sparkles,
   UserPlus,
 } from "lucide-react";
+import { estAdoptable, statutLabel } from "@/lib/chat-statut";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ChatGallery from "@/components/adoption/ChatGallery";
@@ -44,7 +45,8 @@ export default async function ChatDetailPage({ params }: PageProps) {
 
   const c = res.data;
   const sexeLabel = c.sexe === "Male" ? "Mâle" : "Femelle";
-  const statusLabel = c.adopted ? "Adopté" : "Disponible";
+  const statusLabel = statutLabel(c.statut);
+  const adoptable = estAdoptable(c.statut);
   const demandeUrl = `/adoption/${slug}/demande`;
   const referentPhotoUrl = c.referent?.photo
     ? getStrapiMedia(c.referent.photo.url)
@@ -88,12 +90,12 @@ export default async function ChatDetailPage({ params }: PageProps) {
 
               <span
                 className={`inline-flex shrink-0 items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold ${
-                  c.adopted
-                    ? "bg-white/15 text-white/80"
-                    : "bg-white text-primary shadow-sm"
+                  adoptable
+                    ? "bg-white text-primary shadow-sm"
+                    : "bg-white/15 text-white/80"
                 }`}
               >
-                {!c.adopted && (
+                {adoptable && (
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inset-0 animate-ping rounded-full bg-primary opacity-60 motion-reduce:hidden" />
                     <span className="relative h-2 w-2 rounded-full bg-primary" />
@@ -117,7 +119,7 @@ export default async function ChatDetailPage({ params }: PageProps) {
             {/* Bloc adoption inline */}
             <Reveal delay={80}>
               <div id="adoption-cta" className="mt-6 rounded-2xl bg-primary-50 p-5 ring-1 ring-primary/15 md:p-6">
-                {c.adopted ? (
+                {!adoptable ? (
                   <>
                     <p className="font-display text-lg font-bold text-text">
                       {c.nom} a trouvé son foyer
@@ -311,7 +313,7 @@ export default async function ChatDetailPage({ params }: PageProps) {
         </section>
       </main>
 
-      {!c.adopted && (
+      {adoptable && (
         <StickyAdoptionBar
           catName={c.nom}
           sexeLabel={sexeLabel}
