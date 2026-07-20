@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Heart } from "lucide-react";
-import AdoptionCard from "@/components/AdoptionCard";
+import AdoptionCard from "@/components/adoption/AdoptionCard";
 import { getMesFavoris } from "@/lib/strapi-server";
 
 export default async function FavorisPage() {

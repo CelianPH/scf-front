@@ -274,9 +274,10 @@ export async function getDonPage(): Promise<DonPageResponse> {
 export async function getAdoptionPage(): Promise<AdoptionPageResponse> {
   const params = {
     populate: {
-      hero: {
-        populate: { image: { fields: mediaFields } },
-      },
+      // Le composant backend `adoption.hero` n'a pas de champ media : on
+      // peuple ses champs scalaires uniquement. AdoptionHero retombe sur son
+      // image statique de secours. (Peupler `image` ici renvoie un 400 Strapi.)
+      hero: true,
       matchingCta: {
         populate: { cta: ctaPopulate },
       },
