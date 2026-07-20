@@ -6,7 +6,6 @@ import QuiSommesNous from "@/components/home/QuiSommesNous";
 import DistributionBandeau from "@/components/home/DistributionBandeau";
 import GesteCompte from "@/components/home/GesteCompte";
 import ActualitesSection from "@/components/home/ActualitesSection";
-import CtaFinal from "@/components/home/CtaFinal";
 import Footer from "@/components/layout/Footer";
 import { getHomePage } from "@/lib/strapi";
 
@@ -28,7 +27,6 @@ export default async function Home() {
         {home.actualitesBlock ? (
           <ActualitesSection data={home.actualitesBlock} />
         ) : null}
-        {home.ctaFinal ? <CtaFinal data={home.ctaFinal} /> : null}
       </main>
       <Footer />
     </>
