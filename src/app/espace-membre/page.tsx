@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { Inbox, Cat, ArrowRight } from "lucide-react";
+import { Inbox, Cat, CalendarOff, ArrowRight } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
-import { getDemandesATraiter } from "@/lib/strapi-server";
+import { getBenevoleMe, getDemandesATraiter } from "@/lib/strapi-server";
 
 export default async function EspaceMembrePage() {
-  const [user, { data: demandes }] = await Promise.all([
+  const [user, { data: demandes }, { data: benevole }] = await Promise.all([
     getCurrentUser(),
     getDemandesATraiter(),
+    getBenevoleMe(),
   ]);
 
   const enAttente = demandes.filter((d) => d.statut === "en_attente").length;
@@ -24,6 +25,20 @@ export default async function EspaceMembrePage() {
       <p className="mt-2 text-text-secondary">
         Retrouve ici les demandes d&apos;adoption dont tu as la charge.
       </p>
+
+      {benevole?.absent ? (
+        <p className="mt-4 flex items-center gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-900 ring-1 ring-amber-200">
+          <CalendarOff className="h-4 w-4 shrink-0" />
+          Tu es déclaré·e absent·e : tes demandes sont redirigées vers tes
+          référent·es de secours.{" "}
+          <Link
+            href="/espace-membre/absence"
+            className="font-semibold underline"
+          >
+            Gérer
+          </Link>
+        </p>
+      ) : null}
 
       <dl className="mt-8 grid grid-cols-3 gap-3">
         {[
@@ -58,6 +73,24 @@ export default async function EspaceMembrePage() {
             </span>
             <span className="mt-0.5 block text-sm text-text-secondary">
               Prendre en charge, accepter ou refuser une demande.
+            </span>
+          </span>
+        </Link>
+
+        <Link
+          href="/espace-membre/absence"
+          className="group flex items-start gap-3 rounded-2xl bg-surface p-5 ring-1 ring-border transition hover:ring-primary"
+        >
+          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary">
+            <CalendarOff className="h-5 w-5" />
+          </span>
+          <span className="min-w-0">
+            <span className="flex items-center gap-1 font-display text-lg font-bold text-text">
+              Mes absences
+              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            </span>
+            <span className="mt-0.5 block text-sm text-text-secondary">
+              Signaler une indisponibilité et passer la main aux backups.
             </span>
           </span>
         </Link>

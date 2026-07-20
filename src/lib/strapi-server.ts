@@ -2,6 +2,7 @@ import "server-only";
 
 import { getAuthToken } from "./cookies";
 import type {
+  Benevole,
   Chat,
   DemandeAdoption,
   DemandeATraiter,
@@ -62,6 +63,18 @@ export async function getDemandesATraiter(): Promise<{
     cache: "no-store",
   });
   if (!res.ok) throw new Error(`getDemandesATraiter: ${res.status}`);
+  return res.json();
+}
+
+/** Fiche bénévole du membre connecté (chats suivis, état d'absence). */
+export async function getBenevoleMe(): Promise<{ data: Benevole | null }> {
+  const token = await getAuthToken();
+  if (!token) throw new Error("Auth required");
+  const res = await fetch(`${INTERNAL}/api/benevoles/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: "no-store",
+  });
+  if (!res.ok) return { data: null };
   return res.json();
 }
 

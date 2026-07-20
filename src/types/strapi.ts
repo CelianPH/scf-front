@@ -165,6 +165,12 @@ export interface Benevole {
   bio: string | null;
   email: string | null;
   actif: boolean;
+  absent: boolean;
+  absenceDebut: string | null;
+  absenceFin: string | null;
+  absenceMotif: string | null;
+  chats?: Chat[];
+  chatsEnBackup?: Chat[];
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;

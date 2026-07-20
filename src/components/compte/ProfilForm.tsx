@@ -7,13 +7,16 @@ import { DatePicker } from "@/components/ui/DatePicker";
 import type {
   AccesExterieur,
   AutresAnimaux,
+  CompositionFoyer,
   Enfants,
   ExperienceChats,
+  LieuVieAnimal,
   PrefAge,
   PrefSexe,
   PresenceMaison,
   ProfilAdoptant,
   TypeLogement,
+  TypeZone,
 } from "@/types/strapi";
 
 const TYPE_LOGEMENT_OPTIONS: SelectOption<TypeLogement>[] = [
@@ -62,6 +65,24 @@ const PREF_SEXE_OPTIONS: SelectOption<PrefSexe>[] = [
   { value: "femelle", label: "Femelle" },
   { value: "male", label: "Mâle" },
 ];
+const COMPOSITION_FOYER_OPTIONS: SelectOption<CompositionFoyer>[] = [
+  { value: "seul", label: "Je vis seul(e)" },
+  { value: "couple", label: "En couple" },
+  { value: "colocation", label: "En colocation" },
+  { value: "autre", label: "Autre situation" },
+];
+const LIEU_VIE_OPTIONS: SelectOption<LieuVieAnimal>[] = [
+  { value: "interieur", label: "Uniquement à l'intérieur" },
+  { value: "exterieur", label: "Uniquement à l'extérieur" },
+  { value: "les_deux", label: "Les deux" },
+  { value: "autre", label: "Autre" },
+];
+const TYPE_ZONE_OPTIONS: SelectOption<TypeZone>[] = [
+  { value: "ville", label: "En ville" },
+  { value: "campagne", label: "À la campagne" },
+  { value: "lotissement", label: "En lotissement" },
+  { value: "autre", label: "Autre" },
+];
 
 interface Props {
   profil: ProfilAdoptant;
@@ -69,6 +90,7 @@ interface Props {
 
 const inputCls =
   "mt-1 w-full rounded-md border border-border bg-surface px-4 py-2.5 text-base text-text outline-none focus:border-primary";
+const textareaCls = `${inputCls} min-h-[96px] resize-y`;
 
 export default function ProfilForm({ profil }: Props) {
   const router = useRouter();
@@ -94,9 +116,24 @@ export default function ProfilForm({ profil }: Props) {
     router.refresh();
   }
 
+  // --- Conditions d'affichage ---
+  const enAppartement =
+    data.typeLogement === "appartement" || data.typeLogement === "studio";
+  const aUnJardin = data.accesExterieur === "jardin";
+  const aUnBalcon = data.accesExterieur === "balcon";
+  const enColocation = data.compositionFoyer === "colocation";
+  const aDesEnfants = data.enfants != null && data.enfants !== "aucun";
+  const foyerEnDesaccord = data.foyerDaccord === false;
+  const travailleActuellement = data.travaille === true;
+  const aDautresAnimaux =
+    data.autresAnimaux != null && data.autresAnimaux !== "aucun";
+
   return (
     <form onSubmit={onSubmit} className="space-y-10">
-      <Section title="Coordonnées" subtitle="Pour qu'on puisse te contacter au sujet d'une demande.">
+      <Section
+        title="Coordonnées"
+        subtitle="Pour qu'on puisse te contacter au sujet d'une demande."
+      >
         <FieldLabel label="Téléphone">
           <input
             type="tel"
@@ -133,25 +170,92 @@ export default function ProfilForm({ profil }: Props) {
             autoComplete="postal-code"
           />
         </FieldLabel>
+        <FieldLabel label="Adresse postale" full>
+          <textarea
+            value={data.adressePostale ?? ""}
+            onChange={(e) => update("adressePostale", e.target.value || null)}
+            className={textareaCls}
+            autoComplete="street-address"
+            placeholder="Numéro, rue, complément d'adresse…"
+          />
+        </FieldLabel>
       </Section>
 
-      <Section title="Mon logement" subtitle="Pour te proposer un chat adapté à ton cadre de vie.">
-        <FieldLabel label="Type de logement">
+      <Section
+        title="Mon foyer"
+        subtitle="Adopter, c'est une décision de toute la maison."
+      >
+        <FieldLabel label="Composition du foyer">
           <SelectWrap
-            value={data.typeLogement ?? null}
-            options={TYPE_LOGEMENT_OPTIONS}
-            onChange={(v) => update("typeLogement", v)}
-            placeholder="Type de logement"
+            value={data.compositionFoyer ?? null}
+            options={COMPOSITION_FOYER_OPTIONS}
+            onChange={(v) => update("compositionFoyer", v)}
+            placeholder="Composition du foyer"
           />
         </FieldLabel>
-        <FieldLabel label="Accès extérieur">
+        {enColocation ? (
+          <NumberField
+            label="Nombre de colocataires"
+            value={data.nbColocataires ?? null}
+            onChange={(v) => update("nbColocataires", v)}
+            min={0}
+          />
+        ) : null}
+        <FieldLabel label="Enfants au foyer">
           <SelectWrap
-            value={data.accesExterieur ?? null}
-            options={ACCES_OPTIONS}
-            onChange={(v) => update("accesExterieur", v)}
-            placeholder="Accès extérieur"
+            value={data.enfants ?? null}
+            options={ENFANTS_OPTIONS}
+            onChange={(v) => update("enfants", v)}
+            placeholder="Enfants"
           />
         </FieldLabel>
+        {aDesEnfants ? (
+          <>
+            <NumberField
+              label="Nombre d'enfants"
+              value={data.nbEnfants ?? null}
+              onChange={(v) => update("nbEnfants", v)}
+              min={0}
+            />
+            <FieldLabel label="Âges des enfants">
+              <input
+                type="text"
+                value={data.agesEnfants ?? ""}
+                onChange={(e) => update("agesEnfants", e.target.value || null)}
+                className={inputCls}
+                placeholder="Ex. 4 ans et 9 ans"
+              />
+            </FieldLabel>
+          </>
+        ) : null}
+        <BooleanField
+          label="Tout le foyer est d'accord pour adopter"
+          value={data.foyerDaccord ?? null}
+          onChange={(v) => update("foyerDaccord", v)}
+        />
+        {foyerEnDesaccord ? (
+          <FieldLabel label="Peux-tu nous en dire plus ?" full>
+            <textarea
+              value={data.foyerDesaccordDetail ?? ""}
+              onChange={(e) =>
+                update("foyerDesaccordDetail", e.target.value || null)
+              }
+              className={textareaCls}
+              placeholder="Qui n'est pas d'accord, et pourquoi ?"
+            />
+          </FieldLabel>
+        ) : null}
+      </Section>
+
+      <Section
+        title="Mon quotidien"
+        subtitle="Pour savoir combien de temps le chat passerait seul."
+      >
+        <BooleanField
+          label="Je travaille actuellement"
+          value={data.travaille ?? null}
+          onChange={(v) => update("travaille", v)}
+        />
         <FieldLabel label="Présence à la maison">
           <SelectWrap
             value={data.presenceMaison ?? null}
@@ -160,23 +264,178 @@ export default function ProfilForm({ profil }: Props) {
             placeholder="Présence à la maison"
           />
         </FieldLabel>
+        {travailleActuellement ? (
+          <>
+            <FieldLabel label="Profession">
+              <input
+                type="text"
+                value={data.profession ?? ""}
+                onChange={(e) => update("profession", e.target.value || null)}
+                className={inputCls}
+                autoComplete="organization-title"
+              />
+            </FieldLabel>
+            <FieldLabel label="Horaires de travail">
+              <input
+                type="text"
+                value={data.horairesTravail ?? ""}
+                onChange={(e) =>
+                  update("horairesTravail", e.target.value || null)
+                }
+                className={inputCls}
+                placeholder="Ex. 9h-17h du lundi au vendredi"
+              />
+            </FieldLabel>
+          </>
+        ) : null}
+        <NumberField
+          label="Heures seul par jour (estimation)"
+          value={data.heuresSeulParJour ?? null}
+          onChange={(v) => update("heuresSeulParJour", v)}
+          min={0}
+          max={24}
+          suffix="h"
+        />
       </Section>
 
-      <Section title="Mon foyer" subtitle="Pour vérifier les ententes possibles avec le chat.">
+      <Section
+        title="Mon logement"
+        subtitle="Pour te proposer un chat adapté à ton cadre de vie."
+      >
+        <FieldLabel label="Type de logement">
+          <SelectWrap
+            value={data.typeLogement ?? null}
+            options={TYPE_LOGEMENT_OPTIONS}
+            onChange={(v) => update("typeLogement", v)}
+            placeholder="Type de logement"
+          />
+        </FieldLabel>
+        <NumberField
+          label="Superficie du logement"
+          value={data.superficieLogement ?? null}
+          onChange={(v) => update("superficieLogement", v)}
+          min={0}
+          suffix="m²"
+        />
+        <FieldLabel label="Type de zone">
+          <SelectWrap
+            value={data.typeZone ?? null}
+            options={TYPE_ZONE_OPTIONS}
+            onChange={(v) => update("typeZone", v)}
+            placeholder="Type de zone"
+          />
+        </FieldLabel>
+        <FieldLabel label="Où vivrait le chat ?">
+          <SelectWrap
+            value={data.lieuVieAnimal ?? null}
+            options={LIEU_VIE_OPTIONS}
+            onChange={(v) => update("lieuVieAnimal", v)}
+            placeholder="Lieu de vie du chat"
+          />
+        </FieldLabel>
+        <BooleanField
+          label="Une route passante est proche du logement"
+          value={data.proximiteRoutePassante ?? null}
+          onChange={(v) => update("proximiteRoutePassante", v)}
+        />
+        <BooleanField
+          label="Le chat pourrait sortir librement"
+          value={data.sortiesAutorisees ?? null}
+          onChange={(v) => update("sortiesAutorisees", v)}
+        />
+        {enAppartement ? (
+          <>
+            <NumberField
+              label="Étage"
+              value={data.etage ?? null}
+              onChange={(v) => update("etage", v)}
+              min={0}
+            />
+            <BooleanField
+              label="Les fenêtres sont sécurisées"
+              value={data.fenetresSecurisees ?? null}
+              onChange={(v) => update("fenetresSecurisees", v)}
+            />
+            {data.fenetresSecurisees !== true ? (
+              <BooleanField
+                label="J'envisage de sécuriser les fenêtres"
+                value={data.envisageSecuriserFenetres ?? null}
+                onChange={(v) => update("envisageSecuriserFenetres", v)}
+              />
+            ) : null}
+          </>
+        ) : null}
+      </Section>
+
+      <Section
+        title="Extérieur"
+        subtitle="Pour vérifier que le chat serait en sécurité dehors."
+      >
+        <FieldLabel label="Accès extérieur">
+          <SelectWrap
+            value={data.accesExterieur ?? null}
+            options={ACCES_OPTIONS}
+            onChange={(v) => update("accesExterieur", v)}
+            placeholder="Accès extérieur"
+          />
+        </FieldLabel>
+        {aUnJardin ? (
+          <>
+            <NumberField
+              label="Superficie du jardin"
+              value={data.superficieJardin ?? null}
+              onChange={(v) => update("superficieJardin", v)}
+              min={0}
+              suffix="m²"
+            />
+            <BooleanField
+              label="Le jardin est grillagé"
+              value={data.jardinGrillage ?? null}
+              onChange={(v) => update("jardinGrillage", v)}
+            />
+            {data.jardinGrillage === true ? (
+              <FieldLabel label="Hauteur du grillage">
+                <input
+                  type="text"
+                  value={data.hauteurGrillage ?? ""}
+                  onChange={(e) =>
+                    update("hauteurGrillage", e.target.value || null)
+                  }
+                  className={inputCls}
+                  placeholder="Ex. 1,80 m"
+                />
+              </FieldLabel>
+            ) : null}
+          </>
+        ) : null}
+        {aUnBalcon ? (
+          <>
+            <NumberField
+              label="Superficie du balcon"
+              value={data.superficieBalcon ?? null}
+              onChange={(v) => update("superficieBalcon", v)}
+              min={0}
+              suffix="m²"
+            />
+            <BooleanField
+              label="Le balcon est sécurisé (filet, grillage…)"
+              value={data.balconSecurise ?? null}
+              onChange={(v) => update("balconSecurise", v)}
+            />
+          </>
+        ) : null}
+      </Section>
+
+      <Section
+        title="Mes animaux"
+        subtitle="Pour vérifier les ententes possibles avec le chat."
+      >
         <FieldLabel label="Autres animaux">
           <SelectWrap
             value={data.autresAnimaux ?? null}
             options={ANIMAUX_OPTIONS}
             onChange={(v) => update("autresAnimaux", v)}
             placeholder="Autres animaux"
-          />
-        </FieldLabel>
-        <FieldLabel label="Enfants au foyer">
-          <SelectWrap
-            value={data.enfants ?? null}
-            options={ENFANTS_OPTIONS}
-            onChange={(v) => update("enfants", v)}
-            placeholder="Enfants"
           />
         </FieldLabel>
         <FieldLabel label="Expérience avec les chats">
@@ -187,9 +446,42 @@ export default function ProfilForm({ profil }: Props) {
             placeholder="Expérience"
           />
         </FieldLabel>
+        {aDautresAnimaux ? (
+          <>
+            <FieldLabel label="Parle-nous de tes animaux" full>
+              <textarea
+                value={data.autresAnimauxDetail ?? ""}
+                onChange={(e) =>
+                  update("autresAnimauxDetail", e.target.value || null)
+                }
+                className={textareaCls}
+                placeholder="Espèce, âge, caractère, entente avec les chats…"
+              />
+            </FieldLabel>
+            <FieldLabel label="Depuis quand les as-tu ?">
+              <input
+                type="text"
+                value={data.autresAnimauxDepuis ?? ""}
+                onChange={(e) =>
+                  update("autresAnimauxDepuis", e.target.value || null)
+                }
+                className={inputCls}
+                placeholder="Ex. depuis 3 ans"
+              />
+            </FieldLabel>
+            <BooleanField
+              label="Ils sont tous stérilisés"
+              value={data.autresAnimauxSterilises ?? null}
+              onChange={(v) => update("autresAnimauxSterilises", v)}
+            />
+          </>
+        ) : null}
       </Section>
 
-      <Section title="Mes préférences" subtitle="Optionnel — utilisé pour le matching intelligent.">
+      <Section
+        title="Mes préférences"
+        subtitle="Optionnel — utilisé pour le matching intelligent."
+      >
         <FieldLabel label="Âge préféré">
           <SelectWrap
             value={data.prefAge ?? null}
@@ -204,6 +496,52 @@ export default function ProfilForm({ profil }: Props) {
             options={PREF_SEXE_OPTIONS}
             onChange={(v) => update("prefSexe", v)}
             placeholder="Sexe préféré"
+          />
+        </FieldLabel>
+        <FieldLabel
+          label="Caractères recherchés"
+          hint="Sépare-les par des virgules."
+          full
+        >
+          <input
+            type="text"
+            value={(data.prefCaracteres ?? []).join(", ")}
+            onChange={(e) => {
+              const liste = e.target.value
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean);
+              update("prefCaracteres", liste.length ? liste : null);
+            }}
+            className={inputCls}
+            placeholder="Ex. câlin, joueur, calme"
+          />
+        </FieldLabel>
+      </Section>
+
+      <Section
+        title="Pour finir"
+        subtitle="Tout ce que tu veux nous dire et qui n'entre pas dans les cases."
+      >
+        <FieldLabel label="Remarques" full>
+          <textarea
+            value={data.remarques ?? ""}
+            onChange={(e) => update("remarques", e.target.value || null)}
+            className={textareaCls}
+            placeholder="Une question, un contexte particulier…"
+          />
+        </FieldLabel>
+        <FieldLabel
+          label="Notes personnelles"
+          hint="Visible uniquement par toi."
+          full
+        >
+          <textarea
+            value={data.notesPersonnelles ?? ""}
+            onChange={(e) =>
+              update("notesPersonnelles", e.target.value || null)
+            }
+            className={textareaCls}
           />
         </FieldLabel>
       </Section>
@@ -242,12 +580,120 @@ function Section({
   );
 }
 
-function FieldLabel({ label, children }: { label: string; children: React.ReactNode }) {
+function FieldLabel({
+  label,
+  hint,
+  full,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  full?: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <label className="block">
+    <label className={`block${full ? " sm:col-span-2" : ""}`}>
       <span className="text-sm font-semibold text-text">{label}</span>
+      {hint ? (
+        <span className="ml-2 text-xs font-normal text-text-secondary">{hint}</span>
+      ) : null}
       {children}
     </label>
+  );
+}
+
+/** Champ numérique tolérant le vide (valeur non renseignée = null). */
+function NumberField({
+  label,
+  value,
+  onChange,
+  min,
+  max,
+  suffix,
+  full,
+}: {
+  label: string;
+  value: number | null;
+  onChange: (v: number | null) => void;
+  min?: number;
+  max?: number;
+  suffix?: string;
+  full?: boolean;
+}) {
+  return (
+    <FieldLabel label={label} full={full}>
+      <div className="relative">
+        <input
+          type="number"
+          inputMode="numeric"
+          min={min}
+          max={max}
+          value={value ?? ""}
+          onChange={(e) => {
+            const raw = e.target.value;
+            if (raw === "") return onChange(null);
+            const n = Number(raw);
+            onChange(Number.isNaN(n) ? null : n);
+          }}
+          className={`${inputCls}${suffix ? " pr-12" : ""}`}
+        />
+        {suffix ? (
+          <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center pt-1 text-sm text-text-secondary">
+            {suffix}
+          </span>
+        ) : null}
+      </div>
+    </FieldLabel>
+  );
+}
+
+/**
+ * Booléen à trois états : Oui / Non / non renseigné.
+ * Recliquer sur l'option active la désélectionne (retour à null).
+ */
+function BooleanField({
+  label,
+  value,
+  onChange,
+  full,
+}: {
+  label: string;
+  value: boolean | null;
+  onChange: (v: boolean | null) => void;
+  full?: boolean;
+}) {
+  return (
+    <div className={`block${full ? " sm:col-span-2" : ""}`}>
+      <span className="text-sm font-semibold text-text">{label}</span>
+      <div role="group" aria-label={label} className="mt-1 flex gap-2">
+        {[
+          { v: true, l: "Oui" },
+          { v: false, l: "Non" },
+        ].map(({ v, l }) => {
+          const active = value === v;
+          return (
+            <button
+              key={l}
+              type="button"
+              aria-pressed={active}
+              onClick={() => onChange(active ? null : v)}
+              className={
+                active
+                  ? "rounded-md border border-primary bg-primary/10 px-5 py-2.5 text-sm font-semibold text-primary"
+                  : "rounded-md border border-border bg-surface px-5 py-2.5 text-sm font-medium text-text-secondary hover:border-primary/50"
+              }
+            >
+              {l}
+            </button>
+          );
+        })}
+        {value === null ? (
+          <span className="self-center text-xs text-text-secondary">
+            Non renseigné
+          </span>
+        ) : null}
+      </div>
+    </div>
   );
 }
 
