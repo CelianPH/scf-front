@@ -99,6 +99,7 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
   const [data, setData] = useState<Partial<ProfilAdoptant>>(profil);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [erreur, setErreur] = useState<string | null>(null);
 
   /**
    * Un champ signalé reste en évidence tant qu'il est vide : le surlignage
@@ -110,22 +111,92 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
     return v === null || v === undefined || v === "";
   };
 
+  /**
+   * Vide les champs que le formulaire n'affiche plus.
+   *
+   * Passer de « maison avec jardin » à « appartement » masque les questions sur
+   * le jardin, mais leurs valeurs restaient dans l'état et repartaient au
+   * serveur : le dossier transmis au bénévole annonçait un grillage de 1,80 m
+   * pour quelqu'un vivant en appartement. On renvoie explicitement `null` pour
+   * effacer la valeur enregistrée précédemment.
+   */
+  function nettoyerChampsSansObjet(d: Partial<ProfilAdoptant>) {
+    const enAppart =
+      d.typeLogement === "appartement" || d.typeLogement === "studio";
+    const groupes: [boolean, (keyof ProfilAdoptant)[]][] = [
+      [d.compositionFoyer !== "colocation", ["nbColocataires"]],
+      [
+        d.enfants == null || d.enfants === "aucun",
+        ["nbEnfants", "agesEnfants"],
+      ],
+      [d.foyerDaccord !== false, ["foyerDesaccordDetail"]],
+      [d.travaille !== true, ["profession", "horairesTravail"]],
+      [
+        !enAppart,
+        ["etage", "fenetresSecurisees", "envisageSecuriserFenetres"],
+      ],
+      [
+        d.accesExterieur !== "jardin",
+        ["superficieJardin", "jardinGrillage", "hauteurGrillage"],
+      ],
+      [
+        d.accesExterieur !== "balcon",
+        ["superficieBalcon", "balconSecurise"],
+      ],
+      [
+        d.autresAnimaux == null || d.autresAnimaux === "aucun",
+        ["autresAnimauxDetail", "autresAnimauxDepuis", "autresAnimauxSterilises"],
+      ],
+    ];
+
+    const nettoye = { ...d };
+    for (const [sansObjet, cles] of groupes) {
+      if (!sansObjet) continue;
+      for (const cle of cles) nettoye[cle] = null as never;
+    }
+    return nettoye;
+  }
+
   function update<K extends keyof ProfilAdoptant>(key: K, value: ProfilAdoptant[K]) {
     setData((d) => ({ ...d, [key]: value }));
     setSaved(false);
+    setErreur(null);
   }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (saving) return;
+
     setSaving(true);
-    await fetch("/api/compte/profil", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    setSaving(false);
-    setSaved(true);
-    router.refresh();
+    setErreur(null);
+
+    try {
+      const res = await fetch("/api/compte/profil", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nettoyerChampsSansObjet(data)),
+      });
+
+      // Sans ce test, une session expirée ou une erreur serveur affichait
+      // « ✓ Enregistré » alors que rien n'avait été sauvegardé.
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        setErreur(
+          res.status === 401
+            ? "Ta session a expiré. Reconnecte-toi pour enregistrer."
+            : body?.error?.message ??
+                "Ton profil n'a pas pu être enregistré. Réessaie."
+        );
+        return;
+      }
+
+      setSaved(true);
+      router.refresh();
+    } catch {
+      setErreur("Connexion impossible. Vérifie ta connexion et réessaie.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   // --- Conditions d'affichage ---
@@ -586,7 +657,12 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
       </Section>
 
       <div className="sticky bottom-4 flex items-center justify-end gap-3 rounded-xl bg-surface px-5 py-4 shadow-lg ring-1 ring-border">
-        {saved ? (
+        {erreur ? (
+          <p role="alert" className="mr-auto text-sm text-red-700">
+            {erreur}
+          </p>
+        ) : null}
+        {saved && !erreur ? (
           <span className="text-sm font-medium text-primary">✓ Enregistré</span>
         ) : null}
         <button
