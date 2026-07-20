@@ -9,30 +9,33 @@ export default async function AbsencePage() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-bg to-secondary-50">
+      <section className="relative isolate overflow-hidden bg-gradient-to-br from-secondary via-primary to-primary-vif">
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,rgba(194,24,91,0.08),transparent_55%)]"
-        />
-        <div className="mx-auto max-w-2xl px-5 pt-10 pb-8 md:px-8 md:pt-14">
+          className="pointer-events-none absolute inset-0 -z-10"
+        >
+          <div className="absolute -left-16 -top-20 h-64 w-64 rounded-full bg-primary-accent/40 blur-3xl" />
+          <div className="absolute -right-14 bottom-[-3rem] h-56 w-56 rounded-full bg-secondary-light/35 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-2xl px-5 pt-10 pb-8 md:px-8 md:pt-14">
           <Reveal>
             <Link
               href="/espace-membre"
-              className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1.5 text-sm font-medium text-text-secondary backdrop-blur-sm transition hover:text-primary"
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/25"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               Espace membre
             </Link>
 
             <div className="mt-5 flex items-center gap-3">
-              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-vif text-white shadow-md shadow-primary/25">
+              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-sm">
                 <CalendarOff className="h-5 w-5" aria-hidden="true" />
               </span>
-              <h1 className="font-display text-3xl font-bold text-text md:text-4xl">
+              <h1 className="font-display text-3xl font-bold text-white md:text-4xl">
                 Mes absences
               </h1>
             </div>
-            <p className="mt-3 text-text-secondary md:text-lg">
+            <p className="mt-3 text-white/80 md:text-lg">
               Préviens l&apos;association quand tu n&apos;es pas disponible
               pour traiter les demandes d&apos;adoption.
             </p>
