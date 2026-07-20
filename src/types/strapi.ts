@@ -695,6 +695,8 @@ export interface DemandeAdoption {
   documentId: string;
   message: string;
   dateRencontreSouhaitee: string | null;
+  /** Rempli seulement quand l'adoptant candidate malgré une incompatibilité. */
+  justificationIncompatibilite: string | null;
   statut: DemandeStatut;
   reponseBenevole: string | null;
   repondueAt: string | null;
@@ -720,21 +722,30 @@ export interface DemandeATraiter extends DemandeAdoption {
 export type NiveauCompatibilite = "excellent" | "bon" | "moyen" | "faible";
 export type CategorieCritere = "bien_etre" | "capacite" | "preference";
 
-/** Détail d'un critère du score, pour expliquer le pourcentage à l'adoptant. */
+/**
+ * Ressenti qualitatif d'un critère. L'adoptant n'a pas le barème : on ne lui
+ * montre jamais de nombre, seulement la nature de chaque critère (un atout, un
+ * point d'attention, ou neutre) et la raison en langage naturel.
+ */
+export type Ressenti = "atout" | "neutre" | "attention";
+
+/** Un critère de compatibilité, exprimé sans chiffre. */
 export interface CritereCompatibilite {
   code: string;
   libelle: string;
-  points: number;
-  max: number;
   categorie: CategorieCritere;
   detail: string;
+  ressenti: Ressenti;
 }
 
-/** Score de compatibilité d'un chat pour l'adoptant connecté. */
+/**
+ * Compatibilité d'un chat pour l'adoptant connecté. Volontairement sans
+ * pourcentage : seul le niveau qualitatif et l'indicateur `plafonne`
+ * (incompatibilité rédhibitoire) pilotent l'affichage.
+ */
 export interface ChatScore {
   slug: string;
   nom: string;
-  score: number;
   niveau: NiveauCompatibilite;
   plafonne: boolean;
   alertes: string[];

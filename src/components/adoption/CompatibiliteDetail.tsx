@@ -3,26 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, Sparkles } from "lucide-react";
-import type {
-  ChatScore,
-  CompatibiliteResponse,
-  NiveauCompatibilite,
-} from "@/types/strapi";
-
-/** Couleurs de la jauge par niveau (cohérentes avec le badge de carte). */
-const COULEUR_JAUGE: Record<NiveauCompatibilite, string> = {
-  excellent: "bg-green-600",
-  bon: "bg-primary",
-  moyen: "bg-amber-500",
-  faible: "bg-text-muted",
-};
-
-const LIBELLE_NIVEAU: Record<NiveauCompatibilite, string> = {
-  excellent: "Excellente compatibilité",
-  bon: "Bonne compatibilité",
-  moyen: "Compatibilité moyenne",
-  faible: "Compatibilité faible",
-};
+import type { ChatScore, CompatibiliteResponse } from "@/types/strapi";
+import {
+  IconeRessenti,
+  JaugeNiveau,
+  LIBELLE_NIVEAU,
+} from "./compatibilite-ui";
 
 type Etat =
   | { statut: "chargement" }
@@ -80,8 +66,7 @@ export default function CompatibiliteDetail({ slug }: { slug: string }) {
           Découvrez votre compatibilité
         </p>
         <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">
-          Complétez votre profil pour voir votre pourcentage de compatibilité
-          avec {" "}
+          Complétez votre profil pour voir votre compatibilité avec {" "}
           {etat.champsManquants.length > 0
             ? `ce chat. Il manque ${etat.champsManquants.join(", ")}.`
             : "ce chat."}
@@ -98,10 +83,11 @@ export default function CompatibiliteDetail({ slug }: { slug: string }) {
   }
 
   const { score } = etat;
-  // Contributions les plus fortes, hors critères parfaitement neutres.
-  const forces = [...score.criteres]
-    .filter((c) => c.max > 0)
-    .sort((a, b) => b.points / b.max - a.points / a.max)
+  // Les raisons qui portent : atouts d'abord, puis quelques points neutres,
+  // sans jamais montrer de chiffre.
+  const raisons = [...score.criteres]
+    .filter((c) => c.ressenti !== "attention")
+    .sort((a, b) => Number(b.ressenti === "atout") - Number(a.ressenti === "atout"))
     .slice(0, 3);
 
   return (
@@ -110,24 +96,7 @@ export default function CompatibiliteDetail({ slug }: { slug: string }) {
         <p className="text-sm font-semibold text-text">
           {LIBELLE_NIVEAU[score.niveau]}
         </p>
-        <span className="font-display text-2xl font-bold text-text">
-          {score.score}
-          <span className="text-base font-semibold text-text-secondary">%</span>
-        </span>
-      </div>
-
-      <div
-        className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-bg-alt"
-        role="progressbar"
-        aria-valuenow={score.score}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label="Compatibilité avec votre profil"
-      >
-        <div
-          className={`h-full rounded-full transition-[width] duration-500 ${COULEUR_JAUGE[score.niveau]}`}
-          style={{ width: `${score.score}%` }}
-        />
+        <JaugeNiveau niveau={score.niveau} />
       </div>
 
       {score.alertes.length > 0 && (
@@ -144,13 +113,11 @@ export default function CompatibiliteDetail({ slug }: { slug: string }) {
         </ul>
       )}
 
-      <ul className="mt-3 space-y-1 text-sm text-text-secondary">
-        {forces.map((c) => (
-          <li key={c.code} className="flex items-center justify-between gap-3">
-            <span>{c.libelle}</span>
-            <span className="font-medium text-text">
-              {c.points}/{c.max}
-            </span>
+      <ul className="mt-3 space-y-1.5 text-sm text-text-secondary">
+        {raisons.map((c) => (
+          <li key={c.code} className="flex items-start gap-2">
+            <IconeRessenti ressenti={c.ressenti} />
+            <span>{c.detail}</span>
           </li>
         ))}
       </ul>

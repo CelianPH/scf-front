@@ -1,20 +1,16 @@
 "use client";
 
+import { Heart } from "lucide-react";
 import { useCompatibilite } from "./CompatibiliteProvider";
-import type { NiveauCompatibilite } from "@/types/strapi";
-
-/** Couleurs par niveau — cohérentes entre la carte, la fiche et /matching. */
-const STYLES: Record<NiveauCompatibilite, string> = {
-  excellent: "bg-green-600 text-white",
-  bon: "bg-primary text-white",
-  moyen: "bg-amber-500 text-white",
-  faible: "bg-text-muted text-white",
-};
+import { COULEUR_NIVEAU, LIBELLE_NIVEAU, LIBELLE_NIVEAU_COURT } from "./compatibilite-ui";
 
 /**
  * Pastille de compatibilité affichée sur une carte chat. Ne rend rien tant que
  * le score n'est pas disponible (visiteur anonyme, profil incomplet, ou
  * chargement) : la carte reste alors strictement identique à aujourd'hui.
+ *
+ * Volontairement qualitative — pas de pourcentage : l'adoptant n'a pas le
+ * barème, un chiffre l'inviterait à « optimiser » sans rien lui apprendre.
  */
 export default function CompatibiliteBadge({ slug }: { slug: string }) {
   const score = useCompatibilite(slug);
@@ -22,11 +18,11 @@ export default function CompatibiliteBadge({ slug }: { slug: string }) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold shadow-sm ${STYLES[score.niveau]}`}
-      title={`Compatibilité ${score.score}% avec votre profil`}
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-sm ${COULEUR_NIVEAU[score.niveau]}`}
+      title={LIBELLE_NIVEAU[score.niveau]}
     >
-      {score.score}%
-      <span className="font-medium opacity-90">compatible</span>
+      <Heart className="h-3 w-3" aria-hidden="true" />
+      {LIBELLE_NIVEAU_COURT[score.niveau]}
     </span>
   );
 }
