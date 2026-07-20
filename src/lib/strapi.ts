@@ -243,16 +243,6 @@ export async function getDonPage(): Promise<DonPageResponse> {
       utilite: {
         populate: { items: true },
       },
-      campagnes: {
-        populate: {
-          campagnes: {
-            populate: {
-              ctaDetails: ctaPopulate,
-              ctaContribuer: ctaPopulate,
-            },
-          },
-        },
-      },
       autresActions: {
         populate: {
           actions: {

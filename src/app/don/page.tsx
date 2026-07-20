@@ -5,7 +5,6 @@ import DonHero from "@/components/don/DonHero";
 import DonReassurance from "@/components/don/DonReassurance";
 import DonWidget from "@/components/don/DonWidget";
 import DonUtilite from "@/components/don/DonUtilite";
-import DonCampagnes from "@/components/don/DonCampagnes";
 import DonAutresActions from "@/components/don/DonAutresActions";
 import { getDonPage } from "@/lib/strapi";
 
@@ -30,7 +29,6 @@ export default async function DonPage() {
         <DonHero data={don.hero} />
         {don.reassurance ? <DonReassurance data={don.reassurance} /> : null}
         {don.utilite ? <DonUtilite data={don.utilite} /> : null}
-        {don.campagnes ? <DonCampagnes data={don.campagnes} /> : null}
         {don.widget ? <DonWidget data={don.widget} /> : null}
         {don.autresActions ? <DonAutresActions data={don.autresActions} /> : null}
       </main>

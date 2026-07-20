@@ -503,25 +503,6 @@ export interface DonUtiliteBlock {
   items: DonUtiliteItem[];
 }
 
-export interface DonCampagne {
-  id: number;
-  titre: string;
-  description: string | null;
-  objectifEUR: number;
-  collecteEUR: number | null;
-  progressionPct: number | null;
-  actif: boolean;
-  ctaDetails: SharedCta | null;
-  ctaContribuer: SharedCta;
-}
-
-export interface DonCampagnesBlock {
-  id: number;
-  titre: string;
-  intro: string | null;
-  campagnes: DonCampagne[];
-}
-
 export interface DonAutresActions {
   id: number;
   titre: string;
@@ -549,7 +530,6 @@ export interface DonPage {
   reassurance: DonReassuranceBand | null;
   widget: DonWidget | null;
   utilite: DonUtiliteBlock | null;
-  campagnes: DonCampagnesBlock | null;
   autresActions: DonAutresActions | null;
   seo: SharedSeo | null;
   createdAt: string;
