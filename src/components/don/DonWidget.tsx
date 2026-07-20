@@ -43,27 +43,31 @@ export default function DonWidget({ data }: DonWidgetProps) {
           </h2>
         </Reveal>
 
-        {/* Formulaire HelloAsso natif (français), centré */}
+        {/* Formulaire HelloAsso natif (français), centré. Cadre à deux niveaux :
+           la marge teintée primary reprend le thème du site et évite que les
+           coins carrés du contenu HelloAsso ne dépassent du coin arrondi. */}
         <Reveal delay={120} className="mx-auto mt-10 max-w-3xl md:mt-12">
-          <div className="relative overflow-hidden rounded-2xl bg-surface shadow-xl shadow-primary/5 ring-1 ring-border">
-            {!loaded ? (
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 z-10 flex items-center justify-center bg-surface"
-              >
-                <span className="h-9 w-9 animate-spin rounded-full border-2 border-primary/25 border-t-primary" />
-              </div>
-            ) : null}
-            <iframe
-              id="haWidget"
-              src={widgetUrl}
-              scrolling="auto"
-              title="Formulaire de don HelloAsso"
-              allow="payment"
-              loading="lazy"
-              onLoad={() => setLoaded(true)}
-              style={{ width: "100%", height: "760px", border: "none", display: "block" }}
-            />
+          <div className="rounded-[1.75rem] bg-gradient-to-br from-primary-50 to-secondary-50 p-2 shadow-xl shadow-primary/10 md:p-2.5">
+            <div className="relative overflow-hidden rounded-[1.4rem] bg-surface ring-1 ring-black/[0.03]">
+              {!loaded ? (
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 z-10 flex items-center justify-center bg-surface"
+                >
+                  <span className="h-9 w-9 animate-spin rounded-full border-2 border-primary/25 border-t-primary" />
+                </div>
+              ) : null}
+              <iframe
+                id="haWidget"
+                src={widgetUrl}
+                scrolling="auto"
+                title="Formulaire de don HelloAsso"
+                allow="payment"
+                loading="lazy"
+                onLoad={() => setLoaded(true)}
+                style={{ width: "100%", height: "760px", border: "none", display: "block" }}
+              />
+            </div>
           </div>
 
           <Script
