@@ -29,9 +29,9 @@ export default async function DonPage() {
       <main>
         <DonHero data={don.hero} />
         {don.reassurance ? <DonReassurance data={don.reassurance} /> : null}
-        {don.widget ? <DonWidget data={don.widget} /> : null}
         {don.utilite ? <DonUtilite data={don.utilite} /> : null}
         {don.campagnes ? <DonCampagnes data={don.campagnes} /> : null}
+        {don.widget ? <DonWidget data={don.widget} /> : null}
         {don.autresActions ? <DonAutresActions data={don.autresActions} /> : null}
       </main>
       <Footer />

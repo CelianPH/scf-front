@@ -225,6 +225,7 @@ export async function getDonPage(): Promise<DonPageResponse> {
     populate: {
       hero: {
         populate: {
+          image: { fields: mediaFields },
           ctaPrimary: ctaPopulate,
           ctaSecondary: ctaPopulate,
         },
@@ -236,7 +237,6 @@ export async function getDonPage(): Promise<DonPageResponse> {
       },
       widget: {
         populate: {
-          montants: true,
           ctaSubmit: ctaPopulate,
         },
       },

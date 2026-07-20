@@ -1,6 +1,6 @@
 import Reveal from "@/components/layout/Reveal";
-import { Icon } from "@/components/ui/Icon";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { ArrowLink } from "@/components/ui/ArrowLink";
 import type { DonCampagnesBlock } from "@/types/strapi";
 
 interface DonCampagnesProps {
@@ -38,15 +38,14 @@ export default function DonCampagnes({ data }: DonCampagnesProps) {
       aria-labelledby="don-campagnes-titre"
       className="bg-bg-alt"
     >
-      <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
+      <div className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full bg-secondary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-secondary">
-            <Icon name="Sparkles" className="h-3.5 w-3.5" aria-hidden="true" />
+          <span className="text-sm font-semibold uppercase tracking-wider text-secondary">
             Projets en cours
           </span>
           <h2
             id="don-campagnes-titre"
-            className="mt-4 font-display text-3xl font-bold text-text md:text-5xl"
+            className="mt-2 font-display text-3xl font-bold text-text md:text-4xl lg:text-5xl"
           >
             {data.titre}
           </h2>
@@ -58,7 +57,7 @@ export default function DonCampagnes({ data }: DonCampagnesProps) {
         </Reveal>
 
         <ul
-          className={`mx-auto mt-12 grid gap-7 ${
+          className={`mx-auto mt-10 grid gap-7 md:mt-12 ${
             actives.length === 1
               ? "max-w-3xl grid-cols-1"
               : "grid-cols-1 lg:grid-cols-2"
@@ -146,9 +145,17 @@ export default function DonCampagnes({ data }: DonCampagnesProps) {
                       ) : null}
                     </div>
 
-                    <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                    <div className="mt-7 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
                       <CtaButton cta={c.ctaContribuer} />
-                      <CtaButton cta={c.ctaDetails} />
+                      {c.ctaDetails ? (
+                        <ArrowLink
+                          href={c.ctaDetails.href}
+                          external={c.ctaDetails.external}
+                          tone="secondary"
+                        >
+                          {c.ctaDetails.label}
+                        </ArrowLink>
+                      ) : null}
                     </div>
                   </div>
                 </article>

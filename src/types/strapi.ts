@@ -427,6 +427,8 @@ export interface DonHero {
   titre: string;
   sousTitre: string;
   mention: string | null;
+  image: StrapiMedia | null;
+  imageAlt: string | null;
   ctaPrimary: SharedCta;
   ctaSecondary: SharedCta | null;
 }
@@ -436,21 +438,12 @@ export interface DonReassuranceBand {
   items: SharedFeatureCard[];
 }
 
-export interface DonMontant {
-  id: number;
-  valeur: number;
-  impactText: string | null;
-  defaut: boolean;
-}
-
 export interface DonWidget {
   id: number;
   titre: string;
   frequenceLabel: string | null;
   frequenceUniqueLabel: string;
   frequenceMensuelLabel: string;
-  montantLabel: string | null;
-  montants: DonMontant[];
   placeholderMontantLibre: string | null;
   labelMontantLibre: string | null;
   exempleImpactLabel: string | null;
