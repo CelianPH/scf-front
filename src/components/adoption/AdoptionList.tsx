@@ -16,9 +16,28 @@ interface AdoptionListProps {
   chats: Chat[];
 }
 
+/** Convertit un âge en années. Gère "2 ans", "3 mois", "6 semaines" et "01/09/2025". */
 function parseAge(age: string): number {
-  const m = age.match(/(\d+([.,]\d+)?)/);
-  return m ? parseFloat(m[1].replace(",", ".")) : 0;
+  const value = age.trim();
+
+  // Date de naissance au format JJ/MM/AAAA
+  const birth = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (birth) {
+    const [, d, mo, y] = birth;
+    const birthDate = new Date(Number(y), Number(mo) - 1, Number(d));
+    const ms = Date.now() - birthDate.getTime();
+    return ms > 0 ? ms / (365.25 * 24 * 60 * 60 * 1000) : 0;
+  }
+
+  const m = value.match(/(\d+([.,]\d+)?)/);
+  if (!m) return 0;
+  const n = parseFloat(m[1].replace(",", "."));
+
+  const unit = value.toLowerCase();
+  if (unit.includes("semaine")) return n / 52;
+  if (unit.includes("mois")) return n / 12;
+  if (unit.includes("jour")) return n / 365;
+  return n;
 }
 
 function ageBucket(age: string): AgeFilter {
