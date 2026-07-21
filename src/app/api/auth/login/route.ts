@@ -9,17 +9,34 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Email et mot de passe requis" }, { status: 400 });
   }
 
-  const res = await fetch(`${STRAPI}/api/auth/local`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ identifier: email, password }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${STRAPI}/api/auth/local`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier: email, password }),
+    });
+  } catch {
+    // Strapi injoignable : sans ce garde, l'exception remonte en 500 au corps
+    // vide et le formulaire échoue sur un message incompréhensible.
+    return NextResponse.json(
+      { error: "Service d'authentification indisponible." },
+      { status: 503 }
+    );
+  }
 
-  const data = await res.json();
+  const data = await res.json().catch(() => null);
   if (!res.ok) {
     return NextResponse.json(
       { error: data?.error?.message ?? "Identifiants invalides" },
       { status: 401 }
+    );
+  }
+
+  if (!data?.jwt) {
+    return NextResponse.json(
+      { error: "Réponse inattendue du service d'authentification." },
+      { status: 502 }
     );
   }
 

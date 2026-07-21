@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Heart, LogOut, Menu, PawPrint, User as UserIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useAuthState } from "@/lib/use-auth-state";
+import { ROLE_MEMBRE } from "@/types/strapi";
 
 const links = [
   { href: "/", label: "Accueil" },
@@ -18,6 +19,10 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { user } = useAuthState();
+  // Un membre de l'association n'a pas d'espace adoptant : son prénom mène
+  // directement à son espace de travail.
+  const espaceUrl =
+    user?.role?.type === ROLE_MEMBRE ? "/espace-membre" : "/compte";
 
   useEffect(() => {
     setOpen(false);
@@ -81,7 +86,7 @@ export default function Navbar() {
           {user ? (
             <>
               <Link
-                href="/compte"
+                href={espaceUrl}
                 className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-text-secondary hover:text-text"
               >
                 <UserIcon className="h-4 w-4" aria-hidden="true" />
@@ -183,7 +188,7 @@ export default function Navbar() {
               {user ? (
                 <div className="flex items-center justify-between">
                   <Link
-                    href="/compte"
+                    href={espaceUrl}
                     onClick={() => setOpen(false)}
                     className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-text-secondary hover:text-text"
                   >

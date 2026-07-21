@@ -26,7 +26,7 @@ export default function ChatsAdoption({ data }: ChatsAdoptionProps) {
         </Reveal>
 
         <ul className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 md:mt-10 lg:grid-cols-3">
-          {data.chats.map((chat, i) => (
+          {data.chats.slice(0, 3).map((chat, i) => (
             <Reveal as="li" key={chat.id} delay={i * 100}>
               <AdoptionCard chat={chat} />
             </Reveal>

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getAuthToken } from "./cookies";
+import { ROLE_MEMBRE } from "@/types/strapi";
 import type { AuthUser } from "@/types/strapi";
 
 const STRAPI = process.env.STRAPI_INTERNAL_URL ?? "http://localhost:1337";
@@ -25,6 +26,6 @@ export async function requireUser(redirectTo = "/connexion"): Promise<AuthUser> 
 
 export async function requireBenevole(): Promise<AuthUser> {
   const user = await requireUser();
-  if (user.role?.type !== ("benevole" as const)) redirect("/compte");
+  if (user.role?.type !== ROLE_MEMBRE) redirect("/compte");
   return user;
 }

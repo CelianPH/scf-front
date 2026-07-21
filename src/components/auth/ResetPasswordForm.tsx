@@ -32,8 +32,13 @@ export default function ResetPasswordForm() {
     });
     setLoading(false);
     if (!res.ok) {
-      const { error: msg } = await res.json();
-      setError(msg ?? "Lien invalide ou expiré");
+      const body = await res.json().catch(() => null);
+      setError(
+        body?.error ??
+          (res.status >= 500
+            ? "Le service est momentanément indisponible."
+            : "Lien invalide ou expiré")
+      );
       return;
     }
     router.push("/compte");

@@ -225,6 +225,7 @@ export async function getDonPage(): Promise<DonPageResponse> {
     populate: {
       hero: {
         populate: {
+          image: { fields: mediaFields },
           ctaPrimary: ctaPopulate,
           ctaSecondary: ctaPopulate,
         },
@@ -236,22 +237,11 @@ export async function getDonPage(): Promise<DonPageResponse> {
       },
       widget: {
         populate: {
-          montants: true,
           ctaSubmit: ctaPopulate,
         },
       },
       utilite: {
         populate: { items: true },
-      },
-      campagnes: {
-        populate: {
-          campagnes: {
-            populate: {
-              ctaDetails: ctaPopulate,
-              ctaContribuer: ctaPopulate,
-            },
-          },
-        },
       },
       autresActions: {
         populate: {
@@ -320,7 +310,10 @@ export async function getChats(opts: {
 } = {}): Promise<ChatsResponse> {
   const filters: Record<string, unknown> = {};
   if (opts.featured) filters.featured = { $eq: true };
-  if (!opts.includeAdopted) filters.adopted = { $eq: false };
+  // Par défaut on masque les chats qui ne sont plus à l'adoption.
+  if (!opts.includeAdopted) {
+    filters.statut = { $notIn: ["adopte", "reserve"] };
+  }
 
   const params = {
     filters,

@@ -11,6 +11,10 @@ interface ActualitesSectionProps {
 }
 
 export default function ActualitesSection({ data }: ActualitesSectionProps) {
+  const articles = [...data.articles]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 3);
+
   return (
     <section aria-labelledby="actus-titre" className="bg-bg">
       <div className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
@@ -40,7 +44,7 @@ export default function ActualitesSection({ data }: ActualitesSectionProps) {
         </Reveal>
 
         <ul className="mt-8 grid grid-cols-1 gap-6 md:mt-10 md:grid-cols-2 lg:grid-cols-3">
-          {data.articles.map((article, i) => {
+          {articles.map((article, i) => {
             const imageUrl = getStrapiMedia(article.image.url) ?? "";
             const dateLabel = formatArticleDate(article.date);
             return (

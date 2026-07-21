@@ -4,7 +4,8 @@ import Footer from "@/components/layout/Footer";
 import DemandeForm from "@/components/adoption/DemandeForm";
 import { requireUser } from "@/lib/auth";
 import { getChatBySlug } from "@/lib/strapi";
-import { getProfilAdoptant } from "@/lib/strapi-server";
+import { getCompatibilites, getProfilAdoptant } from "@/lib/strapi-server";
+import { raisonsNegatives } from "@/components/adoption/compatibilite-ui";
 
 const REQUIRED_FIELDS = [
   "telephone",
@@ -27,11 +28,20 @@ export default async function DemandePage({ params }: PageProps) {
   const { slug } = await params;
   await requireUser(`/connexion?next=/adoption/${slug}/demande`);
 
-  const [chatRes, { data: profil }] = await Promise.all([
+  const [chatRes, { data: profil }, compat] = await Promise.all([
     getChatBySlug(slug),
     getProfilAdoptant(),
+    getCompatibilites(slug),
   ]);
   if (!chatRes) redirect("/adoption");
+
+  // Ce chat est-il incompatible avec ce profil ? Si oui, on demandera une
+  // justification (le serveur revérifie de toute façon).
+  const score = compat.data?.[0];
+  const incompatibilite =
+    score?.plafonne
+      ? { alertes: score.alertes, problemes: raisonsNegatives(score) }
+      : null;
 
   const missing = REQUIRED_FIELDS.filter((k) => {
     const v = (profil as any)[k];
@@ -39,8 +49,11 @@ export default async function DemandePage({ params }: PageProps) {
   });
 
   if (missing.length > 0) {
+    // On transmet les champs manquants pour que la page profil puisse les
+    // nommer, plutôt que d'afficher un refus sans explication.
     redirect(
-      `/compte/profil?gate=adoption&next=/adoption/${slug}/demande`
+      `/compte/profil?gate=adoption&next=/adoption/${slug}/demande` +
+        `&manquants=${missing.join(",")}`
     );
   }
 
@@ -60,7 +73,11 @@ export default async function DemandePage({ params }: PageProps) {
             suite.
           </p>
           <div className="mt-10 rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-border md:p-8">
-            <DemandeForm chatSlug={slug} chatNom={chatRes.data.nom} />
+            <DemandeForm
+              chatSlug={slug}
+              chatNom={chatRes.data.nom}
+              incompatibilite={incompatibilite}
+            />
           </div>
         </section>
       </main>

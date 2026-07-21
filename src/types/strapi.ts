@@ -165,10 +165,33 @@ export interface Benevole {
   bio: string | null;
   email: string | null;
   actif: boolean;
+  absent: boolean;
+  absenceDebut: string | null;
+  absenceFin: string | null;
+  absenceMotif: string | null;
+  chats?: Chat[];
+  chatsEnBackup?: Chat[];
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
 }
+
+/** Statut du chat dans le parcours d'adoption. */
+export type ChatStatut =
+  | "en_refuge"
+  | "famille_accueil"
+  | "en_soins"
+  | "reserve"
+  | "adopte";
+
+/** Entente constatée avec une espèce ou un public. */
+export type Entente = "ok" | "pas_ok" | "inconnu";
+
+/** Besoin d'accès extérieur du chat. */
+export type BesoinExterieur =
+  | "indifferent"
+  | "interieur_strict"
+  | "acces_exterieur_requis";
 
 export interface Chat {
   id: number;
@@ -184,9 +207,21 @@ export interface Chat {
   caracteres: string[] | null;
   infos: ChatInfoPratique[] | null;
   referent: Benevole | null;
+  referentsBackup: Benevole[] | null;
   badge: string | null;
   featured: boolean;
-  adopted: boolean;
+  statut: ChatStatut;
+  dateNaissance: string | null;
+  vaccine: boolean;
+  sterilise: boolean;
+  identifie: boolean;
+  deparasite: boolean;
+  fraisAdoption: number | null;
+  ententeChiens: Entente;
+  ententeChats: Entente;
+  ententeEnfants: Entente;
+  niveauEnergie: number;
+  besoinExterieur: BesoinExterieur;
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
@@ -427,6 +462,8 @@ export interface DonHero {
   titre: string;
   sousTitre: string;
   mention: string | null;
+  image: StrapiMedia | null;
+  imageAlt: string | null;
   ctaPrimary: SharedCta;
   ctaSecondary: SharedCta | null;
 }
@@ -436,21 +473,12 @@ export interface DonReassuranceBand {
   items: SharedFeatureCard[];
 }
 
-export interface DonMontant {
-  id: number;
-  valeur: number;
-  impactText: string | null;
-  defaut: boolean;
-}
-
 export interface DonWidget {
   id: number;
   titre: string;
   frequenceLabel: string | null;
   frequenceUniqueLabel: string;
   frequenceMensuelLabel: string;
-  montantLabel: string | null;
-  montants: DonMontant[];
   placeholderMontantLibre: string | null;
   labelMontantLibre: string | null;
   exempleImpactLabel: string | null;
@@ -473,25 +501,6 @@ export interface DonUtiliteBlock {
   titre: string;
   note: string | null;
   items: DonUtiliteItem[];
-}
-
-export interface DonCampagne {
-  id: number;
-  titre: string;
-  description: string | null;
-  objectifEUR: number;
-  collecteEUR: number | null;
-  progressionPct: number | null;
-  actif: boolean;
-  ctaDetails: SharedCta | null;
-  ctaContribuer: SharedCta;
-}
-
-export interface DonCampagnesBlock {
-  id: number;
-  titre: string;
-  intro: string | null;
-  campagnes: DonCampagne[];
 }
 
 export interface DonAutresActions {
@@ -521,7 +530,6 @@ export interface DonPage {
   reassurance: DonReassuranceBand | null;
   widget: DonWidget | null;
   utilite: DonUtiliteBlock | null;
-  campagnes: DonCampagnesBlock | null;
   autresActions: DonAutresActions | null;
   seo: SharedSeo | null;
   createdAt: string;
@@ -586,7 +594,15 @@ export interface SiteSettings {
 
 // ---------- Auth & user ----------
 
-export type StrapiRole = "public" | "authenticated" | "benevole";
+/**
+ * Rôles users-permissions.
+ * - `authenticated` : adoptant (rôle attribué à l'inscription)
+ * - `membre` : membre de l'association, traite les demandes d'adoption
+ */
+export type StrapiRole = "public" | "authenticated" | "membre";
+
+/** Type du rôle « Membre de l'association » (cf. src/index.ts côté Strapi). */
+export const ROLE_MEMBRE: StrapiRole = "membre";
 
 export interface AuthUser {
   id: number;
@@ -630,7 +646,47 @@ export interface ProfilAdoptant {
   prefCaracteres: string[] | null;
   completionPct: number;
   notesPersonnelles: string | null;
+
+  // Fiche d'adoption SCF — identité et foyer
+  adressePostale: string | null;
+  compositionFoyer: CompositionFoyer | null;
+  nbColocataires: number | null;
+  nbEnfants: number | null;
+  agesEnfants: string | null;
+  foyerDaccord: boolean | null;
+  foyerDesaccordDetail: string | null;
+
+  // Activité
+  travaille: boolean | null;
+  profession: string | null;
+  horairesTravail: string | null;
+  heuresSeulParJour: number | null;
+
+  // Logement et environnement
+  superficieLogement: number | null;
+  lieuVieAnimal: LieuVieAnimal | null;
+  typeZone: TypeZone | null;
+  proximiteRoutePassante: boolean | null;
+  sortiesAutorisees: boolean | null;
+  etage: number | null;
+  fenetresSecurisees: boolean | null;
+  envisageSecuriserFenetres: boolean | null;
+  superficieJardin: number | null;
+  jardinGrillage: boolean | null;
+  hauteurGrillage: string | null;
+  superficieBalcon: number | null;
+  balconSecurise: boolean | null;
+
+  // Autres animaux et remarques
+  autresAnimauxDetail: string | null;
+  autresAnimauxSterilises: boolean | null;
+  autresAnimauxDepuis: string | null;
+  remarques: string | null;
 }
+
+export type CompositionFoyer = "seul" | "couple" | "colocation" | "autre";
+export type LieuVieAnimal = "interieur" | "exterieur" | "les_deux" | "autre";
+export type TypeZone = "ville" | "campagne" | "lotissement" | "autre";
 
 export type DemandeStatut = "en_attente" | "en_cours" | "acceptee" | "refusee";
 
@@ -639,6 +695,8 @@ export interface DemandeAdoption {
   documentId: string;
   message: string;
   dateRencontreSouhaitee: string | null;
+  /** Rempli seulement quand l'adoptant candidate malgré une incompatibilité. */
+  justificationIncompatibilite: string | null;
   statut: DemandeStatut;
   reponseBenevole: string | null;
   repondueAt: string | null;
@@ -646,6 +704,57 @@ export interface DemandeAdoption {
   chat: Chat;
   createdAt: string;
   updatedAt: string;
+}
+
+/**
+ * Demande vue par un membre de l'association : elle porte en plus l'adoptant
+ * et son profil, ainsi que le fait d'agir ou non en remplacement du référent.
+ */
+export interface DemandeATraiter extends DemandeAdoption {
+  user: Pick<AuthUser, "id" | "prenom" | "nom" | "email"> & {
+    profil: ProfilAdoptant | null;
+  };
+  enRemplacement: boolean;
+}
+
+// ---------- Compatibilité chat ↔ adoptant ----------
+
+export type NiveauCompatibilite = "excellent" | "bon" | "moyen" | "faible";
+export type CategorieCritere = "bien_etre" | "capacite" | "preference";
+
+/**
+ * Ressenti qualitatif d'un critère. L'adoptant n'a pas le barème : on ne lui
+ * montre jamais de nombre, seulement la nature de chaque critère (un atout, un
+ * point d'attention, ou neutre) et la raison en langage naturel.
+ */
+export type Ressenti = "atout" | "neutre" | "attention";
+
+/** Un critère de compatibilité, exprimé sans chiffre. */
+export interface CritereCompatibilite {
+  code: string;
+  libelle: string;
+  categorie: CategorieCritere;
+  detail: string;
+  ressenti: Ressenti;
+}
+
+/**
+ * Compatibilité d'un chat pour l'adoptant connecté. Volontairement sans
+ * pourcentage : seul le niveau qualitatif et l'indicateur `plafonne`
+ * (incompatibilité rédhibitoire) pilotent l'affichage.
+ */
+export interface ChatScore {
+  slug: string;
+  nom: string;
+  niveau: NiveauCompatibilite;
+  plafonne: boolean;
+  alertes: string[];
+  criteres: CritereCompatibilite[];
+}
+
+export interface CompatibiliteResponse {
+  data: ChatScore[];
+  meta: { profilComplet: boolean; champsManquants?: string[] };
 }
 
 // ---------- Response aliases ----------
