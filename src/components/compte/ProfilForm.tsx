@@ -782,7 +782,7 @@ function FieldLabel({
       id={anchor}
       className={`block scroll-mt-24${full ? " sm:col-span-2" : ""}${
         highlight
-          ? " -mx-3 rounded-xl bg-amber-50/70 px-3 py-2 ring-1 ring-amber-300"
+          ? " rounded-xl bg-amber-50/70 p-3 ring-1 ring-amber-300"
           : ""
       }`}
     >
