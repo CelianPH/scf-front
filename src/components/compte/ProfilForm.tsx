@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Check, Loader2, Save } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { Select, type SelectOption } from "@/components/ui/Select";
 import { DatePicker } from "@/components/ui/DatePicker";
 import {
@@ -39,14 +41,19 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
   // « Aucune préférence » (valeur "aucune") est la seule représentation de
   // l'absence de préférence : on normalise un éventuel null hérité, pour ne pas
   // laisser coexister null et "aucune" (deux façons de dire la même chose).
-  const [data, setData] = useState<Partial<ProfilAdoptant>>({
+  const [initial, setInitial] = useState<Partial<ProfilAdoptant>>({
     ...profil,
     prefAge: profil.prefAge ?? "aucune",
     prefSexe: profil.prefSexe ?? "aucune",
   });
+  const [data, setData] = useState<Partial<ProfilAdoptant>>(initial);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
+
+  // Le bouton reste inactif tant que rien n'a changé depuis le dernier
+  // enregistrement (comparaison de forme, suffisante pour des valeurs simples).
+  const modifie = JSON.stringify(data) !== JSON.stringify(initial);
 
   /**
    * Un champ signalé reste en évidence tant qu'il est vide : le surlignage
@@ -162,6 +169,9 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
         return;
       }
 
+      // Le profil enregistré devient la nouvelle référence : le bouton
+      // redevient inactif jusqu'à la prochaine modification.
+      setInitial(data);
       setSaved(true);
       router.refresh();
     } catch {
@@ -228,7 +238,7 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-10">
+    <form onSubmit={onSubmit} className="space-y-10 pb-4">
       <p className="rounded-md bg-bg-alt px-4 py-3 text-sm text-text-secondary">
         Les champs marqués d&apos;un{" "}
         <span className="font-semibold text-primary">*</span> sont nécessaires
@@ -688,22 +698,43 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
         </FieldLabel>
       </Section>
 
-      <div className="sticky bottom-4 flex items-center justify-end gap-3 rounded-xl bg-surface px-5 py-4 shadow-lg ring-1 ring-border">
+      <div className="sticky bottom-4 z-10 flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 shadow-lg shadow-black/10 sm:px-5">
         {erreur ? (
-          <p role="alert" className="mr-auto text-sm text-red-700">
+          <p role="alert" className="min-w-0 flex-1 truncate text-sm text-red-700">
             {erreur}
           </p>
-        ) : null}
-        {saved && !erreur ? (
-          <span className="text-sm font-medium text-primary">✓ Enregistré</span>
-        ) : null}
-        <button
+        ) : saved ? (
+          <p className="inline-flex min-w-0 flex-1 items-center gap-1.5 text-sm font-medium text-green-700">
+            <Check className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span className="truncate">
+              <span className="sm:hidden">Enregistré</span>
+              <span className="hidden sm:inline">Modifications enregistrées</span>
+            </span>
+          </p>
+        ) : (
+          <p className="min-w-0 flex-1 truncate text-sm text-text-secondary">
+            {modifie ? (
+              <>
+                <span className="sm:hidden">Non enregistré</span>
+                <span className="hidden sm:inline">
+                  Modifications non enregistrées
+                </span>
+              </>
+            ) : (
+              "Profil à jour"
+            )}
+          </p>
+        )}
+        <Button
           type="submit"
-          disabled={saving}
-          className="rounded-xl bg-gradient-to-r from-primary to-primary-vif px-6 py-3 text-sm font-semibold text-white shadow-md shadow-primary/30 hover:-translate-y-0.5 disabled:opacity-50"
+          variant="primary"
+          size="md"
+          disabled={saving || !modifie}
+          iconLeft={saving ? Loader2 : Save}
+          className={`shrink-0 ${saving ? "[&_svg]:animate-spin" : ""}`}
         >
           {saving ? "Enregistrement…" : "Enregistrer"}
-        </button>
+        </Button>
       </div>
     </form>
   );
