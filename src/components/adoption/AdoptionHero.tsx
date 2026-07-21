@@ -22,7 +22,7 @@ export default function AdoptionHero({
       aria-labelledby="adoption-hero-titre"
       className="relative isolate overflow-hidden"
     >
-      <div className="relative h-[58svh] min-h-[440px] w-full md:h-[68svh] md:min-h-[560px]">
+      <div className="relative flex w-full flex-col justify-end min-h-[58svh] md:min-h-[62svh] lg:h-[70svh] lg:min-h-[600px] lg:justify-center">
         <Image
           src={imageUrl}
           alt={imageAlt}
@@ -42,7 +42,7 @@ export default function AdoptionHero({
           className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-dark/70"
         />
 
-        <div className="relative z-10 mx-auto max-w-7xl px-5 pb-12 pt-28 md:flex md:h-full md:flex-col md:justify-end md:px-8 md:pb-20 md:pt-32 lg:justify-center">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-14 pt-28 md:px-8 md:pb-16 md:pt-32">
           <div className="grid items-end gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-center lg:gap-12">
             <div>
               <h1
