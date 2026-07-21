@@ -11,9 +11,12 @@ export default function LogoutButton() {
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex items-center gap-2 rounded-xl border-2 border-red-200 bg-red-50 px-5 py-3 text-base font-semibold text-red-700 transition hover:bg-red-100"
+      className="group inline-flex shrink-0 items-center gap-2 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-700 ring-1 ring-red-200 transition hover:bg-red-600 hover:text-white hover:ring-red-600"
     >
-      <LogOut className="h-5 w-5" />
+      <LogOut
+        className="h-4 w-4 transition-transform group-hover:-translate-x-0.5"
+        aria-hidden="true"
+      />
       Se déconnecter
     </button>
   );

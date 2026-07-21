@@ -118,7 +118,24 @@ export default async function ParametresPage() {
           </Block>
 
           <Block title="Session" icon={LogOut} delay={180}>
-            <LogoutButton />
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <span className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-secondary via-primary to-primary-vif font-display text-sm font-bold text-white shadow-sm shadow-primary/25">
+                  {`${user.prenom?.[0] ?? ""}${user.nom?.[0] ?? ""}`.toUpperCase() || "?"}
+                  <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-surface bg-green-500" />
+                </span>
+                <div className="min-w-0">
+                  <p className="flex items-center gap-1.5 text-sm font-semibold text-text">
+                    <span className="h-2 w-2 rounded-full bg-green-500" />
+                    Connecté·e
+                  </p>
+                  <p className="truncate text-sm text-text-secondary">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+              <LogoutButton />
+            </div>
           </Block>
         </div>
       </section>
