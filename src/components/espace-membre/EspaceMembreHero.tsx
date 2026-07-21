@@ -36,82 +36,79 @@ export default function EspaceMembreHero({
   stats,
 }: EspaceMembreHeroProps) {
   return (
-    <section className="relative isolate overflow-hidden bg-gradient-to-br from-secondary via-primary to-primary-vif">
+    <section className="relative isolate overflow-hidden border-b border-border bg-bg-alt">
+      {/* Halo léger : le dégradé signature reste présent, mais très diffus et discret. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10"
       >
-        <div className="absolute -left-16 -top-24 h-72 w-72 rounded-full bg-primary-accent/40 blur-3xl" />
-        <div className="absolute -right-12 top-1/4 h-64 w-64 rounded-full bg-secondary-light/35 blur-3xl" />
-        <div className="absolute bottom-[-4rem] left-1/3 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute -left-20 bottom-[-4rem] h-56 w-56 rounded-full bg-secondary/10 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-4xl px-5 py-14 md:px-8 md:py-20">
+      <div className="relative mx-auto max-w-4xl px-5 py-9 md:px-8 md:py-12">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
             <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
             Espace membre
           </span>
-          <h1 className="mt-3 font-display text-4xl font-bold text-white md:text-5xl">
+          <h1 className="mt-3 font-display text-3xl font-bold text-text md:text-4xl">
             Bonjour {prenom} 👋
           </h1>
-          <p className="mt-2 text-white/80 md:text-lg">
+          <p className="mt-2 text-text-secondary md:text-lg">
             Retrouve ici les demandes d&apos;adoption dont tu as la charge.
           </p>
         </motion.div>
 
         {absent ? (
           <motion.p
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, duration: 0.4 }}
-            className="mt-5 flex flex-wrap items-center gap-2 rounded-xl bg-white/15 px-4 py-3 text-sm text-white backdrop-blur-sm ring-1 ring-white/20"
+            className="mt-5 flex flex-wrap items-center gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-900 ring-1 ring-amber-200"
           >
-            <CalendarOff className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <CalendarOff className="h-4 w-4 shrink-0 text-amber-700" aria-hidden="true" />
             Tu es déclaré·e absent·e : tes demandes sont redirigées vers tes
             référent·es de secours.{" "}
             <Link
               href="/espace-membre/absence"
-              className="font-semibold underline underline-offset-2"
+              className="font-semibold text-amber-900 underline underline-offset-2"
             >
               Gérer
             </Link>
           </motion.p>
         ) : null}
 
-        <dl className="mt-8 grid grid-cols-3 gap-3 md:gap-4">
+        <dl className="mt-7 grid grid-cols-3 gap-3 md:gap-4">
           {stats.map((s, i) => {
             const Icon = STAT_ICONS[i] ?? Inbox;
             return (
               <motion.div
                 key={s.label}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   delay: 0.2 + i * 0.1,
                   duration: 0.4,
                   ease: "easeOut",
                 }}
-                whileHover={{
-                  y: -4,
-                  scale: 1.03,
-                  transition: { duration: 0.2, ease: "easeOut" },
-                }}
-                className="group cursor-default rounded-2xl bg-white/15 p-4 text-center backdrop-blur-md ring-1 ring-white/20 transition-colors duration-200 hover:bg-white/25 hover:ring-white/40 hover:shadow-lg hover:shadow-primary-deep/25 md:p-5"
+                className="group flex flex-col items-center rounded-2xl bg-surface p-4 text-center shadow-sm ring-1 ring-border transition duration-200 hover:-translate-y-0.5 hover:shadow-md hover:ring-primary/30 md:flex-row md:items-center md:gap-3 md:p-5 md:text-left"
               >
-                <span className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-white transition duration-200 group-hover:scale-110 group-hover:bg-white/30">
-                  <Icon className="h-4 w-4" aria-hidden="true" />
+                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-vif text-white shadow-sm shadow-primary/25 transition group-hover:scale-105">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
                 </span>
-                <dd className="mt-2 font-display text-3xl font-bold tabular-nums text-white md:text-4xl">
-                  <CountUp value={s.valeur} />
-                </dd>
-                <dt className="mt-1 text-xs text-white/75 md:text-sm">
-                  {s.label}
-                </dt>
+                <div className="mt-2 md:mt-0">
+                  <dd className="font-display text-2xl font-bold tabular-nums text-text md:text-3xl">
+                    <CountUp value={s.valeur} />
+                  </dd>
+                  <dt className="mt-0.5 text-xs text-text-secondary md:text-sm">
+                    {s.label}
+                  </dt>
+                </div>
               </motion.div>
             );
           })}
