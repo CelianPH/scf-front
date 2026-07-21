@@ -7,12 +7,17 @@ interface StatsSectionProps {
 }
 
 export default function StatsSection({ data }: StatsSectionProps) {
+  const heading = data.ariaLabel ?? "Notre impact en chiffres";
+
   return (
-    <section
-      aria-label={data.ariaLabel ?? "Notre impact en chiffres"}
-      className="bg-bg"
-    >
+    <section aria-label={heading} className="bg-bg">
       <div className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
+        <Reveal
+          as="h2"
+          className="mb-8 text-center font-display text-2xl font-bold text-text md:mb-10 md:text-3xl"
+        >
+          {heading}
+        </Reveal>
         <ul className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4 md:gap-x-8">
           {data.stats.map((stat, i) => (
             <Reveal
