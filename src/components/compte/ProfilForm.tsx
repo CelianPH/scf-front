@@ -4,85 +4,21 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Select, type SelectOption } from "@/components/ui/Select";
 import { DatePicker } from "@/components/ui/DatePicker";
-import type {
-  AccesExterieur,
-  AutresAnimaux,
-  CompositionFoyer,
-  Enfants,
-  ExperienceChats,
-  LieuVieAnimal,
-  PrefAge,
-  PrefSexe,
-  PresenceMaison,
-  ProfilAdoptant,
-  TypeLogement,
-  TypeZone,
-} from "@/types/strapi";
-
-const TYPE_LOGEMENT_OPTIONS: SelectOption<TypeLogement>[] = [
-  { value: "maison", label: "Maison" },
-  { value: "appartement", label: "Appartement" },
-  { value: "studio", label: "Studio" },
-];
-const ACCES_OPTIONS: SelectOption<AccesExterieur>[] = [
-  { value: "jardin", label: "Jardin sécurisé" },
-  { value: "balcon", label: "Balcon sécurisé" },
-  { value: "aucun", label: "Aucun" },
-];
-const PRESENCE_OPTIONS: SelectOption<PresenceMaison>[] = [
-  { value: "tout_le_temps", label: "Présent toute la journée" },
-  { value: "partiel", label: "Mi-temps / en alternance" },
-  { value: "bureau", label: "Bureau plein temps" },
-];
-const ANIMAUX_OPTIONS: SelectOption<AutresAnimaux>[] = [
-  { value: "aucun", label: "Aucun" },
-  { value: "chats", label: "Chat(s)" },
-  { value: "chiens", label: "Chien(s)" },
-  { value: "chats_et_chiens", label: "Chats et chiens" },
-  { value: "autres", label: "Autres animaux" },
-];
-const ENFANTS_OPTIONS: SelectOption<Enfants>[] = [
-  { value: "aucun", label: "Aucun" },
-  { value: "moins_6_ans", label: "Moins de 6 ans" },
-  { value: "plus_6_ans", label: "Plus de 6 ans" },
-  { value: "mixte", label: "Les deux" },
-];
-const EXPERIENCE_OPTIONS: SelectOption<ExperienceChats>[] = [
-  { value: "jamais", label: "Première adoption" },
-  { value: "passee", label: "Déjà eu un chat dans le passé" },
-  { value: "actuelle", label: "J'ai actuellement un chat" },
-  { value: "fa", label: "Expérience en FA" },
-];
-const PREF_AGE_OPTIONS: SelectOption<PrefAge>[] = [
-  { value: "aucune", label: "Aucune préférence" },
-  { value: "chaton", label: "Chaton (< 1 an)" },
-  { value: "jeune", label: "Jeune (1-3 ans)" },
-  { value: "adulte", label: "Adulte (3-8 ans)" },
-  { value: "senior", label: "Senior (8+ ans)" },
-];
-const PREF_SEXE_OPTIONS: SelectOption<PrefSexe>[] = [
-  { value: "aucune", label: "Aucune préférence" },
-  { value: "femelle", label: "Femelle" },
-  { value: "male", label: "Mâle" },
-];
-const COMPOSITION_FOYER_OPTIONS: SelectOption<CompositionFoyer>[] = [
-  { value: "seul", label: "Je vis seul(e)" },
-  { value: "couple", label: "En couple" },
-  { value: "colocation", label: "En colocation" },
-  { value: "autre", label: "Autre situation" },
-];
-const LIEU_VIE_OPTIONS: SelectOption<LieuVieAnimal>[] = [
-  { value: "interieur", label: "Uniquement à l'intérieur" },
-  { value: "exterieur", label: "Uniquement à l'extérieur" },
-  { value: "les_deux", label: "Les deux" },
-  { value: "autre", label: "Autre" },
-];
-const TYPE_ZONE_OPTIONS: SelectOption<TypeZone>[] = [
-  { value: "ville", label: "En ville" },
-  { value: "campagne", label: "À la campagne" },
-  { value: "lotissement", label: "En lotissement" },
-  { value: "autre", label: "Autre" },
-];
+import {
+  ACCES_OPTIONS,
+  ANIMAUX_OPTIONS,
+  CARACTERE_OPTIONS,
+  COMPOSITION_FOYER_OPTIONS,
+  ENFANTS_OPTIONS,
+  EXPERIENCE_OPTIONS,
+  LIEU_VIE_OPTIONS,
+  PREF_AGE_OPTIONS,
+  PREF_SEXE_OPTIONS,
+  PRESENCE_OPTIONS,
+  TYPE_LOGEMENT_OPTIONS,
+  TYPE_ZONE_OPTIONS,
+} from "@/lib/profil-labels";
+import type { ProfilAdoptant } from "@/types/strapi";
 
 interface Props {
   profil: ProfilAdoptant;
@@ -94,9 +30,20 @@ const inputCls =
   "mt-1 w-full rounded-md border border-border bg-surface px-4 py-2.5 text-base text-text outline-none focus:border-primary";
 const textareaCls = `${inputCls} min-h-[96px] resize-y`;
 
+/** Numéro français : 10 chiffres démarrant par 0, ou +33 suivi de 9 chiffres. */
+const TELEPHONE_FR = /^(0\d{9}|\+33[1-9]\d{8})$/;
+const telephoneValide = (v: string) => TELEPHONE_FR.test(v.replace(/\s/g, ""));
+
 export default function ProfilForm({ profil, manquants = [] }: Props) {
   const router = useRouter();
-  const [data, setData] = useState<Partial<ProfilAdoptant>>(profil);
+  // « Aucune préférence » (valeur "aucune") est la seule représentation de
+  // l'absence de préférence : on normalise un éventuel null hérité, pour ne pas
+  // laisser coexister null et "aucune" (deux façons de dire la même chose).
+  const [data, setData] = useState<Partial<ProfilAdoptant>>({
+    ...profil,
+    prefAge: profil.prefAge ?? "aucune",
+    prefSexe: profil.prefSexe ?? "aucune",
+  });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
@@ -130,11 +77,17 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
         ["nbEnfants", "agesEnfants"],
       ],
       [d.foyerDaccord !== false, ["foyerDesaccordDetail"]],
-      [d.travaille !== true, ["profession", "horairesTravail"]],
+      [
+        d.travaille !== true,
+        ["profession", "heureDebutTravail", "heureFinTravail"],
+      ],
       [
         !enAppart,
         ["etage", "fenetresSecurisees", "envisageSecuriserFenetres"],
       ],
+      // Fenêtres déjà sécurisées : la question « J'envisage de les sécuriser »
+      // n'est plus posée, sa valeur ne doit pas subsister.
+      [d.fenetresSecurisees === true, ["envisageSecuriserFenetres"]],
       [
         d.accesExterieur !== "jardin",
         ["superficieJardin", "jardinGrillage", "hauteurGrillage"],
@@ -154,6 +107,15 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
       if (!sansObjet) continue;
       for (const cle of cles) nettoye[cle] = null as never;
     }
+
+    // Le back n'accepte qu'un tableau d'entiers : on retire les âges non encore
+    // saisis (null), et on renvoie null si aucun âge n'est renseigné.
+    if (Array.isArray(nettoye.agesEnfants)) {
+      const ages = (nettoye.agesEnfants as (number | null)[]).filter(
+        (a): a is number => typeof a === "number"
+      );
+      nettoye.agesEnfants = (ages.length ? ages : null) as never;
+    }
     return nettoye;
   }
 
@@ -166,6 +128,16 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (saving) return;
+
+    // Le back rejette un téléphone mal formé (message générique) : on l'arrête
+    // ici pour un retour ciblé, plutôt que de laisser partir la requête.
+    if (data.telephone && !telephoneValide(data.telephone)) {
+      setErreur("Vérifie le numéro de téléphone avant d'enregistrer.");
+      document
+        .getElementById("champ-telephone")
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
 
     setSaving(true);
     setErreur(null);
@@ -211,6 +183,50 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
   const aDautresAnimaux =
     data.autresAnimaux != null && data.autresAnimaux !== "aucun";
 
+  // « Présent toute la journée » et un long temps seul quotidien se
+  // contredisent, et l'algo lit les deux : on le signale sans bloquer.
+  const presenceHeuresIncoherentes =
+    data.presenceMaison === "tout_le_temps" &&
+    (data.heuresSeulParJour ?? 0) >= 4;
+
+  // Garde défensive : d'anciens profils stockaient `agesEnfants` en texte libre
+  // (« 4 ans et 9 ans »). On ne conserve qu'un tableau ; toute autre forme est
+  // repartie de zéro.
+  const agesEnfants: (number | null)[] = Array.isArray(data.agesEnfants)
+    ? (data.agesEnfants as (number | null)[])
+    : [];
+
+  /**
+   * Ajuste le nombre d'enfants et redimensionne le tableau d'âges en
+   * conséquence (troncature si on réduit, complétion par `null` si on augmente).
+   */
+  function setNbEnfants(n: number | null) {
+    setData((d) => {
+      const courant = Array.isArray(d.agesEnfants)
+        ? (d.agesEnfants as (number | null)[])
+        : [];
+      if (n == null || n <= 0) {
+        return { ...d, nbEnfants: n, agesEnfants: null };
+      }
+      const ages = Array.from({ length: n }, (_, i) => courant[i] ?? null);
+      return { ...d, nbEnfants: n, agesEnfants: ages as ProfilAdoptant["agesEnfants"] };
+    });
+    setSaved(false);
+    setErreur(null);
+  }
+
+  function setAgeEnfant(index: number, v: number | null) {
+    setData((d) => {
+      const courant = Array.isArray(d.agesEnfants)
+        ? [...(d.agesEnfants as (number | null)[])]
+        : [];
+      courant[index] = v;
+      return { ...d, agesEnfants: courant as ProfilAdoptant["agesEnfants"] };
+    });
+    setSaved(false);
+    setErreur(null);
+  }
+
   return (
     <form onSubmit={onSubmit} className="space-y-10">
       <p className="rounded-md bg-bg-alt px-4 py-3 text-sm text-text-secondary">
@@ -230,10 +246,24 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
           <input
             type="tel"
             value={data.telephone ?? ""}
-            onChange={(e) => update("telephone", e.target.value || null)}
+            onChange={(e) => {
+              // On limite la frappe aux caractères d'un numéro (chiffres, +,
+              // espaces) : le format complet est vérifié plus bas.
+              const filtre = e.target.value.replace(/[^\d+\s]/g, "");
+              update("telephone", filtre || null);
+            }}
             className={inputCls}
             autoComplete="tel"
+            inputMode="tel"
+            aria-invalid={
+              data.telephone ? !telephoneValide(data.telephone) : undefined
+            }
           />
+          {data.telephone && !telephoneValide(data.telephone) ? (
+            <span className="mt-1 block text-xs text-red-700">
+              Numéro français attendu (ex. 06 12 34 56 78 ou +33 6 12 34 56 78).
+            </span>
+          ) : null}
         </FieldLabel>
         <FieldLabel label="Date de naissance" required
           highlight={aSignaler("dateNaissance")}
@@ -263,7 +293,12 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
             maxLength={5}
             inputMode="numeric"
             value={data.codePostal ?? ""}
-            onChange={(e) => update("codePostal", e.target.value || null)}
+            onChange={(e) => {
+              // Un code postal français est exactement 5 chiffres : on écarte
+              // toute autre saisie à la volée.
+              const chiffres = e.target.value.replace(/\D/g, "").slice(0, 5);
+              update("codePostal", chiffres || null);
+            }}
             className={inputCls}
             autoComplete="postal-code"
           />
@@ -314,18 +349,14 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
             <NumberField
               label="Nombre d'enfants"
               value={data.nbEnfants ?? null}
-              onChange={(v) => update("nbEnfants", v)}
-              min={0}
+              onChange={(v) => setNbEnfants(v)}
+              min={1}
             />
-            <FieldLabel label="Âges des enfants">
-              <input
-                type="text"
-                value={data.agesEnfants ?? ""}
-                onChange={(e) => update("agesEnfants", e.target.value || null)}
-                className={inputCls}
-                placeholder="Ex. 4 ans et 9 ans"
-              />
-            </FieldLabel>
+            <AgesEnfantsFields
+              nbEnfants={data.nbEnfants ?? null}
+              ages={agesEnfants}
+              onChange={(index, v) => setAgeEnfant(index, v)}
+            />
           </>
         ) : null}
         <BooleanField
@@ -377,17 +408,22 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
                 autoComplete="organization-title"
               />
             </FieldLabel>
-            <FieldLabel label="Horaires de travail">
-              <input
-                type="text"
-                value={data.horairesTravail ?? ""}
-                onChange={(e) =>
-                  update("horairesTravail", e.target.value || null)
-                }
-                className={inputCls}
-                placeholder="Ex. 9h-17h du lundi au vendredi"
-              />
-            </FieldLabel>
+            <NumberField
+              label="Heure de début"
+              value={data.heureDebutTravail ?? null}
+              onChange={(v) => update("heureDebutTravail", v)}
+              min={0}
+              max={23}
+              suffix="h"
+            />
+            <NumberField
+              label="Heure de fin"
+              value={data.heureFinTravail ?? null}
+              onChange={(v) => update("heureFinTravail", v)}
+              min={0}
+              max={23}
+              suffix="h"
+            />
           </>
         ) : null}
         <NumberField
@@ -398,6 +434,16 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
           max={24}
           suffix="h"
         />
+        {presenceHeuresIncoherentes ? (
+          <p
+            role="status"
+            className="rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800 ring-1 ring-amber-200 sm:col-span-2"
+          >
+            Tu as indiqué être présent toute la journée, mais aussi{" "}
+            {data.heuresSeulParJour} h seul par jour : vérifie que ces deux
+            réponses sont cohérentes.
+          </p>
+        ) : null}
       </Section>
 
       <Section
@@ -500,17 +546,15 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
               onChange={(v) => update("jardinGrillage", v)}
             />
             {data.jardinGrillage === true ? (
-              <FieldLabel label="Hauteur du grillage">
-                <input
-                  type="text"
-                  value={data.hauteurGrillage ?? ""}
-                  onChange={(e) =>
-                    update("hauteurGrillage", e.target.value || null)
-                  }
-                  className={inputCls}
-                  placeholder="Ex. 1,80 m"
-                />
-              </FieldLabel>
+              <NumberField
+                label="Hauteur du grillage"
+                value={data.hauteurGrillage ?? null}
+                onChange={(v) => update("hauteurGrillage", v)}
+                min={0}
+                max={10}
+                step={0.1}
+                suffix="m"
+              />
             ) : null}
           </>
         ) : null}
@@ -568,17 +612,14 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
                 placeholder="Espèce, âge, caractère, entente avec les chats…"
               />
             </FieldLabel>
-            <FieldLabel label="Depuis quand les as-tu ?">
-              <input
-                type="text"
-                value={data.autresAnimauxDepuis ?? ""}
-                onChange={(e) =>
-                  update("autresAnimauxDepuis", e.target.value || null)
-                }
-                className={inputCls}
-                placeholder="Ex. depuis 3 ans"
-              />
-            </FieldLabel>
+            <NumberField
+              label="Depuis combien d'années ?"
+              value={data.autresAnimauxDepuis ?? null}
+              onChange={(v) => update("autresAnimauxDepuis", v)}
+              min={0}
+              max={50}
+              suffix="ans"
+            />
             <BooleanField
               label="Ils sont tous stérilisés"
               value={data.autresAnimauxSterilises ?? null}
@@ -594,39 +635,30 @@ export default function ProfilForm({ profil, manquants = [] }: Props) {
       >
         <FieldLabel label="Âge préféré">
           <SelectWrap
-            value={data.prefAge ?? null}
+            value={data.prefAge ?? "aucune"}
             options={PREF_AGE_OPTIONS}
             onChange={(v) => update("prefAge", v)}
-            placeholder="Âge préféré"
+            placeholder="Aucune préférence"
           />
         </FieldLabel>
         <FieldLabel label="Sexe préféré">
           <SelectWrap
-            value={data.prefSexe ?? null}
+            value={data.prefSexe ?? "aucune"}
             options={PREF_SEXE_OPTIONS}
             onChange={(v) => update("prefSexe", v)}
-            placeholder="Sexe préféré"
+            placeholder="Aucune préférence"
           />
         </FieldLabel>
-        <FieldLabel
-          label="Caractères recherchés"
-          hint="Sépare-les par des virgules."
-          full
-        >
-          <input
-            type="text"
-            value={(data.prefCaracteres ?? []).join(", ")}
-            onChange={(e) => {
-              const liste = e.target.value
-                .split(",")
-                .map((s) => s.trim())
-                .filter(Boolean);
-              update("prefCaracteres", liste.length ? liste : null);
-            }}
-            className={inputCls}
-            placeholder="Ex. câlin, joueur, calme"
-          />
-        </FieldLabel>
+        <CaracteresField
+          value={data.prefCaracteres ?? null}
+          onToggle={(trait) => {
+            const courant = data.prefCaracteres ?? [];
+            const liste = courant.includes(trait)
+              ? courant.filter((t) => t !== trait)
+              : [...courant, trait];
+            update("prefCaracteres", liste.length ? liste : null);
+          }}
+        />
       </Section>
 
       <Section
@@ -751,25 +783,32 @@ function NumberField({
   onChange,
   min,
   max,
+  step,
   suffix,
   full,
+  hint,
 }: {
   label: string;
   value: number | null;
   onChange: (v: number | null) => void;
   min?: number;
   max?: number;
+  /** Pas de saisie ; un pas non entier active le clavier décimal. */
+  step?: number;
   suffix?: string;
   full?: boolean;
+  hint?: string;
 }) {
+  const decimal = step !== undefined && !Number.isInteger(step);
   return (
-    <FieldLabel label={label} full={full}>
+    <FieldLabel label={label} full={full} hint={hint}>
       <div className="relative">
         <input
           type="number"
-          inputMode="numeric"
+          inputMode={decimal ? "decimal" : "numeric"}
           min={min}
           max={max}
+          step={step}
           value={value ?? ""}
           onChange={(e) => {
             const raw = e.target.value;
@@ -866,6 +905,98 @@ function SelectWrap<T extends string>({
         className="w-full"
         buttonClassName="w-full justify-between py-2.5"
       />
+    </div>
+  );
+}
+
+/**
+ * Un champ d'âge (input number, suffixe « ans ») par enfant déclaré.
+ * Le nombre de champs suit `nbEnfants` ; les valeurs vivent dans le tableau
+ * `ages` du parent.
+ */
+function AgesEnfantsFields({
+  nbEnfants,
+  ages,
+  onChange,
+}: {
+  nbEnfants: number | null;
+  ages: (number | null)[];
+  onChange: (index: number, v: number | null) => void;
+}) {
+  if (!nbEnfants || nbEnfants <= 0) return null;
+  return (
+    <div className="block sm:col-span-2">
+      <span className="text-sm font-semibold text-text">Âges des enfants</span>
+      <div className="mt-1 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {Array.from({ length: nbEnfants }, (_, i) => (
+          <div key={i} className="relative">
+            <input
+              type="number"
+              inputMode="numeric"
+              min={0}
+              max={25}
+              value={ages[i] ?? ""}
+              aria-label={`Âge de l'enfant ${i + 1}`}
+              onChange={(e) => {
+                const raw = e.target.value;
+                if (raw === "") return onChange(i, null);
+                const n = Number(raw);
+                onChange(i, Number.isNaN(n) ? null : n);
+              }}
+              className={`${inputCls} pr-12`}
+              placeholder={`N°${i + 1}`}
+            />
+            <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center pt-1 text-sm text-text-secondary">
+              ans
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Sélection multiple des traits de caractère recherchés, sous forme de puces.
+ * Le vocabulaire est fermé (`CARACTERE_OPTIONS`, miroir du back) pour que le
+ * matching par caractères recoupe le même ensemble de valeurs côté chats.
+ */
+function CaracteresField({
+  value,
+  onToggle,
+}: {
+  value: string[] | null;
+  onToggle: (trait: string) => void;
+}) {
+  const choisis = value ?? [];
+  return (
+    <div className="block sm:col-span-2">
+      <span className="text-sm font-semibold text-text">
+        Caractères recherchés
+      </span>
+      <span className="ml-2 text-xs font-normal text-text-secondary">
+        Choisis ceux qui comptent pour toi.
+      </span>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {CARACTERE_OPTIONS.map((trait) => {
+          const actif = choisis.includes(trait);
+          return (
+            <button
+              key={trait}
+              type="button"
+              aria-pressed={actif}
+              onClick={() => onToggle(trait)}
+              className={
+                actif
+                  ? "rounded-full border border-primary bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition"
+                  : "rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text-secondary transition hover:border-primary/50"
+              }
+            >
+              {trait}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

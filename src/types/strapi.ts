@@ -652,14 +652,15 @@ export interface ProfilAdoptant {
   compositionFoyer: CompositionFoyer | null;
   nbColocataires: number | null;
   nbEnfants: number | null;
-  agesEnfants: string | null;
+  agesEnfants: number[] | null;
   foyerDaccord: boolean | null;
   foyerDesaccordDetail: string | null;
 
   // Activité
   travaille: boolean | null;
   profession: string | null;
-  horairesTravail: string | null;
+  heureDebutTravail: number | null;
+  heureFinTravail: number | null;
   heuresSeulParJour: number | null;
 
   // Logement et environnement
@@ -673,14 +674,14 @@ export interface ProfilAdoptant {
   envisageSecuriserFenetres: boolean | null;
   superficieJardin: number | null;
   jardinGrillage: boolean | null;
-  hauteurGrillage: string | null;
+  hauteurGrillage: number | null;
   superficieBalcon: number | null;
   balconSecurise: boolean | null;
 
   // Autres animaux et remarques
   autresAnimauxDetail: string | null;
   autresAnimauxSterilises: boolean | null;
-  autresAnimauxDepuis: string | null;
+  autresAnimauxDepuis: number | null;
   remarques: string | null;
 }
 

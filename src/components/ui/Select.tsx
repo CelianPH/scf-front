@@ -176,7 +176,14 @@ export function Select<T extends string>({
                 data-idx={i}
                 aria-selected={isSelected}
                 onMouseEnter={() => setActiveIdx(i)}
-                onClick={() => pick(i)}
+                onClick={(e) => {
+                  // Empêche l'activation du <label> parent éventuel (FieldLabel) :
+                  // sans ça, le clic sur une option (un <li>, non interactif) est
+                  // redispatché sur le bouton du Select et rouvre la liste
+                  // aussitôt après le setOpen(false) de pick().
+                  e.preventDefault();
+                  pick(i);
+                }}
                 className={`flex cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm transition ${
                   active
                     ? "bg-primary-50 text-text"

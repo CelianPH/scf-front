@@ -1,17 +1,16 @@
 import Image from "next/image";
-import { Sparkles, PawPrint } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { cn } from "@/lib/cn";
 import { getStrapiMedia } from "@/lib/strapi";
 import type { AdoptionHeroData, AdoptionMatchingCta } from "@/types/strapi";
 
 interface AdoptionHeroProps {
-  count: number;
   hero: AdoptionHeroData;
   matchingCta: AdoptionMatchingCta | null;
 }
 
 export default function AdoptionHero({
-  count,
   hero,
   matchingCta,
 }: AdoptionHeroProps) {
@@ -46,10 +45,6 @@ export default function AdoptionHero({
         <div className="relative z-10 mx-auto max-w-7xl px-5 pb-12 pt-28 md:flex md:h-full md:flex-col md:justify-end md:px-8 md:pb-20 md:pt-32 lg:justify-center">
           <div className="grid items-end gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-center lg:gap-12">
             <div>
-              <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm md:text-sm">
-                <PawPrint className="h-3.5 w-3.5" aria-hidden="true" />
-                {count} chat{count > 1 ? "s" : ""} disponible{count > 1 ? "s" : ""}
-              </span>
               <h1
                 id="adoption-hero-titre"
                 className="font-display text-4xl font-bold leading-[1.05] text-white md:text-6xl lg:text-7xl"
@@ -80,14 +75,19 @@ export default function AdoptionHero({
                     {matchingCta.badge}
                   </span>
                 ) : null}
-                <h2 className="relative mt-4 font-display text-2xl font-bold leading-tight md:text-3xl">
+                <h2
+                  className={cn(
+                    "relative font-display text-2xl font-bold leading-tight md:text-3xl",
+                    matchingCta.badge && "mt-4",
+                  )}
+                >
                   {matchingCta.titre}
                 </h2>
                 <p className="relative mt-2 text-sm leading-relaxed text-white/85 md:text-base">
                   {matchingCta.description}
                 </p>
                 <div className="relative mt-5">
-                  <CtaButton cta={matchingCta.cta} />
+                  <CtaButton cta={matchingCta.cta} variant="white" />
                 </div>
               </article>
             ) : null}

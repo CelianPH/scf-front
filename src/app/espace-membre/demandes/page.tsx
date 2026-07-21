@@ -5,6 +5,16 @@ import Reveal from "@/components/layout/Reveal";
 import { getDemandesATraiter } from "@/lib/strapi-server";
 import { getStrapiMedia } from "@/lib/strapi";
 import DemandeActions from "@/components/espace-membre/DemandeActions";
+import DossierAdoptantComplet from "@/components/espace-membre/DossierAdoptantComplet";
+import {
+  ACCES_EXTERIEUR_LABELS,
+  AUTRES_ANIMAUX_LABELS,
+  ENFANTS_LABELS,
+  EXPERIENCE_CHATS_LABELS,
+  PRESENCE_MAISON_LABELS,
+  TYPE_LOGEMENT_LABELS,
+  enumLabel,
+} from "@/lib/profil-labels";
 import type { DemandeATraiter } from "@/types/strapi";
 
 const STATUT_LABEL: Record<
@@ -208,17 +218,21 @@ export default async function DemandesATraiterPage() {
                           <dl className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
                             <LigneProfil label="Téléphone" valeur={profil.telephone} />
                             <LigneProfil label="Ville" valeur={profil.ville} />
-                            <LigneProfil label="Logement" valeur={profil.typeLogement} />
-                            <LigneProfil label="Extérieur" valeur={profil.accesExterieur} />
-                            <LigneProfil label="Présence" valeur={profil.presenceMaison} />
-                            <LigneProfil label="Enfants" valeur={profil.enfants} />
-                            <LigneProfil label="Autres animaux" valeur={profil.autresAnimaux} />
-                            <LigneProfil label="Expérience" valeur={profil.experienceChats} />
+                            <LigneProfil label="Logement" valeur={enumLabel(TYPE_LOGEMENT_LABELS, profil.typeLogement)} />
+                            <LigneProfil label="Extérieur" valeur={enumLabel(ACCES_EXTERIEUR_LABELS, profil.accesExterieur)} />
+                            <LigneProfil label="Présence" valeur={enumLabel(PRESENCE_MAISON_LABELS, profil.presenceMaison)} />
+                            <LigneProfil label="Enfants" valeur={enumLabel(ENFANTS_LABELS, profil.enfants)} />
+                            <LigneProfil label="Autres animaux" valeur={enumLabel(AUTRES_ANIMAUX_LABELS, profil.autresAnimaux)} />
+                            <LigneProfil label="Expérience" valeur={enumLabel(EXPERIENCE_CHATS_LABELS, profil.experienceChats)} />
                             <LigneProfil label="Foyer d'accord" valeur={profil.foyerDaccord} />
                             <LigneProfil label="Seul / jour" valeur={profil.heuresSeulParJour ? `${profil.heuresSeulParJour} h` : null} />
                             <LigneProfil label="Superficie" valeur={profil.superficieLogement ? `${profil.superficieLogement} m²` : null} />
                             <LigneProfil label="Sorties" valeur={profil.sortiesAutorisees} />
                           </dl>
+                          <DossierAdoptantComplet
+                            profil={profil}
+                            adoptant={adoptant ?? "l'adoptant"}
+                          />
                         </details>
                       ) : null}
 

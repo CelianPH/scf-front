@@ -27,7 +27,6 @@ export default async function AdoptionPage() {
       <Navbar />
       <main>
         <AdoptionHero
-          count={chats.length}
           hero={page.hero}
           matchingCta={page.matchingCta}
         />
