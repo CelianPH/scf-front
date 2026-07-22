@@ -10,6 +10,7 @@ import {
   ListChecks,
   HelpCircle,
   Stethoscope,
+  ArrowUp,
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -34,7 +35,10 @@ export default function ConseilsPage() {
       <Navbar />
       <main className="bg-bg">
         {/* Hero */}
-        <section className="relative isolate overflow-hidden bg-gradient-to-br from-secondary via-primary to-primary-vif">
+        <section
+          id="haut"
+          className="relative isolate overflow-hidden bg-gradient-to-br from-secondary via-primary to-primary-vif"
+        >
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 -z-10"
@@ -195,6 +199,16 @@ export default function ConseilsPage() {
                   vétérinaire reste votre meilleur interlocuteur.
                 </p>
               </Reveal>
+
+              <div className="text-center lg:text-left">
+                <a
+                  href="#haut"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition hover:gap-2.5"
+                >
+                  <ArrowUp className="h-4 w-4" aria-hidden="true" />
+                  Revenir en haut
+                </a>
+              </div>
             </div>
           </div>
         </div>
