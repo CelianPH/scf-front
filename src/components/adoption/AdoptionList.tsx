@@ -10,7 +10,7 @@ import type { Chat } from "@/types/strapi";
 
 type SexeFilter = "all" | "Male" | "Femelle";
 type AgeFilter = "all" | "junior" | "adulte" | "senior";
-type SortKey = "recent" | "oldest" | "name";
+type SortKey = "recent" | "oldest" | "name" | "featured";
 
 interface AdoptionListProps {
   chats: Chat[];
@@ -64,6 +64,7 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "recent", label: "Plus récents" },
   { value: "oldest", label: "Plus anciens" },
   { value: "name", label: "Nom (A-Z)" },
+  { value: "featured", label: "Coups de cœur d'abord" },
 ];
 
 type EntenteKey = "ententeChiens" | "ententeChats" | "ententeEnfants";
@@ -124,6 +125,9 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
       .slice()
       .sort((a, b) => {
         if (sort === "name") return a.nom.localeCompare(b.nom, "fr");
+        if (sort === "featured" && a.featured !== b.featured) {
+          return a.featured ? -1 : 1;
+        }
         const aDate = new Date(a.createdAt).getTime();
         const bDate = new Date(b.createdAt).getTime();
         return sort === "oldest" ? aDate - bDate : bDate - aDate;
