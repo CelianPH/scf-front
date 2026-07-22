@@ -16,9 +16,9 @@ export default function ArticleCard({ article }: ArticleCardProps) {
   return (
     <Link
       href={`/actualites/${article.slug}`}
-      className="group block h-full rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      className="group block h-full rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
     >
-      <article className="flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface shadow-sm transition duration-200 ease-out group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-primary/15 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0">
+      <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition duration-200 ease-out group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-primary/15 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0">
         <div className="relative aspect-[16/10] w-full overflow-hidden bg-secondary-50">
           <Image
             src={imageUrl}
