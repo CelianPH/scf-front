@@ -3,6 +3,7 @@ import Reveal from "@/components/layout/Reveal";
 import { Icon } from "@/components/ui/Icon";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { RichText } from "@/components/ui/RichText";
+import CollecteProgress from "./CollecteProgress";
 import { getStrapiMedia } from "@/lib/strapi";
 import type { AboutFelinsOmbre as AboutFelinsOmbreData } from "@/types/strapi";
 
@@ -72,41 +73,11 @@ export default function AboutFelinsOmbre({ data }: AboutFelinsOmbreProps) {
             />
 
             {data.goal > 0 ? (
-              <figure
-                aria-label={`Avancement de la collecte : ${progress}%`}
-                className="mt-7 rounded-xl border border-border bg-surface p-5 shadow-sm md:p-6"
-              >
-                <div className="flex items-baseline justify-between gap-3">
-                  <span className="font-display text-2xl font-bold text-primary md:text-3xl">
-                    {progress}%
-                  </span>
-                  <span className="text-sm text-text-muted md:text-base">
-                    de l&apos;objectif global atteint
-                  </span>
-                </div>
-                <div
-                  className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-primary-50"
-                  role="progressbar"
-                  aria-valuenow={progress}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                >
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-secondary to-primary"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <figcaption className="mt-3 text-sm text-text-secondary">
-                  <strong className="font-semibold text-text">
-                    {data.collected.toLocaleString("fr-FR")} €
-                  </strong>{" "}
-                  déjà collectés en phase 1.{" "}
-                  <strong className="font-semibold text-text">
-                    {remaining.toLocaleString("fr-FR")} €
-                  </strong>{" "}
-                  restent à réunir pour finir l&apos;enclos extérieur.
-                </figcaption>
-              </figure>
+              <CollecteProgress
+                progress={progress}
+                collected={data.collected}
+                remaining={remaining}
+              />
             ) : null}
 
             {data.ctaHelloAsso ? (
