@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, X, SlidersHorizontal, PawPrint } from "lucide-react";
+import { Search, X, SlidersHorizontal, PawPrint, Dog, Cat, Baby, type LucideIcon } from "lucide-react";
 import AdoptionCard from "./AdoptionCard";
 import { Button } from "@/components/ui/Button";
 import Reveal from "@/components/layout/Reveal";
@@ -10,7 +10,7 @@ import type { Chat } from "@/types/strapi";
 
 type SexeFilter = "all" | "Male" | "Femelle";
 type AgeFilter = "all" | "junior" | "adulte" | "senior";
-type SortKey = "recent" | "oldest" | "name";
+type SortKey = "recent" | "oldest" | "name" | "featured";
 
 interface AdoptionListProps {
   chats: Chat[];
@@ -64,43 +64,138 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "recent", label: "Plus récents" },
   { value: "oldest", label: "Plus anciens" },
   { value: "name", label: "Nom (A-Z)" },
+  { value: "featured", label: "Coups de cœur d'abord" },
+];
+
+type EntenteKey = "ententeChiens" | "ententeChats" | "ententeEnfants";
+
+const ENTENTE_OPTIONS: { key: EntenteKey; label: string; icon: LucideIcon }[] = [
+  { key: "ententeChiens", label: "Chiens", icon: Dog },
+  { key: "ententeChats", label: "Chats", icon: Cat },
+  { key: "ententeEnfants", label: "Enfants", icon: Baby },
 ];
 
 export default function AdoptionList({ chats }: AdoptionListProps) {
   const [sexe, setSexe] = useState<SexeFilter>("all");
   const [age, setAge] = useState<AgeFilter>("all");
   const [caractere, setCaractere] = useState<string>("");
+  const [caracteresSel, setCaracteresSel] = useState<string[]>([]);
+  const [ententes, setEntentes] = useState<EntenteKey[]>([]);
   const [sort, setSort] = useState<SortKey>("recent");
 
-  const hasFilter = sexe !== "all" || age !== "all" || caractere.length > 0;
+  // Caractères les plus fréquents parmi les chats disponibles → filtres rapides.
+  const topCaracteres = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const c of chats) {
+      for (const trait of c.caracteres ?? []) {
+        counts.set(trait, (counts.get(trait) ?? 0) + 1);
+      }
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "fr"))
+      .slice(0, 8)
+      .map(([trait]) => trait);
+  }, [chats]);
+
+  const hasFilter =
+    sexe !== "all" ||
+    age !== "all" ||
+    caractere.length > 0 ||
+    caracteresSel.length > 0 ||
+    ententes.length > 0;
 
   const filtered = useMemo(() => {
     const q = caractere.trim().toLowerCase();
     return chats
       .filter((c) => (sexe === "all" ? true : c.sexe === sexe))
       .filter((c) => (age === "all" ? true : ageBucket(c.age) === age))
+      .filter((c) =>
+        caracteresSel.every((t) => c.caracteres?.includes(t))
+      )
+      .filter((c) => ententes.every((k) => c[k] === "ok"))
       .filter((c) => {
         if (!q) return true;
         return (
           c.trait?.toLowerCase().includes(q) ||
           c.description?.toLowerCase().includes(q) ||
-          c.nom.toLowerCase().includes(q)
+          c.nom.toLowerCase().includes(q) ||
+          c.caracteres?.some((t) => t.toLowerCase().includes(q))
         );
       })
       .slice()
       .sort((a, b) => {
         if (sort === "name") return a.nom.localeCompare(b.nom, "fr");
+        if (sort === "featured" && a.featured !== b.featured) {
+          return a.featured ? -1 : 1;
+        }
         const aDate = new Date(a.createdAt).getTime();
         const bDate = new Date(b.createdAt).getTime();
         return sort === "oldest" ? aDate - bDate : bDate - aDate;
       });
-  }, [chats, sexe, age, caractere, sort]);
+  }, [chats, sexe, age, caractere, caracteresSel, ententes, sort]);
+
+  function toggleCaractere(trait: string) {
+    setCaracteresSel((prev) =>
+      prev.includes(trait)
+        ? prev.filter((t) => t !== trait)
+        : [...prev, trait]
+    );
+  }
+
+  function toggleEntente(key: EntenteKey) {
+    setEntentes((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+    );
+  }
 
   function resetFilters() {
     setSexe("all");
     setAge("all");
     setCaractere("");
+    setCaracteresSel([]);
+    setEntentes([]);
   }
+
+  // Puces récapitulant chaque filtre actif, chacune retirable individuellement.
+  const activeChips: { key: string; label: string; onRemove: () => void }[] = [
+    ...(sexe !== "all"
+      ? [
+          {
+            key: "sexe",
+            label: SEXE_OPTIONS.find((o) => o.value === sexe)!.label,
+            onRemove: () => setSexe("all"),
+          },
+        ]
+      : []),
+    ...(age !== "all"
+      ? [
+          {
+            key: "age",
+            label: AGE_OPTIONS.find((o) => o.value === age)!.label,
+            onRemove: () => setAge("all"),
+          },
+        ]
+      : []),
+    ...caracteresSel.map((t) => ({
+      key: `car-${t}`,
+      label: t,
+      onRemove: () => toggleCaractere(t),
+    })),
+    ...ententes.map((k) => ({
+      key: `ent-${k}`,
+      label: `S'entend avec ${ENTENTE_OPTIONS.find((o) => o.key === k)!.label.toLowerCase()}`,
+      onRemove: () => toggleEntente(k),
+    })),
+    ...(caractere.trim()
+      ? [
+          {
+            key: "q",
+            label: `« ${caractere.trim()} »`,
+            onRemove: () => setCaractere(""),
+          },
+        ]
+      : []),
+  ];
 
   return (
     <section aria-label="Liste des chats à l'adoption" className="bg-bg">
@@ -197,6 +292,61 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
               </div>
             </label>
           </div>
+
+          {topCaracteres.length > 0 ? (
+            <div className="mt-5 border-t border-border pt-5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                Caractère
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {topCaracteres.map((trait) => {
+                  const active = caracteresSel.includes(trait);
+                  return (
+                    <button
+                      key={trait}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => toggleCaractere(trait)}
+                      className={`rounded-full px-3.5 py-1.5 text-sm font-medium capitalize transition focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:outline-none ${
+                        active
+                          ? "bg-primary text-white shadow-sm shadow-primary/30"
+                          : "bg-surface text-text-secondary ring-1 ring-border hover:text-text"
+                      }`}
+                    >
+                      {trait}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+
+          <div className="mt-5 border-t border-border pt-5">
+            <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
+              S&apos;entend avec
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {ENTENTE_OPTIONS.map((opt) => {
+                const active = ententes.includes(opt.key);
+                return (
+                  <button
+                    key={opt.key}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => toggleEntente(opt.key)}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:outline-none ${
+                      active
+                        ? "bg-primary text-white shadow-sm shadow-primary/30"
+                        : "bg-surface text-text-secondary ring-1 ring-border hover:text-text"
+                    }`}
+                  >
+                    <opt.icon className="h-4 w-4" aria-hidden="true" />
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -231,6 +381,32 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
             />
           </div>
         </div>
+
+        {activeChips.length > 0 ? (
+          <ul
+            aria-label="Filtres actifs"
+            className="mt-4 flex flex-wrap items-center gap-2"
+          >
+            {activeChips.map((chip) => (
+              <li key={chip.key}>
+                <button
+                  type="button"
+                  onClick={chip.onRemove}
+                  className="group inline-flex items-center gap-1.5 rounded-full bg-primary-50 py-1 pl-3 pr-2 text-sm font-medium capitalize text-primary-dark transition hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:outline-none"
+                >
+                  {chip.label}
+                  <span
+                    aria-hidden="true"
+                    className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-primary/15 group-hover:bg-white/25"
+                  >
+                    <X className="h-3 w-3" />
+                  </span>
+                  <span className="sr-only">— retirer ce filtre</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : null}
 
         {filtered.length === 0 ? (
           <div className="mt-10 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-surface px-6 py-16 text-center">
