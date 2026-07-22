@@ -3,7 +3,16 @@
 import { useEffect, useRef, useState, type ElementType, type ReactNode } from "react";
 
 type Props = {
-  as?: "div" | "li" | "section" | "article" | "ul" | "span" | "header";
+  as?:
+    | "div"
+    | "li"
+    | "section"
+    | "article"
+    | "ul"
+    | "span"
+    | "header"
+    | "h2"
+    | "h3";
   delay?: number;
   className?: string;
   children: ReactNode;
