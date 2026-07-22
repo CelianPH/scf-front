@@ -70,21 +70,44 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
   const [sexe, setSexe] = useState<SexeFilter>("all");
   const [age, setAge] = useState<AgeFilter>("all");
   const [caractere, setCaractere] = useState<string>("");
+  const [caracteresSel, setCaracteresSel] = useState<string[]>([]);
   const [sort, setSort] = useState<SortKey>("recent");
 
-  const hasFilter = sexe !== "all" || age !== "all" || caractere.length > 0;
+  // Caractères les plus fréquents parmi les chats disponibles → filtres rapides.
+  const topCaracteres = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const c of chats) {
+      for (const trait of c.caracteres ?? []) {
+        counts.set(trait, (counts.get(trait) ?? 0) + 1);
+      }
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "fr"))
+      .slice(0, 8)
+      .map(([trait]) => trait);
+  }, [chats]);
+
+  const hasFilter =
+    sexe !== "all" ||
+    age !== "all" ||
+    caractere.length > 0 ||
+    caracteresSel.length > 0;
 
   const filtered = useMemo(() => {
     const q = caractere.trim().toLowerCase();
     return chats
       .filter((c) => (sexe === "all" ? true : c.sexe === sexe))
       .filter((c) => (age === "all" ? true : ageBucket(c.age) === age))
+      .filter((c) =>
+        caracteresSel.every((t) => c.caracteres?.includes(t))
+      )
       .filter((c) => {
         if (!q) return true;
         return (
           c.trait?.toLowerCase().includes(q) ||
           c.description?.toLowerCase().includes(q) ||
-          c.nom.toLowerCase().includes(q)
+          c.nom.toLowerCase().includes(q) ||
+          c.caracteres?.some((t) => t.toLowerCase().includes(q))
         );
       })
       .slice()
@@ -94,12 +117,21 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
         const bDate = new Date(b.createdAt).getTime();
         return sort === "oldest" ? aDate - bDate : bDate - aDate;
       });
-  }, [chats, sexe, age, caractere, sort]);
+  }, [chats, sexe, age, caractere, caracteresSel, sort]);
+
+  function toggleCaractere(trait: string) {
+    setCaracteresSel((prev) =>
+      prev.includes(trait)
+        ? prev.filter((t) => t !== trait)
+        : [...prev, trait]
+    );
+  }
 
   function resetFilters() {
     setSexe("all");
     setAge("all");
     setCaractere("");
+    setCaracteresSel([]);
   }
 
   return (
@@ -197,6 +229,34 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
               </div>
             </label>
           </div>
+
+          {topCaracteres.length > 0 ? (
+            <div className="mt-5 border-t border-border pt-5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                Caractère
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {topCaracteres.map((trait) => {
+                  const active = caracteresSel.includes(trait);
+                  return (
+                    <button
+                      key={trait}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => toggleCaractere(trait)}
+                      className={`rounded-full px-3.5 py-1.5 text-sm font-medium capitalize transition focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:outline-none ${
+                        active
+                          ? "bg-primary text-white shadow-sm shadow-primary/30"
+                          : "bg-surface text-text-secondary ring-1 ring-border hover:text-text"
+                      }`}
+                    >
+                      {trait}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </div>
 
         <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
