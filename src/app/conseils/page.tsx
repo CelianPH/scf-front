@@ -9,6 +9,7 @@ import {
   Heart,
   ListChecks,
   HelpCircle,
+  Stethoscope,
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -182,6 +183,19 @@ export default function ConseilsPage() {
                   ) : null}
                 </section>
               ))}
+
+              <Reveal>
+                <p className="flex items-start gap-3 rounded-2xl bg-bg-alt p-4 text-sm leading-relaxed text-text-secondary md:p-5">
+                  <Stethoscope
+                    className="mt-0.5 h-5 w-5 shrink-0 text-primary"
+                    aria-hidden="true"
+                  />
+                  Ce guide donne des repères généraux pour bien démarrer. Il ne
+                  remplace pas l&apos;avis d&apos;un professionnel : au moindre
+                  doute sur la santé ou le comportement de votre chat, votre
+                  vétérinaire reste votre meilleur interlocuteur.
+                </p>
+              </Reveal>
             </div>
           </div>
         </div>
