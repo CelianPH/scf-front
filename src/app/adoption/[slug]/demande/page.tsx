@@ -39,9 +39,7 @@ export default async function DemandePage({ params }: PageProps) {
   // justification (le serveur revérifie de toute façon).
   const score = compat.data?.[0];
   const incompatibilite =
-    score?.plafonne
-      ? { alertes: score.alertes, problemes: raisonsNegatives(score) }
-      : null;
+    score?.plafonne ? { problemes: raisonsNegatives(score) } : null;
 
   const missing = REQUIRED_FIELDS.filter((k) => {
     const v = (profil as any)[k];

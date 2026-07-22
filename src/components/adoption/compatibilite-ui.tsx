@@ -64,17 +64,16 @@ export function raisonsPositives(score: ChatScore, n = 3): string[] {
 }
 
 /**
- * Les points qui coincent : les alertes rédhibitoires d'abord, puis les
- * critères vécus comme des points d'attention (sans doublonner une alerte).
+ * Les points qui coincent : les critères vécus comme des points d'attention,
+ * priorité au bien-être du chat. Chaque phrase se suffit à elle-même (elle ne
+ * nomme pas le chat, déjà affiché au-dessus de la liste) et dit le point une
+ * seule fois.
  */
 export function raisonsNegatives(score: ChatScore): string[] {
-  const attentions = score.criteres
+  return score.criteres
     .filter((c) => c.ressenti === "attention")
+    .sort((a, b) => RANG_CATEGORIE[a.categorie] - RANG_CATEGORIE[b.categorie])
     .map((c) => c.detail);
-  // Les alertes sont déjà des phrases fortes ; on les met en tête et on évite
-  // de répéter un détail qui dirait la même chose.
-  const vues = new Set(score.alertes);
-  return [...score.alertes, ...attentions.filter((d) => !vues.has(d))];
 }
 
 /** Jauge segmentée en 4 crans — un repère visuel sans révéler de nombre. */

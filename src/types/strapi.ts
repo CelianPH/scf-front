@@ -760,7 +760,6 @@ export interface ChatScore {
   nom: string;
   niveau: NiveauCompatibilite;
   plafonne: boolean;
-  alertes: string[];
   criteres: CritereCompatibilite[];
 }
 

@@ -11,7 +11,7 @@ interface Props {
    * Renseigné quand ce chat est incompatible avec le profil : on affiche les
    * raisons et on exige une justification, transmise au bénévole référent.
    */
-  incompatibilite: { alertes: string[]; problemes: string[] } | null;
+  incompatibilite: { problemes: string[] } | null;
 }
 
 export default function DemandeForm({ chatSlug, chatNom, incompatibilite }: Props) {
@@ -22,16 +22,8 @@ export default function DemandeForm({ chatSlug, chatNom, incompatibilite }: Prop
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Les problèmes à afficher : les alertes fortes d'abord, puis les points
-  // d'attention non déjà couverts.
-  const raisons = incompatibilite
-    ? [
-        ...incompatibilite.alertes,
-        ...incompatibilite.problemes.filter(
-          (p) => !incompatibilite.alertes.includes(p)
-        ),
-      ]
-    : [];
+  // Les points d'incompatibilité à afficher, une phrase par point.
+  const raisons = incompatibilite ? incompatibilite.problemes : [];
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
