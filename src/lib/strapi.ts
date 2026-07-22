@@ -223,11 +223,11 @@ export async function getAboutPage(): Promise<AboutPageResponse> {
 export async function getDonPage(): Promise<DonPageResponse> {
   const params = {
     populate: {
+      // Le hero split n'affiche plus de CTA bouton (juste l'ancre vers le récit) :
+      // seule l'image est nécessaire ici.
       hero: {
         populate: {
           image: { fields: mediaFields },
-          ctaPrimary: ctaPopulate,
-          ctaSecondary: ctaPopulate,
         },
       },
       reassurance: {
@@ -235,19 +235,21 @@ export async function getDonPage(): Promise<DonPageResponse> {
           items: { populate: "*" },
         },
       },
-      widget: {
-        populate: {
-          ctaSubmit: ctaPopulate,
-        },
-      },
+      // Champs scalaires uniquement (eyebrow, titre, sousTexte, URL HelloAsso).
+      widget: true,
       utilite: {
-        populate: { items: true },
+        populate: {
+          items: {
+            populate: { image: { fields: mediaFields } },
+          },
+        },
       },
       autresActions: {
         populate: {
           actions: {
             populate: { cta: ctaPopulate },
           },
+          besoins: true,
         },
       },
       seo: seoPopulate,

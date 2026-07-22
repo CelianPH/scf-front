@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DonHero from "@/components/don/DonHero";
-import DonReassurance from "@/components/don/DonReassurance";
-import DonWidget from "@/components/don/DonWidget";
 import DonUtilite from "@/components/don/DonUtilite";
-import DonAutresActions from "@/components/don/DonAutresActions";
+import DonMateriel from "@/components/don/DonMateriel";
+import DonAiderAutrement from "@/components/don/DonAiderAutrement";
 import { getDonPage } from "@/lib/strapi";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -26,11 +25,11 @@ export default async function DonPage() {
     <>
       <Navbar />
       <main>
-        <DonHero data={don.hero} />
-        {don.reassurance ? <DonReassurance data={don.reassurance} /> : null}
+        {/* Hero split : émotion + garanties à gauche, formulaire HelloAsso à droite. */}
+        <DonHero hero={don.hero} reassurance={don.reassurance} widget={don.widget} />
         {don.utilite ? <DonUtilite data={don.utilite} /> : null}
-        {don.widget ? <DonWidget data={don.widget} /> : null}
-        {don.autresActions ? <DonAutresActions data={don.autresActions} /> : null}
+        {don.autresActions ? <DonMateriel data={don.autresActions} /> : null}
+        {don.autresActions ? <DonAiderAutrement data={don.autresActions} /> : null}
       </main>
       <Footer />
     </>
