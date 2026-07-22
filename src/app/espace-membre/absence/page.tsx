@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Cat } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Reveal from "@/components/layout/Reveal";
 import { getBenevoleMe } from "@/lib/strapi-server";
 import AbsenceForm from "@/components/espace-membre/AbsenceForm";
@@ -37,27 +37,6 @@ export default async function AbsencePage() {
           </p>
         )}
       </Reveal>
-
-      {benevole?.chats?.length ? (
-        <Reveal delay={180} className="mx-auto mt-10 max-w-2xl">
-          <h2 className="flex items-center gap-2 font-display text-xl font-bold text-text">
-            <Cat className="h-5 w-5 text-primary" aria-hidden="true" />
-            Chats dont tu es référent·e
-          </h2>
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {benevole.chats.map((c) => (
-              <li key={c.id}>
-                <Link
-                  href={`/adoption/${c.slug}`}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-surface px-3.5 py-1.5 text-sm font-medium text-text shadow-sm ring-1 ring-border transition hover:-translate-y-0.5 hover:text-primary hover:ring-primary/40"
-                >
-                  {c.nom}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Reveal>
-      ) : null}
     </section>
   );
 }

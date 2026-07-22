@@ -228,35 +228,41 @@ export default async function ChatDetailPage({ params }: PageProps) {
             ) : null}
 
             {/* Infos pratiques */}
-            {c.infos && c.infos.length > 0 ? (
-              <Reveal delay={200}>
-                <section aria-labelledby="infos" className="mt-8">
-                  <h2
-                    id="infos"
-                    className="font-display text-xl font-bold text-text md:text-2xl"
-                  >
-                    Informations pratiques
-                  </h2>
-                  <dl className="mt-4 overflow-hidden rounded-2xl bg-surface ring-1 ring-border">
-                    {c.infos.map((info, i) => (
-                      <div
-                        key={info.id}
-                        className={`grid gap-1 px-5 py-4 md:grid-cols-[200px_1fr] md:gap-6 md:px-7 md:py-5 ${
-                          i > 0 ? "border-t border-border" : ""
-                        }`}
-                      >
-                        <dt className="text-sm font-semibold uppercase tracking-wider text-primary md:text-[13px]">
-                          {info.libelle}
-                        </dt>
-                        <dd className="text-sm text-text md:text-base">
-                          {info.valeur}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-                </section>
-              </Reveal>
-            ) : null}
+            <Reveal delay={200}>
+              <section aria-labelledby="infos" className="mt-8">
+                <h2
+                  id="infos"
+                  className="font-display text-xl font-bold text-text md:text-2xl"
+                >
+                  Informations pratiques
+                </h2>
+                <dl className="mt-4 overflow-hidden rounded-2xl bg-surface ring-1 ring-border">
+                  <div className="grid gap-1 px-5 py-4 md:grid-cols-[200px_1fr] md:gap-6 md:px-7 md:py-5">
+                    <dt className="text-sm font-semibold uppercase tracking-wider text-primary md:text-[13px]">
+                      Frais d&apos;adoption
+                    </dt>
+                    <dd className="text-sm text-text md:text-base">
+                      {c.fraisAdoption != null
+                        ? `${c.fraisAdoption} €`
+                        : "Non communiqué"}
+                    </dd>
+                  </div>
+                  {c.infos?.map((info) => (
+                    <div
+                      key={info.id}
+                      className="grid gap-1 border-t border-border px-5 py-4 md:grid-cols-[200px_1fr] md:gap-6 md:px-7 md:py-5"
+                    >
+                      <dt className="text-sm font-semibold uppercase tracking-wider text-primary md:text-[13px]">
+                        {info.libelle}
+                      </dt>
+                      <dd className="text-sm text-text md:text-base">
+                        {info.valeur}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            </Reveal>
           </div>
         </section>
 

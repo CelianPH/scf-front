@@ -40,16 +40,10 @@ export default async function EspaceMembrePage() {
 
   const enAttente = demandes.filter((d) => d.statut === "en_attente").length;
   const enCours = demandes.filter((d) => d.statut === "en_cours").length;
-  // « Chats concernés » = chats distincts ayant une demande encore à traiter
-  // (en attente ou en cours). On exclut les demandes closes (acceptée/refusée),
-  // sinon le compteur inclut des chats déjà traités et devient incohérent avec
-  // les deux autres stats.
-  const chatsSuivis = new Set(
-    demandes
-      .filter((d) => d.statut === "en_attente" || d.statut === "en_cours")
-      .map((d) => d.chat?.slug)
-      .filter(Boolean)
-  ).size;
+  // « Chats concernés » = chats dont le bénévole est référent·e, indépendamment
+  // des demandes en cours (même donnée que la liste « Chats dont tu es
+  // référent·e » de la page absence).
+  const chatsSuivis = benevole?.chats?.length ?? 0;
 
   const ouvertes = enAttente + enCours;
 
