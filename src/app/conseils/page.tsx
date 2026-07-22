@@ -92,16 +92,15 @@ export default function ConseilsPage() {
                   Sommaire
                 </p>
                 <ul className="mt-2 space-y-0.5">
-                  {GUIDE_SECTIONS.map((s) => (
+                  {GUIDE_SECTIONS.map((s, i) => (
                     <li key={s.id}>
                       <a
                         href={`#${s.id}`}
                         className="group flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm font-medium text-text-secondary transition hover:bg-primary-50 hover:text-primary"
                       >
-                        <s.icon
-                          className="h-4 w-4 shrink-0 text-text-muted transition group-hover:text-primary"
-                          aria-hidden="true"
-                        />
+                        <span className="w-5 shrink-0 font-display text-xs font-bold tabular-nums text-primary/40 transition group-hover:text-primary">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
                         {s.navLabel}
                       </a>
                     </li>
