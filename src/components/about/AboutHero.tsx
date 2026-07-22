@@ -13,7 +13,7 @@ export default function AboutHero({ data }: AboutHeroProps) {
 
   return (
     <section className="relative isolate overflow-hidden">
-      <div className="relative h-[50svh] min-h-[380px] w-full md:h-[68svh] md:min-h-[440px]">
+      <div className="relative flex min-h-[58svh] w-full flex-col justify-end md:min-h-[62svh] lg:h-[70svh] lg:min-h-[600px] lg:justify-center">
         <Image
           src={imageUrl}
           alt={imageAlt}
@@ -31,7 +31,7 @@ export default function AboutHero({ data }: AboutHeroProps) {
           className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-dark/70"
         />
 
-        <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-5 pb-12 pt-24 md:px-8 md:pb-20 md:pt-32 lg:justify-center">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-14 pt-28 md:px-8 md:pb-16 md:pt-32">
           <div className="max-w-3xl">
             {data.badgeText ? (
               <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm md:text-sm">
