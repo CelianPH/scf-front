@@ -135,7 +135,7 @@ export interface SharedFeatureCard {
   id: number;
   iconName: IconName;
   titre: string;
-  description: string;
+  description: string | null;
   cta: SharedCta | null;
 }
 
@@ -461,11 +461,7 @@ export interface DonHero {
   id: number;
   titre: string;
   sousTitre: string;
-  mention: string | null;
   image: StrapiMedia | null;
-  imageAlt: string | null;
-  ctaPrimary: SharedCta;
-  ctaSecondary: SharedCta | null;
 }
 
 export interface DonReassuranceBand {
@@ -475,17 +471,13 @@ export interface DonReassuranceBand {
 
 export interface DonWidget {
   id: number;
+  /** Eyebrow au-dessus du titre du widget (ex. « Votre don en 1 minute »). */
+  eyebrow: string | null;
   titre: string;
-  frequenceLabel: string | null;
-  frequenceUniqueLabel: string;
-  frequenceMensuelLabel: string;
-  placeholderMontantLibre: string | null;
-  labelMontantLibre: string | null;
-  exempleImpactLabel: string | null;
-  exempleImpactTexte: string | null;
+  /** Paragraphe sous le titre du widget. */
+  sousTexte: string | null;
+  /** URL de la campagne HelloAsso (le `/widget` et `?lang=fr` sont ajoutés côté front). */
   helloAssoUrlUnique: string;
-  helloAssoUrlMensuel: string | null;
-  ctaSubmit: SharedCta | null;
 }
 
 export interface DonUtiliteItem {
@@ -493,14 +485,21 @@ export interface DonUtiliteItem {
   iconName: IconName;
   titre: string;
   description: string;
-  sousTexte: string | null;
+  /** Visuel affiché en haut de la carte récit (optionnel — fallback statique sinon). */
+  image?: StrapiMedia | null;
 }
 
 export interface DonUtiliteBlock {
   id: number;
   titre: string;
-  note: string | null;
+  /** Intro éditoriale du récit (sous le titre). */
+  intro: string | null;
   items: DonUtiliteItem[];
+}
+
+export interface DonBesoinItem {
+  id: number;
+  libelle: string;
 }
 
 export interface DonAutresActions {
@@ -508,6 +507,10 @@ export interface DonAutresActions {
   titre: string;
   intro: string | null;
   actions: SharedActionCard[];
+  /** Titre de la carte des besoins matériels (ex. « Nous avons notamment besoin de : »). */
+  titreBesoins: string | null;
+  /** Liste éditable des besoins matériels. */
+  besoins: DonBesoinItem[];
 }
 
 // ---------- Single types ----------

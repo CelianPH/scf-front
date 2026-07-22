@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# docs de travail internes (ne pas committer)
+DESIGN.md
+PRODUCT.md
+stats-contributors.csv
+
+# config locale Claude Code
+.claude/
+
+# page de preview temporaire
+src/app/preview-cta/

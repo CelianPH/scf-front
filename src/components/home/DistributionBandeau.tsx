@@ -1,6 +1,6 @@
 import Reveal from "@/components/layout/Reveal";
 import { Icon } from "@/components/ui/Icon";
-import { ArrowLink } from "@/components/ui/ArrowLink";
+import { Section } from "@/components/ui/Section";
 import type { HomeDistributionBandeau } from "@/types/strapi";
 
 interface DistributionBandeauProps {
@@ -9,11 +9,11 @@ interface DistributionBandeauProps {
 
 export default function DistributionBandeau({ data }: DistributionBandeauProps) {
   return (
-    <section
+    <Section
       aria-labelledby="distribution-titre"
-      className="bg-secondary-50/60"
+      bg="secondary-50"
+      size="compact"
     >
-      <div className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-14">
         <Reveal className="mx-auto max-w-3xl text-center">
           {data.label ? (
             <span className="text-xs font-semibold uppercase tracking-wider text-secondary md:text-sm">
@@ -22,7 +22,7 @@ export default function DistributionBandeau({ data }: DistributionBandeauProps) 
           ) : null}
           <h2
             id="distribution-titre"
-            className="mt-2 font-display text-2xl font-bold text-text md:text-3xl"
+            className="mt-2 font-display text-3xl font-bold text-text md:text-4xl"
           >
             {data.titre}
           </h2>
@@ -33,10 +33,10 @@ export default function DistributionBandeau({ data }: DistributionBandeauProps) 
           ) : null}
         </Reveal>
 
-        <ul className="mt-8 grid grid-cols-1 gap-5 md:mt-10 md:grid-cols-3 md:gap-6">
+        <ul className="mt-8 grid grid-cols-1 gap-6 md:mt-10 md:grid-cols-3">
           {data.infos.map((info, i) => (
             <Reveal as="li" key={info.id} delay={i * 80}>
-              <div className="flex h-full items-start gap-4 rounded-xl bg-surface/80 p-5 shadow-sm ring-1 ring-secondary/10 backdrop-blur-sm md:p-6">
+              <div className="flex h-full items-start gap-4 rounded-lg border border-secondary/15 bg-surface p-5 shadow-sm md:p-6">
                 <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-secondary/15 text-secondary">
                   <Icon name={info.iconName} className="h-5 w-5" aria-hidden="true" />
                 </span>
@@ -44,7 +44,7 @@ export default function DistributionBandeau({ data }: DistributionBandeauProps) 
                   <p className="text-xs font-semibold uppercase tracking-wider text-secondary">
                     {info.titre}
                   </p>
-                  <p className="mt-1 break-words font-display text-base font-bold text-text md:text-lg">
+                  <p className="mt-1 break-words font-display text-sm font-bold text-text sm:text-base">
                     {info.valeur}
                   </p>
                   {info.detail ? (
@@ -57,19 +57,6 @@ export default function DistributionBandeau({ data }: DistributionBandeauProps) 
             </Reveal>
           ))}
         </ul>
-
-        {data.ctaLink ? (
-          <Reveal className="mt-8 flex justify-center">
-            <ArrowLink
-              href={data.ctaLink.href}
-              external={data.ctaLink.external}
-              tone="secondary"
-            >
-              {data.ctaLink.label}
-            </ArrowLink>
-          </Reveal>
-        ) : null}
-      </div>
-    </section>
+    </Section>
   );
 }

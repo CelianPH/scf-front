@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import Script from "next/script";
-import { ShieldCheck, Receipt } from "lucide-react";
-import Reveal from "@/components/layout/Reveal";
+import { useEffect, useState } from "react";
 import type { DonWidget as DonWidgetData } from "@/types/strapi";
 
 interface DonWidgetProps {
   data: DonWidgetData;
+  /** Classe appliquée au cadre extérieur (permet de le faire remplir sa colonne). */
+  className?: string;
 }
 
 /** Ajoute `?lang=fr` à l'URL du widget HelloAsso (seul paramètre supporté par l'iframe). */
@@ -16,85 +15,57 @@ function buildWidgetUrl(baseUrl: string) {
   return clean.includes("?") ? `${clean}&lang=fr` : `${clean}?lang=fr`;
 }
 
-export default function DonWidget({ data }: DonWidgetProps) {
+/**
+ * Bloc formulaire HelloAsso, sans section propre : embarqué dans la colonne
+ * droite du hero split (voir DonHero). Le cadre teinté à deux niveaux reprend
+ * le thème du site et masque les coins carrés du contenu HelloAsso.
+ *
+ * On N'utilise PAS iFrameResizer : il étirerait l'iframe à la hauteur totale du
+ * contenu HelloAsso (bien plus grande que l'écran), cassant l'objectif « le
+ * split fait pile la hauteur d'écran ». À la place, l'iframe remplit son cadre
+ * (`h-full`) et scrolle nativement (`scrolling="auto"`) — le bouton « Faire un
+ * don » reste atteignable en scrollant dans le formulaire, sans scroller la page.
+ */
+export default function DonWidget({ data, className }: DonWidgetProps) {
   const widgetUrl = buildWidgetUrl(data.helloAssoUrlUnique);
   const [loaded, setLoaded] = useState(false);
 
+  // Filet de sécurité : certaines iframes HelloAsso rechargent en interne sans
+  // re-déclencher `onLoad`. On retire le spinner après un délai quoi qu'il
+  // arrive, pour ne jamais laisser un voile masquer le formulaire.
+  useEffect(() => {
+    const t = setTimeout(() => setLoaded(true), 4000);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
-    <section
-      id="widget-don"
-      aria-labelledby="don-widget-titre"
-      className="relative scroll-mt-24 overflow-hidden bg-bg"
+    <div
+      className={`flex min-h-0 flex-col rounded-[1.125rem] bg-gradient-to-br from-primary-50 to-secondary-50 p-2 shadow-lg shadow-primary/10 md:p-2.5 ${className ?? ""}`}
     >
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(194,24,91,0.06),transparent_60%)]"
-      />
-      <div className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <span className="text-sm font-semibold uppercase tracking-wider text-primary">
-            Don sécurisé
-          </span>
-          <h2
-            id="don-widget-titre"
-            className="mt-2 font-display text-3xl font-bold text-text md:text-4xl"
+      <div className="relative flex min-h-[360px] flex-1 flex-col overflow-hidden rounded-[0.875rem] bg-surface ring-1 ring-black/[0.03]">
+        {!loaded ? (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-surface"
           >
-            {data.titre}
-          </h2>
-        </Reveal>
-
-        {/* Formulaire HelloAsso natif (français), centré. Cadre à deux niveaux :
-           la marge teintée primary reprend le thème du site et évite que les
-           coins carrés du contenu HelloAsso ne dépassent du coin arrondi. */}
-        <Reveal delay={120} className="mx-auto mt-10 max-w-3xl md:mt-12">
-          <div className="rounded-[1.75rem] bg-gradient-to-br from-primary-50 to-secondary-50 p-2 shadow-xl shadow-primary/10 md:p-2.5">
-            <div className="relative overflow-hidden rounded-[1.4rem] bg-surface ring-1 ring-black/[0.03]">
-              {!loaded ? (
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 z-10 flex items-center justify-center bg-surface"
-                >
-                  <span className="h-9 w-9 animate-spin rounded-full border-2 border-primary/25 border-t-primary" />
-                </div>
-              ) : null}
-              <iframe
-                id="haWidget"
-                src={widgetUrl}
-                scrolling="auto"
-                title="Formulaire de don HelloAsso"
-                allow="payment"
-                loading="lazy"
-                onLoad={() => setLoaded(true)}
-                style={{ width: "100%", height: "760px", border: "none", display: "block" }}
-              />
-            </div>
+            <span className="h-9 w-9 animate-spin rounded-full border-2 border-primary/25 border-t-primary" />
           </div>
-
-          <Script
-            src="https://www.helloasso.com/js/iFrameResizer.min.js"
-            strategy="lazyOnload"
-            onLoad={() => {
-              if (
-                typeof window !== "undefined" &&
-                typeof (window as any).iFrameResize === "function"
-              ) {
-                (window as any).iFrameResize({}, "#haWidget");
-              }
-            }}
-          />
-
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-text-secondary md:text-sm">
-            <span className="inline-flex items-center gap-1.5">
-              <ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" />
-              Paiement 100 % sécurisé via HelloAsso
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <Receipt className="h-4 w-4 text-primary" aria-hidden="true" />
-              Reçu fiscal envoyé automatiquement
-            </span>
-          </div>
-        </Reveal>
+        ) : null}
+        {/* L'iframe remplit son cadre et scrolle en interne. Hauteur bornée à
+           l'écran sur mobile (80svh) ; sur desktop elle prend toute la hauteur
+           disponible de la colonne (flex-1). */}
+        <iframe
+          id="haWidget"
+          src={widgetUrl}
+          scrolling="auto"
+          title="Formulaire de don HelloAsso"
+          allow="payment"
+          loading="lazy"
+          onLoad={() => setLoaded(true)}
+          className="block h-[min(760px,80svh)] w-full flex-1 border-0 lg:h-full"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        />
       </div>
-    </section>
+    </div>
   );
 }

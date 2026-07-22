@@ -7,9 +7,17 @@ import type { Chat } from "@/types/strapi";
 
 interface AdoptionCardProps {
   chat: Chat;
+  /**
+   * Classes Tailwind pilotant le ratio de l'image.
+   * Par défaut : paysage 4/3 en mobile, portrait 4/5 dès `sm` (utilisé sur /adoption).
+   */
+  imageAspectClassName?: string;
 }
 
-export default function AdoptionCard({ chat }: AdoptionCardProps) {
+export default function AdoptionCard({
+  chat,
+  imageAspectClassName = "aspect-[4/3] sm:aspect-[4/5]",
+}: AdoptionCardProps) {
   const sexeLabel = chat.sexe === "Male" ? "Mâle" : "Femelle";
   const imageUrl = getStrapiMedia(chat.image?.url) ?? "";
   const statusLabel = statutLabel(chat.statut);
@@ -36,7 +44,7 @@ export default function AdoptionCard({ chat }: AdoptionCardProps) {
             : "ring-1 ring-border"
         }`}
       >
-        <div className="relative aspect-[4/5] w-full overflow-hidden bg-gradient-to-br from-primary-50 via-bg-alt to-secondary-50">
+        <div className={`relative w-full overflow-hidden bg-gradient-to-br from-primary-50 via-bg-alt to-secondary-50 ${imageAspectClassName}`}>
           {imageUrl ? (
             <Image
               src={imageUrl}

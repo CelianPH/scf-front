@@ -321,21 +321,21 @@ export default function AboutHistoire({ data }: AboutHistoireProps) {
           >
             <span
               aria-hidden="true"
-              className="absolute left-[92px] bottom-3 top-3 w-px bg-gradient-to-b from-primary/40 via-secondary-light/40 to-border"
+              className="absolute left-[108px] bottom-3 top-3 w-px bg-gradient-to-b from-primary/40 via-secondary-light/40 to-border"
             />
             {jalons.map((j, i) => (
               <Reveal
                 as="li"
                 key={j.id}
                 delay={i * 100}
-                className="relative pl-[112px]"
+                className="relative pl-[128px]"
               >
-                <span className="absolute left-0 top-1 w-20 text-right font-display text-xs font-bold uppercase tracking-wider text-primary">
+                <span className="absolute left-0 top-1 w-24 text-right font-display text-xs font-bold uppercase tracking-wider text-primary">
                   {j.annee}
                 </span>
                 <span
                   aria-hidden="true"
-                  className="absolute left-[92px] top-2 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-primary ring-4 ring-bg"
+                  className="absolute left-[108px] top-2 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-primary ring-4 ring-bg"
                 />
                 <div
                   className={`pb-10 ${i === jalons.length - 1 ? "pb-0" : ""}`}

@@ -26,10 +26,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className="light scroll-smooth" style={{ colorScheme: "light" }}>
-      <body
-        className={`${fraunces.variable} ${inter.variable} font-body antialiased bg-bg text-text`}
-      >
+    <html
+      lang="fr"
+      className={`${fraunces.variable} ${inter.variable} light scroll-smooth`}
+      style={{ colorScheme: "light" }}
+    >
+      <body className="font-body antialiased bg-bg text-text">
         {children}
       </body>
     </html>

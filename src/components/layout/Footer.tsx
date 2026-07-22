@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Heart, Mail, MapPin, Phone, PawPrint } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Section } from "@/components/ui/Section";
 
 const navLinks = [
   { href: "/", label: "Accueil" },
@@ -12,8 +13,6 @@ const navLinks = [
 const legalLinks = [
   { href: "/mentions-legales", label: "Mentions légales" },
   { href: "/politique-de-confidentialite", label: "Politique de confidentialité" },
-  { href: "/rgpd", label: "Données personnelles" },
-  { href: "/cookies", label: "Cookies" },
 ];
 
 function FacebookIcon({ className }: { className?: string }) {
@@ -59,8 +58,7 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-dark-lighter bg-dark text-white/80">
-      <div className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <Section as="footer" bg="dark">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <Link
@@ -70,7 +68,7 @@ export default function Footer() {
               <PawPrint className="h-5 w-5" aria-hidden="true" />
               Sans Croquettes Fixes
             </Link>
-            <p className="mt-3 text-sm leading-relaxed text-white/65">
+            <p className="mt-3 text-sm leading-relaxed text-white/60">
               Association lyonnaise loi 1901, 100 % bénévole, qui prend soin
               des chats et des humains qui les aiment depuis 2015.
             </p>
@@ -90,12 +88,12 @@ export default function Footer() {
             <h2 className="font-display text-sm font-bold uppercase tracking-wider text-white">
               Naviguer
             </h2>
-            <ul className="mt-4 flex flex-col gap-2.5 text-sm">
+            <ul className="mt-4 flex flex-col gap-2 text-sm">
               {navLinks.map(({ href, label }) => (
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-white/70 transition hover:text-white"
+                    className="text-white/80 transition hover:text-white"
                   >
                     {label}
                   </Link>
@@ -108,17 +106,17 @@ export default function Footer() {
             <h2 className="font-display text-sm font-bold uppercase tracking-wider text-white">
               Nous joindre
             </h2>
-            <ul className="mt-4 flex flex-col gap-3 text-sm text-white/70">
+            <ul className="mt-4 flex flex-col gap-3 text-sm text-white/80">
               <li className="flex items-start gap-2.5">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-secondary-lighter" aria-hidden="true" />
-                <span className="flex flex-col gap-0.5">
+                <span className="flex flex-col gap-1">
                   <a href="mailto:contact@sanscroquettesfixes.fr" className="transition hover:text-white">
                     contact@sanscroquettesfixes.fr
                   </a>
-                  <a href="mailto:distribution@sanscroquettesfixes.fr" className="text-xs text-white/55 transition hover:text-white/80">
+                  <a href="mailto:distribution@sanscroquettesfixes.fr" className="text-xs text-white/60 transition hover:text-white">
                     distribution (1ʳᵉ visite)
                   </a>
-                  <a href="mailto:dons@sanscroquettesfixes.fr" className="text-xs text-white/55 transition hover:text-white/80">
+                  <a href="mailto:dons@sanscroquettesfixes.fr" className="text-xs text-white/60 transition hover:text-white">
                     dons (matériel)
                   </a>
                 </span>
@@ -136,7 +134,7 @@ export default function Footer() {
                   <br />
                   69300 Caluire-et-Cuire
                   <br />
-                  <span className="text-xs text-white/45">
+                  <span className="text-xs text-white/60">
                     Boîte postale uniquement, ne pas s&apos;y présenter.
                   </span>
                 </span>
@@ -156,7 +154,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/15 bg-white/5 text-white/80 transition hover:border-secondary-lighter hover:bg-white/10 hover:text-white"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/10 bg-white/10 text-white/80 transition hover:border-secondary-lighter hover:bg-white/20 hover:text-white"
                   >
                     <Icon className="h-4 w-4" />
                   </a>
@@ -170,7 +168,7 @@ export default function Footer() {
             <ul className="mt-4 flex flex-col gap-2 text-sm">
               {legalLinks.map(({ href, label }) => (
                 <li key={href}>
-                  <Link href={href} className="text-white/65 transition hover:text-white">
+                  <Link href={href} className="text-white/60 transition hover:text-white">
                     {label}
                   </Link>
                 </li>
@@ -179,13 +177,12 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/50 md:flex-row md:items-center md:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/60 md:flex-row md:items-center md:justify-between">
           <p>
             Association loi 1901 déclarée en août 2015. SIRET 818 195 307 00017. Reconnue d&apos;intérêt général.
           </p>
           <p>© {new Date().getFullYear()} Sans Croquettes Fixes</p>
         </div>
-      </div>
-    </footer>
+    </Section>
   );
 }

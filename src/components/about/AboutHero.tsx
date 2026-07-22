@@ -13,7 +13,7 @@ export default function AboutHero({ data }: AboutHeroProps) {
 
   return (
     <section className="relative isolate overflow-hidden">
-      <div className="relative h-[58svh] min-h-[440px] w-full md:h-[68svh]">
+      <div className="relative h-[50svh] min-h-[380px] w-full md:h-[68svh] md:min-h-[440px]">
         <Image
           src={imageUrl}
           alt={imageAlt}

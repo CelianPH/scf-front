@@ -49,9 +49,12 @@ export default function StickyAdoptionBar({ catName, sexeLabel, age, adoptionUrl
             </p>
             <p className="truncate font-display text-sm font-bold text-text md:text-base">
               {catName}
-              <span className="font-normal text-text-secondary">
+              <span className="font-normal text-text-secondary max-sm:hidden">
                 {" "}· {sexeLabel} · {age}
               </span>
+            </p>
+            <p className="truncate text-xs font-normal text-text-secondary sm:hidden">
+              {sexeLabel} · {age}
             </p>
           </div>
 
