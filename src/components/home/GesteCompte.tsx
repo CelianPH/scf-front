@@ -1,6 +1,7 @@
 import Reveal from "@/components/layout/Reveal";
 import { Icon } from "@/components/ui/Icon";
 import { ArrowLink } from "@/components/ui/ArrowLink";
+import { Section } from "@/components/ui/Section";
 import type { HomeGesteCompte } from "@/types/strapi";
 
 interface GesteCompteProps {
@@ -9,8 +10,7 @@ interface GesteCompteProps {
 
 export default function GesteCompte({ data }: GesteCompteProps) {
   return (
-    <section aria-labelledby="geste-titre" className="bg-bg-alt">
-      <div className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <Section aria-labelledby="geste-titre" bg="bg-alt">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2
             id="geste-titre"
@@ -25,10 +25,15 @@ export default function GesteCompte({ data }: GesteCompteProps) {
           ) : null}
         </Reveal>
 
-        <ul className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 md:mt-10 lg:grid-cols-3">
+        <ul className="mt-8 flex flex-wrap justify-center gap-6 md:mt-10">
           {data.actions.map((action, i) => (
-            <Reveal as="li" key={action.id} delay={i * 100}>
-              <article className="group flex h-full flex-col rounded-lg border border-border bg-surface p-6 shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/15 motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:p-8">
+            <Reveal
+              as="li"
+              key={action.id}
+              delay={i * 100}
+              className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+            >
+              <article className="group flex h-full flex-col rounded-lg border border-border bg-surface p-5 shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/15 motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:p-6">
                 <span className="inline-flex h-12 w-12 items-center justify-center rounded-md bg-primary-50 text-primary transition duration-200 ease-out group-hover:bg-primary group-hover:text-white motion-reduce:transition-none">
                   <Icon name={action.iconName} className="h-6 w-6" aria-hidden="true" />
                 </span>
@@ -50,7 +55,6 @@ export default function GesteCompte({ data }: GesteCompteProps) {
             </Reveal>
           ))}
         </ul>
-      </div>
-    </section>
+    </Section>
   );
 }

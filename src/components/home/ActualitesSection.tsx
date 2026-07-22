@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/layout/Reveal";
 import { ArrowLink } from "@/components/ui/ArrowLink";
+import { Section } from "@/components/ui/Section";
 import { getStrapiMedia } from "@/lib/strapi";
 import { formatArticleDate } from "@/lib/formatters";
 import type { HomeActualitesBlock } from "@/types/strapi";
@@ -16,8 +17,7 @@ export default function ActualitesSection({ data }: ActualitesSectionProps) {
     .slice(0, 3);
 
   return (
-    <section aria-labelledby="actus-titre" className="bg-bg">
-      <div className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <Section aria-labelledby="actus-titre" bg="bg">
         <Reveal className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <h2
@@ -77,7 +77,6 @@ export default function ActualitesSection({ data }: ActualitesSectionProps) {
             );
           })}
         </ul>
-      </div>
-    </section>
+    </Section>
   );
 }

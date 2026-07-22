@@ -37,7 +37,7 @@ export default function AboutTemoignages({ data }: AboutTemoignagesProps) {
             return (
               <Reveal as="li" key={t.id} delay={i * 90}>
                 <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/15 motion-reduce:hover:translate-y-0">
-                  <div className="relative aspect-[4/5] w-full overflow-hidden">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[4/5]">
                     <Image
                       src={photoUrl}
                       alt={t.photo.alternativeText ?? `Portrait de ${t.nom}`}

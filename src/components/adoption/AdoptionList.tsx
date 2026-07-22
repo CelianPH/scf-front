@@ -128,7 +128,7 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
                       role="radio"
                       aria-checked={active}
                       onClick={() => setSexe(opt.value)}
-                      className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:outline-none ${
+                      className={`rounded-full px-4 py-2.5 text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:outline-none ${
                         active
                           ? "bg-primary text-white shadow-sm shadow-primary/30"
                           : "bg-surface text-text-secondary ring-1 ring-border hover:text-text"
@@ -155,7 +155,7 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
                       role="radio"
                       aria-checked={active}
                       onClick={() => setAge(opt.value)}
-                      className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:outline-none ${
+                      className={`rounded-full px-4 py-2.5 text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:outline-none ${
                         active
                           ? "bg-primary text-white shadow-sm shadow-primary/30"
                           : "bg-surface text-text-secondary ring-1 ring-border hover:text-text"

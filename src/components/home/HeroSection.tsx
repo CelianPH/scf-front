@@ -14,7 +14,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
 
   return (
     <section className="relative isolate overflow-hidden">
-      <div className="relative h-[68svh] min-h-[520px] w-full md:h-[78svh]">
+      <div className="relative flex min-h-[54svh] w-full flex-col md:min-h-[78svh]">
         <Image
           src={imageUrl}
           alt={imageAlt}
@@ -28,7 +28,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
           className="absolute inset-0 bg-gradient-to-b from-dark/15 via-dark/45 to-dark/80"
         />
 
-        <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-5 pb-12 pt-24 md:px-8 md:pb-20 md:pt-32 lg:justify-center">
+        <div className="relative z-10 mx-auto flex w-full flex-1 max-w-7xl flex-col justify-end px-5 pb-12 pt-24 md:px-8 md:pb-20 md:pt-32 lg:justify-center">
           <div className="max-w-2xl">
             {data.badgeText ? (
               <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm md:text-sm">

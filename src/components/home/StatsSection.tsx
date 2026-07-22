@@ -1,5 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import Reveal from "@/components/layout/Reveal";
+import { Section } from "@/components/ui/Section";
 import type { HomeStatsBlock } from "@/types/strapi";
 
 interface StatsSectionProps {
@@ -10,11 +11,10 @@ export default function StatsSection({ data }: StatsSectionProps) {
   const heading = data.ariaLabel ?? "Notre impact en chiffres";
 
   return (
-    <section aria-label={heading} className="bg-bg">
-      <div className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
+    <Section aria-label={heading} bg="bg" size="compact">
         <Reveal
           as="h2"
-          className="mb-8 text-center font-display text-2xl font-bold text-text md:mb-10 md:text-3xl"
+          className="mb-6 text-center font-display text-3xl font-bold text-text md:mb-8 md:text-4xl"
         >
           {heading}
         </Reveal>
@@ -42,7 +42,6 @@ export default function StatsSection({ data }: StatsSectionProps) {
             </Reveal>
           ))}
         </ul>
-      </div>
-    </section>
+    </Section>
   );
 }

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Reveal from "@/components/layout/Reveal";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { RichText } from "@/components/ui/RichText";
+import { Section } from "@/components/ui/Section";
 import { getStrapiMedia } from "@/lib/strapi";
 import type { HomeQuiSommesNous } from "@/types/strapi";
 
@@ -42,11 +43,10 @@ export default function QuiSommesNous({ data }: QuiSommesNousProps) {
   };
 
   return (
-    <section aria-labelledby="qui-titre" className="bg-bg">
-      <div className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
-        <div className="grid items-center gap-10 md:grid-cols-2 md:gap-14 lg:gap-20">
-          <Reveal className="relative order-2 md:order-1">
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-secondary-50 md:aspect-square">
+    <Section aria-labelledby="qui-titre" bg="bg">
+        <div className="grid items-stretch gap-10 md:grid-cols-2 md:gap-14 lg:gap-20">
+          <Reveal className="relative order-2 hidden md:order-1 md:block">
+            <div className="relative h-full min-h-[24rem] w-full overflow-hidden rounded-xl bg-secondary-50">
               <Image
                 src={imageUrl}
                 alt={imageAlt}
@@ -73,6 +73,15 @@ export default function QuiSommesNous({ data }: QuiSommesNousProps) {
             >
               {data.titre}
             </h2>
+            <div className="relative mb-6 mt-6 aspect-[4/3] w-full overflow-hidden rounded-xl bg-secondary-50 md:hidden">
+              <Image
+                src={imageUrl}
+                alt={imageAlt}
+                fill
+                sizes="100vw"
+                className="object-cover"
+              />
+            </div>
             <RichText
               html={data.paragraphes}
               className="text-base leading-relaxed text-text-secondary md:text-lg [&_p]:mt-5 [&_p:not(:first-of-type)]:mt-4 [&_a]:text-primary [&_a]:underline [&_strong]:font-semibold [&_strong]:text-text [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mt-4 [&_ol]:list-decimal [&_ol]:pl-5"
@@ -121,12 +130,6 @@ export default function QuiSommesNous({ data }: QuiSommesNousProps) {
                     <path d="M100 10 L158 10" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
                   </svg>
                 </div>
-
-                {data.label ? (
-                  <figcaption className="mt-3 text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-primary md:text-xs">
-                    {data.label}
-                  </figcaption>
-                ) : null}
               </figure>
             ) : null}
 
@@ -146,7 +149,6 @@ export default function QuiSommesNous({ data }: QuiSommesNousProps) {
             {data.cta ? <CtaButton cta={data.cta} className="mt-7" /> : null}
           </Reveal>
         </div>
-      </div>
-    </section>
+    </Section>
   );
 }
