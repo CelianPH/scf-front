@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { getStrapiMedia } from "@/lib/strapi";
 import { formatArticleDate } from "@/lib/formatters";
 import type { Article } from "@/types/strapi";
@@ -41,18 +42,24 @@ export default function ArticleCard({ article }: ArticleCardProps) {
               {article.resume}
             </p>
           ) : null}
-          {(article.tags?.length ?? 0) > 0 ? (
-            <ul className="mt-4 flex flex-wrap gap-1.5">
-              {(article.tags ?? []).map((tag) => (
-                <li
-                  key={tag.id}
-                  className="rounded-full bg-primary-50 px-2.5 py-0.5 text-xs font-medium text-primary-dark"
-                >
-                  {tag.nom}
-                </li>
-              ))}
-            </ul>
-          ) : null}
+          <div className="mt-auto pt-4">
+            {(article.tags?.length ?? 0) > 0 ? (
+              <ul className="flex flex-wrap gap-1.5">
+                {(article.tags ?? []).map((tag) => (
+                  <li
+                    key={tag.id}
+                    className="rounded-full bg-primary-50 px-2.5 py-0.5 text-xs font-medium text-primary-dark"
+                  >
+                    {tag.nom}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-[gap] duration-200 group-hover:gap-2.5">
+              Lire l&apos;article
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </span>
+          </div>
         </div>
       </article>
     </Link>
