@@ -152,6 +152,47 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
     setEntentes([]);
   }
 
+  // Puces récapitulant chaque filtre actif, chacune retirable individuellement.
+  const activeChips: { key: string; label: string; onRemove: () => void }[] = [
+    ...(sexe !== "all"
+      ? [
+          {
+            key: "sexe",
+            label: SEXE_OPTIONS.find((o) => o.value === sexe)!.label,
+            onRemove: () => setSexe("all"),
+          },
+        ]
+      : []),
+    ...(age !== "all"
+      ? [
+          {
+            key: "age",
+            label: AGE_OPTIONS.find((o) => o.value === age)!.label,
+            onRemove: () => setAge("all"),
+          },
+        ]
+      : []),
+    ...caracteresSel.map((t) => ({
+      key: `car-${t}`,
+      label: t,
+      onRemove: () => toggleCaractere(t),
+    })),
+    ...ententes.map((k) => ({
+      key: `ent-${k}`,
+      label: `S'entend avec ${ENTENTE_OPTIONS.find((o) => o.key === k)!.label.toLowerCase()}`,
+      onRemove: () => toggleEntente(k),
+    })),
+    ...(caractere.trim()
+      ? [
+          {
+            key: "q",
+            label: `« ${caractere.trim()} »`,
+            onRemove: () => setCaractere(""),
+          },
+        ]
+      : []),
+  ];
+
   return (
     <section aria-label="Liste des chats à l'adoption" className="bg-bg">
       <div className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
@@ -336,6 +377,32 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
             />
           </div>
         </div>
+
+        {activeChips.length > 0 ? (
+          <ul
+            aria-label="Filtres actifs"
+            className="mt-4 flex flex-wrap items-center gap-2"
+          >
+            {activeChips.map((chip) => (
+              <li key={chip.key}>
+                <button
+                  type="button"
+                  onClick={chip.onRemove}
+                  className="group inline-flex items-center gap-1.5 rounded-full bg-primary-50 py-1 pl-3 pr-2 text-sm font-medium capitalize text-primary-dark transition hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:outline-none"
+                >
+                  {chip.label}
+                  <span
+                    aria-hidden="true"
+                    className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-primary/15 group-hover:bg-white/25"
+                  >
+                    <X className="h-3 w-3" />
+                  </span>
+                  <span className="sr-only">— retirer ce filtre</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : null}
 
         {filtered.length === 0 ? (
           <div className="mt-10 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-surface px-6 py-16 text-center">
