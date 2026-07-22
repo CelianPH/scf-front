@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Sparkles, PawPrint, Syringe, ShieldCheck, ScanLine, type LucideIcon } from "lucide-react";
+import { ArrowRight, Sparkles, PawPrint, Syringe, ShieldCheck, ScanLine, Zap, type LucideIcon } from "lucide-react";
 import { getStrapiMedia } from "@/lib/strapi";
 import { estAdoptable, statutLabel } from "@/lib/chat-statut";
 import type { Chat } from "@/types/strapi";
@@ -83,6 +83,28 @@ export default function AdoptionCard({ chat }: AdoptionCardProps) {
             <p className="mt-1 text-sm font-medium text-white/90">
               {sexeLabel} · {chat.age}
             </p>
+            {chat.niveauEnergie ? (
+              <div
+                className="mt-2 flex items-center gap-1.5"
+                title={`Niveau d'énergie : ${chat.niveauEnergie}/5`}
+              >
+                <Zap className="h-3.5 w-3.5 text-white/90" aria-hidden="true" />
+                <span
+                  className="flex items-center gap-1"
+                  role="img"
+                  aria-label={`Niveau d'énergie ${chat.niveauEnergie} sur 5`}
+                >
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <span
+                      key={i}
+                      className={`h-1.5 w-1.5 rounded-full ${
+                        i < chat.niveauEnergie ? "bg-white" : "bg-white/30"
+                      }`}
+                    />
+                  ))}
+                </span>
+              </div>
+            ) : null}
           </div>
         </div>
 
