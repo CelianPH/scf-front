@@ -1,5 +1,6 @@
 import Reveal from "@/components/layout/Reveal";
 import { Icon } from "@/components/ui/Icon";
+import StatCounter from "./StatCounter";
 import type { AboutStatsBand as AboutStatsBandData } from "@/types/strapi";
 
 interface AboutStatsBandProps {
@@ -44,7 +45,7 @@ export default function AboutStatsBand({ data }: AboutStatsBandProps) {
                 />
               </span>
               <span className="font-display text-3xl font-bold leading-none tabular-nums text-white md:text-4xl lg:text-5xl">
-                {stat.value}
+                <StatCounter value={stat.value} />
               </span>
               <span className="mt-2 max-w-[18ch] text-sm leading-snug text-white/70 md:text-base">
                 {stat.label}
