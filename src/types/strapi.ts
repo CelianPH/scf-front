@@ -54,7 +54,15 @@ export type IconName =
   | "ArrowRight"
   | "Sparkles"
   | "ShieldCheck"
-  | "Receipt";
+  | "Receipt"
+  | "HeartPulse"
+  | "Utensils"
+  | "Cat"
+  | "Leaf"
+  | "Search"
+  | "ShieldAlert"
+  | "Wallet"
+  | "ListChecks";
 
 export type CtaVariant =
   | "primary"
@@ -770,3 +778,87 @@ export type ChatResponse = StrapiSingleResponse<Chat>;
 export type ArticlesResponse = StrapiCollectionResponse<Article>;
 export type ArticleResponse = StrapiSingleResponse<Article>;
 export type TagsResponse = StrapiCollectionResponse<Tag>;
+
+// ---------- Guide pages (Conseils / Chat trouvé) ----------
+
+export interface GuideHero {
+  id: number;
+  badgeText: string | null;
+  titre: string;
+  intro: string;
+}
+
+export interface GuideStep {
+  id: number;
+  titre: string;
+  texte: string;
+}
+
+export interface GuideSection {
+  id: number;
+  titre: string;
+  navLabel: string;
+  iconName: IconName | null;
+  chapo: string;
+  points: GuideStep[];
+  astuce: string | null;
+  danger: string | null;
+}
+
+export interface GuideChecklistItem {
+  id: number;
+  label: string;
+  detail: string | null;
+}
+
+export interface GuideFaqItem {
+  id: number;
+  question: string;
+  reponse: string;
+}
+
+export interface ConseilsPage {
+  id: number;
+  documentId: string;
+  hero: GuideHero;
+  sections: GuideSection[];
+  kitKicker: string | null;
+  kitTitre: string | null;
+  kitDescription: string | null;
+  kit: GuideChecklistItem[];
+  faqKicker: string | null;
+  faqTitre: string | null;
+  faq: GuideFaqItem[];
+  vetNote: string | null;
+  ctaTitre: string | null;
+  ctaDescription: string | null;
+  ctaPrimary: SharedCta | null;
+  ctaSecondary: SharedCta | null;
+  seo: SharedSeo | null;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string | null;
+}
+
+export interface ChatTrouvePage {
+  id: number;
+  documentId: string;
+  hero: GuideHero;
+  urgenceText: string | null;
+  urgenceCtaLabel: string | null;
+  situations: GuideSection[];
+  infosKicker: string | null;
+  infosTitre: string | null;
+  infosDescription: string | null;
+  infos: GuideChecklistItem[];
+  contactTitre: string | null;
+  contactDescription: string | null;
+  contactEmail: string | null;
+  seo: SharedSeo | null;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string | null;
+}
+
+export type ConseilsPageResponse = StrapiSingleResponse<ConseilsPage>;
+export type ChatTrouvePageResponse = StrapiSingleResponse<ChatTrouvePage>;
