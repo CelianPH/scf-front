@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, X, SlidersHorizontal, PawPrint } from "lucide-react";
+import { Search, X, SlidersHorizontal, PawPrint, Dog, Cat, Baby, type LucideIcon } from "lucide-react";
 import AdoptionCard from "./AdoptionCard";
 import { Button } from "@/components/ui/Button";
 import Reveal from "@/components/layout/Reveal";
@@ -66,11 +66,20 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "name", label: "Nom (A-Z)" },
 ];
 
+type EntenteKey = "ententeChiens" | "ententeChats" | "ententeEnfants";
+
+const ENTENTE_OPTIONS: { key: EntenteKey; label: string; icon: LucideIcon }[] = [
+  { key: "ententeChiens", label: "Chiens", icon: Dog },
+  { key: "ententeChats", label: "Chats", icon: Cat },
+  { key: "ententeEnfants", label: "Enfants", icon: Baby },
+];
+
 export default function AdoptionList({ chats }: AdoptionListProps) {
   const [sexe, setSexe] = useState<SexeFilter>("all");
   const [age, setAge] = useState<AgeFilter>("all");
   const [caractere, setCaractere] = useState<string>("");
   const [caracteresSel, setCaracteresSel] = useState<string[]>([]);
+  const [ententes, setEntentes] = useState<EntenteKey[]>([]);
   const [sort, setSort] = useState<SortKey>("recent");
 
   // Caractères les plus fréquents parmi les chats disponibles → filtres rapides.
@@ -91,7 +100,8 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
     sexe !== "all" ||
     age !== "all" ||
     caractere.length > 0 ||
-    caracteresSel.length > 0;
+    caracteresSel.length > 0 ||
+    ententes.length > 0;
 
   const filtered = useMemo(() => {
     const q = caractere.trim().toLowerCase();
@@ -101,6 +111,7 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
       .filter((c) =>
         caracteresSel.every((t) => c.caracteres?.includes(t))
       )
+      .filter((c) => ententes.every((k) => c[k] === "ok"))
       .filter((c) => {
         if (!q) return true;
         return (
@@ -117,7 +128,7 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
         const bDate = new Date(b.createdAt).getTime();
         return sort === "oldest" ? aDate - bDate : bDate - aDate;
       });
-  }, [chats, sexe, age, caractere, caracteresSel, sort]);
+  }, [chats, sexe, age, caractere, caracteresSel, ententes, sort]);
 
   function toggleCaractere(trait: string) {
     setCaracteresSel((prev) =>
@@ -127,11 +138,18 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
     );
   }
 
+  function toggleEntente(key: EntenteKey) {
+    setEntentes((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+    );
+  }
+
   function resetFilters() {
     setSexe("all");
     setAge("all");
     setCaractere("");
     setCaracteresSel([]);
+    setEntentes([]);
   }
 
   return (
@@ -257,6 +275,33 @@ export default function AdoptionList({ chats }: AdoptionListProps) {
               </div>
             </div>
           ) : null}
+
+          <div className="mt-5 border-t border-border pt-5">
+            <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
+              S&apos;entend avec
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {ENTENTE_OPTIONS.map((opt) => {
+                const active = ententes.includes(opt.key);
+                return (
+                  <button
+                    key={opt.key}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => toggleEntente(opt.key)}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:outline-none ${
+                      active
+                        ? "bg-primary text-white shadow-sm shadow-primary/30"
+                        : "bg-surface text-text-secondary ring-1 ring-border hover:text-text"
+                    }`}
+                  >
+                    <opt.icon className="h-4 w-4" aria-hidden="true" />
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
