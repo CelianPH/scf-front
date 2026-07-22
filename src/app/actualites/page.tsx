@@ -60,6 +60,9 @@ export default async function ActualitesPage({
   const featured = showFeatured ? articles[0] : null;
   const gridArticles = showFeatured ? articles.slice(1) : articles;
 
+  const activeTagName =
+    tag ? (tagsRes.data ?? []).find((t) => t.slug === tag)?.nom ?? tag : null;
+
   return (
     <>
       <Navbar />
@@ -141,6 +144,32 @@ export default async function ActualitesPage({
               </div>
             ) : (
               <>
+                {search || tag ? (
+                  <Reveal>
+                    <p
+                      className="mb-8 text-sm text-text-secondary md:text-base"
+                      aria-live="polite"
+                    >
+                      <span className="font-bold text-text">{total}</span>{" "}
+                      résultat{total > 1 ? "s" : ""}
+                      {search ? (
+                        <>
+                          {" "}
+                          pour «&nbsp;
+                          <span className="text-text">{search}</span>&nbsp;»
+                        </>
+                      ) : null}
+                      {activeTagName ? (
+                        <>
+                          {" "}
+                          dans{" "}
+                          <span className="text-text">{activeTagName}</span>
+                        </>
+                      ) : null}
+                    </p>
+                  </Reveal>
+                ) : null}
+
                 {featured ? (
                   <Reveal>
                     <FeaturedArticle article={featured} />
