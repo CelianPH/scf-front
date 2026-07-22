@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Sparkles, PawPrint } from "lucide-react";
+import { ArrowRight, Sparkles, PawPrint, Syringe, ShieldCheck, ScanLine, type LucideIcon } from "lucide-react";
 import { getStrapiMedia } from "@/lib/strapi";
 import { estAdoptable, statutLabel } from "@/lib/chat-statut";
 import type { Chat } from "@/types/strapi";
@@ -14,6 +14,14 @@ export default function AdoptionCard({ chat }: AdoptionCardProps) {
   const imageUrl = getStrapiMedia(chat.image?.url) ?? "";
   const statusLabel = statutLabel(chat.statut);
   const adoptable = estAdoptable(chat.statut);
+  const e = chat.sexe === "Femelle" ? "e" : "";
+
+  // Soins déjà réalisés : on ne montre que les acquis (rassurant, sans bruit).
+  const soins: { icon: LucideIcon; label: string }[] = [
+    chat.sterilise && { icon: ShieldCheck, label: `Stérilisé${e}` },
+    chat.vaccine && { icon: Syringe, label: `Vacciné${e}` },
+    chat.identifie && { icon: ScanLine, label: `Identifié${e}` },
+  ].filter(Boolean) as { icon: LucideIcon; label: string }[];
 
   return (
     <Link
@@ -98,6 +106,20 @@ export default function AdoptionCard({ chat }: AdoptionCardProps) {
                   +{chat.caracteres.length - 3}
                 </li>
               ) : null}
+            </ul>
+          ) : null}
+
+          {soins.length > 0 ? (
+            <ul className="mt-3 flex flex-wrap gap-1.5">
+              {soins.map((s) => (
+                <li
+                  key={s.label}
+                  className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 ring-1 ring-green-100"
+                >
+                  <s.icon className="h-3.5 w-3.5" aria-hidden="true" />
+                  {s.label}
+                </li>
+              ))}
             </ul>
           ) : null}
 
