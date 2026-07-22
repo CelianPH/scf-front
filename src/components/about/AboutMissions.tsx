@@ -116,8 +116,8 @@ export default function AboutMissions({ data }: AboutMissionsProps) {
           <ul className="mt-10 grid grid-cols-1 gap-6 md:mt-12 md:grid-cols-2">
             {autres.map((mission, i) => (
               <Reveal as="li" key={mission.id} delay={i * 80}>
-                <article className="group flex h-full flex-col rounded-lg border border-border bg-surface p-6 shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 motion-reduce:hover:translate-y-0 md:p-8">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-md bg-primary-50 text-primary transition-colors duration-200 ease-out group-hover:bg-primary group-hover:text-white motion-reduce:transition-none">
+                <article className="group flex h-full flex-col rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-border transition duration-200 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 hover:ring-primary/30 motion-reduce:hover:translate-y-0 md:p-8">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-primary transition-colors duration-200 ease-out group-hover:bg-primary group-hover:text-white motion-reduce:transition-none">
                     <Icon
                       name={mission.iconName}
                       className="h-6 w-6"

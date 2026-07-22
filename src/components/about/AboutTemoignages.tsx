@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Heart } from "lucide-react";
+import { Heart, Quote } from "lucide-react";
 import Reveal from "@/components/layout/Reveal";
 import { getStrapiMedia } from "@/lib/strapi";
 import type { AboutTemoignagesBlock } from "@/types/strapi";
@@ -36,7 +36,7 @@ export default function AboutTemoignages({ data }: AboutTemoignagesProps) {
             const photoUrl = getStrapiMedia(t.photo.url) ?? "";
             return (
               <Reveal as="li" key={t.id} delay={i * 90}>
-                <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/15 motion-reduce:hover:translate-y-0">
+                <article className="group flex h-full flex-col overflow-hidden rounded-2xl bg-surface shadow-sm ring-1 ring-border transition duration-200 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/15 motion-reduce:hover:translate-y-0">
                   <div className="relative aspect-[4/5] w-full overflow-hidden">
                     <Image
                       src={photoUrl}
@@ -54,7 +54,11 @@ export default function AboutTemoignages({ data }: AboutTemoignagesProps) {
                     <h3 className="font-display text-xl font-bold text-text">
                       {t.nom}
                     </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+                    <Quote
+                      className="mt-3 h-5 w-5 text-primary/25"
+                      aria-hidden="true"
+                    />
+                    <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">
                       {t.histoire}
                     </p>
                   </div>
