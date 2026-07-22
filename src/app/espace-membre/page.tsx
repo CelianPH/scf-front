@@ -35,7 +35,16 @@ export default async function EspaceMembrePage() {
 
   const enAttente = demandes.filter((d) => d.statut === "en_attente").length;
   const enCours = demandes.filter((d) => d.statut === "en_cours").length;
-  const chatsSuivis = new Set(demandes.map((d) => d.chat?.slug)).size;
+  // « Chats concernés » = chats distincts ayant une demande encore à traiter
+  // (en attente ou en cours). On exclut les demandes closes (acceptée/refusée),
+  // sinon le compteur inclut des chats déjà traités et devient incohérent avec
+  // les deux autres stats.
+  const chatsSuivis = new Set(
+    demandes
+      .filter((d) => d.statut === "en_attente" || d.statut === "en_cours")
+      .map((d) => d.chat?.slug)
+      .filter(Boolean)
+  ).size;
 
   return (
     <>
