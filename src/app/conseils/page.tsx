@@ -123,12 +123,12 @@ export default function ConseilsPage() {
                 >
                   <Reveal>
                     <div className="flex items-center gap-3">
-                      <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-vif text-white shadow-md shadow-primary/25">
-                        <section.icon className="h-6 w-6" aria-hidden="true" />
+                      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-vif text-white shadow-md shadow-primary/25 md:h-12 md:w-12">
+                        <section.icon className="h-5 w-5 md:h-6 md:w-6" aria-hidden="true" />
                       </span>
                       <h2
                         id={`${section.id}-titre`}
-                        className="font-display text-2xl font-bold text-text md:text-3xl"
+                        className="min-w-0 break-words font-display text-2xl font-bold text-text md:text-3xl"
                       >
                         {section.titre}
                       </h2>
