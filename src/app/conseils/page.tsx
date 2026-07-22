@@ -54,7 +54,7 @@ export default function ConseilsPage() {
                 <PawPrint className="h-3.5 w-3.5" aria-hidden="true" />
                 Le guide du chat
               </span>
-              <h1 className="mt-4 font-display text-4xl font-bold leading-[1.05] text-white md:text-6xl">
+              <h1 className="mt-4 font-display text-3xl font-bold leading-[1.1] text-white sm:text-4xl sm:leading-[1.05] md:text-5xl lg:text-6xl">
                 Bien vivre avec son chat
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/85 md:text-lg">
