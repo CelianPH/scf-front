@@ -12,7 +12,6 @@ const links = [
   { href: "/", label: "Accueil" },
   { href: "/a-propos", label: "À propos" },
   { href: "/adoption", label: "Adopter" },
-  { href: "/conseils", label: "Conseils" },
   { href: "/actualites", label: "Actualités" },
 ];
 

@@ -63,12 +63,6 @@
   border-radius: 2px;
 }
 
-/* Défilement fluide pour les liens d'ancrage (sommaires, retours en haut).
-   Neutralisé plus bas si l'utilisateur préfère les animations réduites. */
-html {
-  scroll-behavior: smooth;
-}
-
 /* Respecte les préférences système d'animation réduite, en sécurité,
    même pour les libs tierces qui n'auraient pas la délicatesse de le faire. */
 @media (prefers-reduced-motion: reduce) {
