@@ -82,6 +82,25 @@ export default function AdoptionCard({ chat }: AdoptionCardProps) {
           <p className="line-clamp-2 text-sm leading-relaxed text-text-secondary md:text-[15px]">
             {chat.trait}
           </p>
+
+          {chat.caracteres && chat.caracteres.length > 0 ? (
+            <ul className="mt-3 flex flex-wrap gap-1.5">
+              {chat.caracteres.slice(0, 3).map((c) => (
+                <li
+                  key={c}
+                  className="rounded-full bg-primary-50 px-2.5 py-0.5 text-xs font-medium text-primary-dark"
+                >
+                  {c}
+                </li>
+              ))}
+              {chat.caracteres.length > 3 ? (
+                <li className="rounded-full bg-bg-alt px-2.5 py-0.5 text-xs font-medium text-text-muted">
+                  +{chat.caracteres.length - 3}
+                </li>
+              ) : null}
+            </ul>
+          ) : null}
+
           <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-[gap] duration-200 group-hover:gap-2.5">
             Faire connaissance
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
