@@ -2,6 +2,8 @@ import qs from "qs";
 import type {
   AboutPageResponse,
   AdoptionPageResponse,
+  ConseilsPageResponse,
+  ChatTrouvePageResponse,
   ArticleResponse,
   ArticlesResponse,
   ChatResponse,
@@ -23,6 +25,8 @@ export const CACHE_TAGS = {
   about: "about-page",
   don: "don-page",
   adoption: "adoption-page",
+  conseils: "conseils-page",
+  chatTrouve: "chat-trouve-page",
   settings: "site-settings",
   chats: "chats",
   articles: "articles",
@@ -215,6 +219,43 @@ export async function getAboutPage(): Promise<AboutPageResponse> {
 
   return fetchAPI<AboutPageResponse>("/about-page", params, {
     tags: [CACHE_TAGS.about],
+  });
+}
+
+// ---------- Conseils page ----------
+
+export async function getConseilsPage(): Promise<ConseilsPageResponse> {
+  const params = {
+    populate: {
+      hero: true,
+      sections: { populate: { points: true } },
+      kit: true,
+      faq: true,
+      ctaPrimary: ctaPopulate,
+      ctaSecondary: ctaPopulate,
+      seo: seoPopulate,
+    },
+  };
+
+  return fetchAPI<ConseilsPageResponse>("/conseils-page", params, {
+    tags: [CACHE_TAGS.conseils],
+  });
+}
+
+// ---------- Chat trouvé page ----------
+
+export async function getChatTrouvePage(): Promise<ChatTrouvePageResponse> {
+  const params = {
+    populate: {
+      hero: true,
+      situations: { populate: { points: true } },
+      infos: true,
+      seo: seoPopulate,
+    },
+  };
+
+  return fetchAPI<ChatTrouvePageResponse>("/chat-trouve-page", params, {
+    tags: [CACHE_TAGS.chatTrouve],
   });
 }
 

@@ -20,6 +20,8 @@ const links = [
   { href: "/", label: "Accueil" },
   { href: "/a-propos", label: "À propos" },
   { href: "/adoption", label: "Adopter" },
+  { href: "/conseils", label: "Conseils" },
+  { href: "/chat-trouve", label: "Chat trouvé" },
   { href: "/actualites", label: "Actualités" },
 ];
 
