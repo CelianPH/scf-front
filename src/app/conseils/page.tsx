@@ -155,15 +155,12 @@ export default function ConseilsPage() {
 
                   {section.astuce ? (
                     <Reveal>
-                      <div className="mt-4 flex gap-3 rounded-2xl bg-primary-50 p-4 ring-1 ring-primary/15 md:p-5">
-                        <Lightbulb
-                          className="h-5 w-5 shrink-0 text-primary"
-                          aria-hidden="true"
-                        />
-                        <p className="text-sm leading-relaxed text-text md:text-base">
-                          <strong className="font-semibold text-primary-dark">
-                            Bon à savoir —{" "}
-                          </strong>
+                      <div className="mt-4 rounded-r-2xl border-l-4 border-primary bg-primary-50/60 p-4 md:p-5">
+                        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
+                          <Lightbulb className="h-4 w-4" aria-hidden="true" />
+                          L&apos;astuce des bénévoles
+                        </p>
+                        <p className="mt-2 text-sm leading-relaxed text-text md:text-base">
                           {section.astuce}
                         </p>
                       </div>
