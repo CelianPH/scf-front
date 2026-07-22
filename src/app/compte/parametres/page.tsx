@@ -1,7 +1,6 @@
 import Link from "next/link";
 import {
   ArrowLeft,
-  Settings,
   IdCard,
   ShieldCheck,
   LogOut,
@@ -20,44 +19,26 @@ export default async function ParametresPage() {
   const user = (await getCurrentUser())!;
 
   return (
-    <>
-      <section className="relative isolate overflow-hidden border-b border-border bg-bg-alt">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10"
+    <section className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+      <Reveal>
+        <Link
+          href="/compte"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-text-secondary transition hover:text-primary"
         >
-          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
-          <div className="absolute -left-20 bottom-[-4rem] h-56 w-56 rounded-full bg-secondary/10 blur-3xl" />
-        </div>
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Mon espace
+        </Link>
 
-        <div className="relative mx-auto max-w-2xl px-5 py-9 md:px-8 md:py-12">
-          <Reveal>
-            <Link
-              href="/compte"
-              className="inline-flex items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-sm font-medium text-text-secondary ring-1 ring-border transition hover:text-primary hover:ring-primary/40"
-            >
-              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-              Mon espace
-            </Link>
+        <h1 className="mt-6 font-display text-4xl font-bold text-text md:text-5xl">
+          Paramètres
+        </h1>
+        <p className="mt-3 text-text-secondary md:text-lg">
+          Tes informations, tes données personnelles et ta session.
+        </p>
+      </Reveal>
 
-            <div className="mt-5 flex items-center gap-3">
-              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-vif text-white shadow-md shadow-primary/25">
-                <Settings className="h-5 w-5" aria-hidden="true" />
-              </span>
-              <h1 className="font-display text-3xl font-bold text-text md:text-4xl">
-                Paramètres
-              </h1>
-            </div>
-            <p className="mt-3 text-text-secondary md:text-lg">
-              Tes informations, tes données personnelles et ta session.
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="bg-bg">
-        <div className="mx-auto max-w-2xl space-y-6 px-5 py-10 md:px-8 md:py-12">
-          <Block title="Informations du compte" icon={IdCard} delay={0}>
+      <div className="mx-auto mt-10 max-w-2xl space-y-6">
+        <Block title="Informations du compte" icon={IdCard} delay={0}>
             <dl>
               <Row
                 icon={UserRound}
@@ -137,9 +118,8 @@ export default async function ParametresPage() {
               <LogoutButton />
             </div>
           </Block>
-        </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
 

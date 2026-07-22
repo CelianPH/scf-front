@@ -1,4 +1,6 @@
-import { AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { AlertCircle, ArrowLeft } from "lucide-react";
+import Reveal from "@/components/layout/Reveal";
 import { getProfilAdoptant } from "@/lib/strapi-server";
 import ProfilForm from "@/components/compte/ProfilForm";
 
@@ -29,14 +31,24 @@ export default async function ProfilPage({
   const manquants = (params.manquants ?? "").split(",").filter(Boolean);
 
   return (
-    <section className="mx-auto max-w-3xl px-5 py-12 md:px-8 md:py-16">
-      <h1 className="font-display text-4xl font-bold text-text md:text-5xl">
-        Mon profil
-      </h1>
-      <p className="mt-3 text-text-secondary">
-        Plus ton profil est complet, plus on peut te proposer un chat adapté.
-      </p>
+    <section className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+      <Reveal>
+        <Link
+          href="/compte"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-text-secondary transition hover:text-primary"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Mon espace
+        </Link>
+        <h1 className="mt-6 font-display text-4xl font-bold text-text md:text-5xl">
+          Mon profil
+        </h1>
+        <p className="mt-3 text-text-secondary">
+          Plus ton profil est complet, plus on peut te proposer un chat adapté.
+        </p>
+      </Reveal>
 
+      <div className="mx-auto max-w-2xl">
       {params.gate === "adoption" ? (
         <div
           role="alert"
@@ -75,6 +87,7 @@ export default async function ProfilPage({
 
       <div className="mt-10">
         <ProfilForm profil={profil} manquants={manquants} />
+      </div>
       </div>
     </section>
   );

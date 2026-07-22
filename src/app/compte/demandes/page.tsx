@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MailQuestion } from "lucide-react";
+import { ArrowLeft, MailQuestion } from "lucide-react";
+import Reveal from "@/components/layout/Reveal";
 import { getMesDemandes } from "@/lib/strapi-server";
 import { getStrapiMedia } from "@/lib/strapi";
 
@@ -20,11 +21,21 @@ export default async function DemandesPage({
   const { data: demandes } = await getMesDemandes();
 
   return (
-    <section className="mx-auto max-w-3xl px-5 py-12 md:px-8 md:py-16">
-      <h1 className="font-display text-4xl font-bold text-text md:text-5xl">
-        Mes demandes d&apos;adoption
-      </h1>
+    <section className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+      <Reveal>
+        <Link
+          href="/compte"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-text-secondary transition hover:text-primary"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Mon espace
+        </Link>
+        <h1 className="mt-6 font-display text-4xl font-bold text-text md:text-5xl">
+          Mes demandes d&apos;adoption
+        </h1>
+      </Reveal>
 
+      <div className="mx-auto max-w-4xl">
       {params.success ? (
         <p className="mt-6 rounded-md bg-primary-50 px-4 py-3 text-sm text-primary-dark">
           ✓ Demande envoyée ! Un bénévole va te recontacter par email.
@@ -95,6 +106,7 @@ export default async function DemandesPage({
           })}
         </ul>
       )}
+      </div>
     </section>
   );
 }

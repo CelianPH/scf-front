@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { ArrowLeft, Heart } from "lucide-react";
 import AdoptionCard from "@/components/adoption/AdoptionCard";
+import Reveal from "@/components/layout/Reveal";
 import { getMesFavoris } from "@/lib/strapi-server";
 
 export default async function FavorisPage() {
@@ -8,9 +9,18 @@ export default async function FavorisPage() {
 
   return (
     <section className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
-      <h1 className="font-display text-4xl font-bold text-text md:text-5xl">
-        Mes favoris
-      </h1>
+      <Reveal>
+        <Link
+          href="/compte"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-text-secondary transition hover:text-primary"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Mon espace
+        </Link>
+        <h1 className="mt-6 font-display text-4xl font-bold text-text md:text-5xl">
+          Mes favoris
+        </h1>
+      </Reveal>
       {favoris.length === 0 ? (
         <div className="mt-10 flex flex-col items-center rounded-3xl border-2 border-dashed border-border bg-surface px-6 py-16 text-center">
           <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary-50 text-primary">

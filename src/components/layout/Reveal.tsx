@@ -38,8 +38,15 @@ export default function Reveal({ as = "div", delay = 0, className = "", children
       },
       { threshold: 0.15, rootMargin: "0px 0px -60px 0px" }
     );
-    obs.observe(el);
-    return () => obs.disconnect();
+    // Décale l'observation d'une frame : si l'élément est déjà dans le
+    // viewport au montage (page courte, carte haute dans la mise en page),
+    // l'observer se déclenche sinon avant le premier paint et l'état
+    // "invisible" n'est jamais rendu à l'écran, donc l'animation ne se voit pas.
+    const raf = requestAnimationFrame(() => obs.observe(el));
+    return () => {
+      cancelAnimationFrame(raf);
+      obs.disconnect();
+    };
   }, []);
 
   const Tag = as as ElementType;

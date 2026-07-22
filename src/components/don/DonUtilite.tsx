@@ -58,37 +58,37 @@ export default function DonUtilite({ data }: DonUtiliteProps) {
           const objectPosition = item.image ? "center" : (fallback?.objectPosition ?? "center");
 
           return (
-            <Reveal
-              as="li"
-              key={item.id}
-              delay={i * 80}
-              className="group overflow-hidden rounded-[20px] border border-border bg-surface text-left shadow-sm transition-shadow hover:shadow-md"
-            >
-              {imageUrl ? (
-                <div className="relative h-[150px] w-full overflow-hidden">
-                  <Image
-                    src={imageUrl}
-                    alt={item.image?.alternativeText ?? ""}
-                    fill
-                    sizes="(min-width: 640px) 300px, 100vw"
-                    className="object-cover"
-                    style={{ objectPosition }}
-                  />
+            <Reveal as="li" key={item.id} delay={i * 120}>
+              {/* Carte sur un div interne : `transition-shadow` écraserait le
+                  `transition-all` du Reveal (même élément) et casserait
+                  l'animation d'entrée. */}
+              <div className="group h-full overflow-hidden rounded-[20px] border border-border bg-surface text-left shadow-sm transition-shadow hover:shadow-md">
+                {imageUrl ? (
+                  <div className="relative h-[150px] w-full overflow-hidden">
+                    <Image
+                      src={imageUrl}
+                      alt={item.image?.alternativeText ?? ""}
+                      fill
+                      sizes="(min-width: 640px) 300px, 100vw"
+                      className="object-cover"
+                      style={{ objectPosition }}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex h-[150px] items-center justify-center bg-primary-50">
+                    <span className="inline-flex h-12 w-12 items-center justify-center rounded-md bg-surface text-primary">
+                      <Icon name={item.iconName} className="h-6 w-6" aria-hidden="true" />
+                    </span>
+                  </div>
+                )}
+                <div className="p-6">
+                  <h3 className="font-display text-xl font-bold text-text">
+                    {item.titre}
+                  </h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">
+                    {item.description}
+                  </p>
                 </div>
-              ) : (
-                <div className="flex h-[150px] items-center justify-center bg-primary-50">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-md bg-surface text-primary">
-                    <Icon name={item.iconName} className="h-6 w-6" aria-hidden="true" />
-                  </span>
-                </div>
-              )}
-              <div className="p-6">
-                <h3 className="font-display text-xl font-bold text-text">
-                  {item.titre}
-                </h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">
-                  {item.description}
-                </p>
               </div>
             </Reveal>
           );
