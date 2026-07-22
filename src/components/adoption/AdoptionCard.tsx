@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Sparkles, PawPrint, Syringe, ShieldCheck, ScanLine, Zap, type LucideIcon } from "lucide-react";
+import { ArrowRight, Sparkles, PawPrint, Syringe, ShieldCheck, ScanLine, Zap, Heart, type LucideIcon } from "lucide-react";
 import { getStrapiMedia } from "@/lib/strapi";
 import { estAdoptable, statutLabel } from "@/lib/chat-statut";
 import type { Chat } from "@/types/strapi";
@@ -29,7 +29,13 @@ export default function AdoptionCard({ chat }: AdoptionCardProps) {
       aria-label={`Découvrir ${chat.nom}, chat ${sexeLabel.toLowerCase()} de ${chat.age}`}
       className="group block h-full rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
     >
-      <article className="relative flex h-full flex-col overflow-hidden rounded-2xl bg-surface ring-1 ring-border transition duration-300 ease-out group-hover:-translate-y-1 group-hover:shadow-2xl group-hover:shadow-primary/15 motion-reduce:group-hover:translate-y-0">
+      <article
+        className={`relative flex h-full flex-col overflow-hidden rounded-2xl bg-surface transition duration-300 ease-out group-hover:-translate-y-1 group-hover:shadow-2xl group-hover:shadow-primary/15 motion-reduce:group-hover:translate-y-0 ${
+          chat.featured
+            ? "ring-2 ring-primary/30 shadow-md shadow-primary/10"
+            : "ring-1 ring-border"
+        }`}
+      >
         <div className="relative aspect-[4/5] w-full overflow-hidden bg-gradient-to-br from-primary-50 via-bg-alt to-secondary-50">
           {imageUrl ? (
             <Image
@@ -73,6 +79,11 @@ export default function AdoptionCard({ chat }: AdoptionCardProps) {
             <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
               <Sparkles className="h-3 w-3" aria-hidden="true" />
               {chat.badge}
+            </span>
+          ) : chat.featured ? (
+            <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-primary shadow-sm ring-1 ring-primary/10">
+              <Heart className="h-3 w-3 fill-primary" aria-hidden="true" />
+              Coup de cœur
             </span>
           ) : null}
 
