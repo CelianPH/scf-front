@@ -169,15 +169,12 @@ export default function ConseilsPage() {
 
                   {section.danger ? (
                     <Reveal>
-                      <div className="mt-4 flex gap-3 rounded-2xl bg-amber-50 p-4 ring-1 ring-amber-200 md:p-5">
-                        <AlertTriangle
-                          className="h-5 w-5 shrink-0 text-amber-600"
-                          aria-hidden="true"
-                        />
-                        <p className="text-sm leading-relaxed text-amber-900 md:text-base">
-                          <strong className="font-semibold">
-                            À éviter absolument —{" "}
-                          </strong>
+                      <div className="mt-4 rounded-r-2xl border-l-4 border-red-500 bg-red-50/70 p-4 md:p-5">
+                        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-red-600">
+                          <AlertTriangle className="h-4 w-4" aria-hidden="true" />
+                          Le danger à connaître
+                        </p>
+                        <p className="mt-2 text-sm leading-relaxed text-text md:text-base">
                           {section.danger}
                         </p>
                       </div>
