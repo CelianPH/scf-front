@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { PawPrint } from "lucide-react";
+import { PawPrint, Lightbulb, Siren } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Reveal from "@/components/layout/Reveal";
 import { Button } from "@/components/ui/Button";
 import ArticleCard from "@/components/actualites/ArticleCard";
+import ResourceCard from "@/components/actualites/ResourceCard";
 import ArticleSearchForm from "@/components/actualites/ArticleSearchForm";
 import TagFilterChips from "@/components/actualites/TagFilterChips";
 import Pagination from "@/components/actualites/Pagination";
@@ -19,6 +20,25 @@ export const metadata: Metadata = {
 };
 
 const PAGE_SIZE = 9;
+
+const RESOURCES = [
+  {
+    href: "/conseils",
+    icon: Lightbulb,
+    title: "Bien vivre avec son chat",
+    description:
+      "Le guide complet pour adopter et prendre soin d'un chat au quotidien : arrivée, santé, alimentation, bien-être.",
+    cta: "Lire le guide",
+  },
+  {
+    href: "/chat-trouve",
+    icon: Siren,
+    title: "J'ai trouvé un chat",
+    description:
+      "Les bons réflexes pour aider un chat trouvé, l'identifier et joindre l'association au plus vite.",
+    cta: "Que faire ?",
+  },
+] as const;
 
 interface ActualitesPageProps {
   searchParams: Promise<{
@@ -108,6 +128,23 @@ export default async function ActualitesPage({
                 />
               </div>
             </Reveal>
+          </div>
+        </section>
+
+        <section className="bg-bg pb-4 pt-2 md:pb-8">
+          <div className="mx-auto max-w-7xl px-5 md:px-8">
+            <Reveal>
+              <h2 className="font-display text-sm font-bold uppercase tracking-wider text-text-muted">
+                Besoin d&apos;un coup de main&nbsp;?
+              </h2>
+            </Reveal>
+            <ul className="mt-5 grid grid-cols-1 gap-6 md:grid-cols-2">
+              {RESOURCES.map((resource, i) => (
+                <Reveal as="li" key={resource.href} delay={i * 80}>
+                  <ResourceCard {...resource} />
+                </Reveal>
+              ))}
+            </ul>
           </div>
         </section>
 

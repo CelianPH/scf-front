@@ -7,6 +7,9 @@ const navLinks = [
   { href: "/", label: "Accueil" },
   { href: "/a-propos", label: "À propos" },
   { href: "/adoption", label: "Adopter" },
+  { href: "/actualites", label: "Actualités" },
+  { href: "/conseils", label: "Conseils" },
+  { href: "/chat-trouve", label: "J'ai trouvé un chat" },
   { href: "/don", label: "Faire un don" },
 ];
 
