@@ -40,6 +40,20 @@ function trierParUrgence(a: DemandeATraiter, b: DemandeATraiter) {
   return +new Date(b.createdAt) - +new Date(a.createdAt);
 }
 
+/**
+ * Points d'incompatibilité de la demande, sous forme normalisée. Les demandes
+ * créées avant l'introduction du `code` stable ont persisté un simple
+ * `string[]` : on les affiche encore, sans clé stable pour ces anciennes
+ * entrées.
+ */
+function problemes(d: DemandeATraiter): { code?: string; detail: string }[] {
+  const valeur = d.problemesIncompatibilite;
+  if (!valeur) return [];
+  return valeur.map((p) =>
+    typeof p === "string" ? { detail: p } : p
+  );
+}
+
 function LigneProfil({ label, valeur }: { label: string; valeur?: unknown }) {
   if (valeur === null || valeur === undefined || valeur === "") return null;
   const texte =
@@ -179,8 +193,25 @@ export default async function DemandesATraiterPage() {
                       {d.justificationIncompatibilite ? (
                         <div className="mt-3 rounded-lg bg-amber-50 p-3 ring-1 ring-amber-200">
                           <p className="text-xs font-semibold uppercase tracking-wider text-amber-800">
-                            ⚠ Adoption malgré une incompatibilité — réponse de
-                            l&apos;adoptant
+                            ⚠ Adoption malgré une incompatibilité
+                          </p>
+
+                          {problemes(d).length > 0 ? (
+                            <ul className="mt-2 space-y-1">
+                              {problemes(d).map((p, idx) => (
+                                <li
+                                  key={p.code ?? idx}
+                                  className="flex gap-2 text-sm text-amber-900"
+                                >
+                                  <span aria-hidden="true">•</span>
+                                  <span>{p.detail}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : null}
+
+                          <p className="mt-3 text-xs font-semibold uppercase tracking-wider text-amber-800">
+                            Réponse de l&apos;adoptant
                           </p>
                           <p className="mt-1 whitespace-pre-line text-sm text-text">
                             {d.justificationIncompatibilite}

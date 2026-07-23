@@ -702,6 +702,12 @@ export type TypeZone = "ville" | "campagne" | "lotissement" | "autre";
 
 export type DemandeStatut = "en_attente" | "en_cours" | "acceptee" | "refusee";
 
+/** Un point d'incompatibilité figé : le code stable du critère, et la phrase vue par l'adoptant. */
+export interface ProblemeIncompatibilite {
+  code: string;
+  detail: string;
+}
+
 export interface DemandeAdoption {
   id: number;
   documentId: string;
@@ -709,6 +715,12 @@ export interface DemandeAdoption {
   dateRencontreSouhaitee: string | null;
   /** Rempli seulement quand l'adoptant candidate malgré une incompatibilité. */
   justificationIncompatibilite: string | null;
+  /**
+   * Points d'incompatibilité figés à la candidature ; null si le chat était
+   * compatible. Les demandes créées avant l'introduction du `code` stable ont
+   * persisté un simple `string[]` — les deux formes coexistent en base.
+   */
+  problemesIncompatibilite: ProblemeIncompatibilite[] | string[] | null;
   statut: DemandeStatut;
   reponseBenevole: string | null;
   repondueAt: string | null;
